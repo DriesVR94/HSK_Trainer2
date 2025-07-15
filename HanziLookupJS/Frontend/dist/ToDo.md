@@ -7,7 +7,11 @@
     - [ ] Level 6
     - [ ] Level 7
     - [ ] Level 8
-    - [ ] Level 9     
+    - [ ] Level 9 
+- [] Make a homepage
+- [] Automatically show the next char when you got one correct. 
+- [] Make an algorithm that checks how well a character is known by counting the time it takes to write the character. Granted time should be in function of the number of strokes. For example, the feedback bar can be divided into levels. After the character is drawn, the achieved level lights up.
+- [] Keep an account of which chars are well-known, lesser-known, unknown, etc.   
 - [x] Remove the grid lines from the pictures that are sent to the server.  
 - [x] Make an algorithm that checks both strokes direction and order + a recognition algorithm that only checks the final character. Compare both. If both characters match, then the drawn character is probably the right one.
 - [ ] Allow different users to make a profile and track their progress

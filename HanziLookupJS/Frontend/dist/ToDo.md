@@ -8,7 +8,7 @@
     - [ ] Level 7
     - [ ] Level 8
     - [ ] Level 9     
-- [ ] Remove the grid lines from the pictures that are sent to the server.  
+- [x] Remove the grid lines from the pictures that are sent to the server.  
 - [x] Make an algorithm that checks both strokes direction and order + a recognition algorithm that only checks the final character. Compare both. If both characters match, then the drawn character is probably the right one.
 - [ ] Allow different users to make a profile and track their progress
 - [ ] Gamify the webpage

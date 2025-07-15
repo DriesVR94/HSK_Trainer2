@@ -144,7 +144,8 @@
 
             setTimeout(() => {
               const dataUrl = board.exportImage();
-              //console.log("PNG Data URL:", dataUrl); 
+              console.log("PNG Data URL:", dataUrl); 
+              console.log(board.exportImage())
 
               fetch('http://127.0.0.1:5000/recognize', {
                 method: 'POST',

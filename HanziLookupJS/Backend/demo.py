@@ -26,7 +26,7 @@ def parse_arg():
 
     #with open(args.cfg, 'r') as f:
      #   config = yaml.load(f)
-    with open('C:/Users/Dries Van Ranst/OneDrive/Bureaublad/VS_Code/HSK_Project/Chinese_Characters_Rec/lib/config/OWN_config.yaml', 'r') as f:
+    with open('C:/Users/Dries Van Ranst/OneDrive/Bureaublad/VS_Code/HSK_Project/HanziLookupJS/Backend/lib/config/OWN_config.yaml', 'r') as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
         config = edict(config)
 

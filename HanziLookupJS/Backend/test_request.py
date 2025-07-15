@@ -3,7 +3,7 @@ import base64
 import json
 
 # Load and encode the image
-with open("C:/Users/Dries Van Ranst/OneDrive/Bureaublad/shan.png", "rb") as f:
+with open("C:/Users/Dries Van Ranst/OneDrive/Bureaublad/gao.png", "rb") as f:
     img_bytes = f.read()
     base64_img = base64.b64encode(img_bytes).decode()
 

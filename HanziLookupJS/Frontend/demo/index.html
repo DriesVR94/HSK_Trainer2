@@ -52,7 +52,7 @@
   <script>
     // ----- 1.  fetch random HSK character -----
     let hanziLoaded = false, assetsLoaded = false;
-    fetch('../dist/HSK_Level_1.json')
+    fetch('../HanziLookupJS/Frontend/dist/HSK_Level_1.json')
       .then(response => response.json())
       .then(hanziList => {
         const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];

@@ -13,7 +13,7 @@
     .colLeft_2 { width: 100%; margin-bottom: 20px; }
     .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
     .colLeft > .boardWrap { flex: 0 0 auto; }
-    .drawingBoard { width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
+    .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
     .commands { width: 100%; margin-top: 3px; display: flex; gap: 10px; }
     .cmd { flex: 1; background-color: #fce7c0; text-align: center; cursor: default; padding: 3px; color: #606060; user-select: none; }
     .cmd:hover { background-color: #f1d7a6; }
@@ -108,7 +108,9 @@
 
         wrap.innerHTML = `
           <h1 style="font-size: ${fontSize}px;">Stroke input (${idx + 1}/${count})</h1>
-          <div class="drawingBoard" style="height: ${boxSize}px;"></div>
+          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
+            <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
+          </div>
           <div class="feedbackBar"></div>
           <div class="commands">
             <div class="cmd cmdUndo">Undo</div>
@@ -123,20 +125,14 @@
           <div class="ocrResultBox">…</div>
         `;
 
-        // Set widths
-        ['.drawingBoard', '.feedbackBar', '.commands', '.charPicker'].forEach(sel => {
-          wrap.querySelector(sel).style.width = `${boxSize}px`;
-        });
-
         container.appendChild(wrap);
 
         const boardElem = wrap.querySelector('.drawingBoard');
         const resOrig = wrap.querySelector('.hanziLookupChars');
         const resMMAH = wrap.querySelector('.mmahLookupChars');
-        
 
-        // Create the drawing board
-        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999; // fallback in case data is missing
+        // Create the drawing board (this will create a canvas inside .drawingBoard div)
+        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
 
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
           lookup(board, resOrig, resMMAH);
@@ -146,9 +142,9 @@
           if (strokes.length === maxStrokes && !board._ocrSent) {
             board._ocrSent = true;
 
-            // Delay to ensure last stroke is rendered
             setTimeout(() => {
               const dataUrl = board.exportImage();
+              //console.log("PNG Data URL:", dataUrl); 
 
               fetch('http://127.0.0.1:5000/recognize', {
                 method: 'POST',
@@ -166,41 +162,85 @@
                   console.error(err);
                   alert(`Failed to recognize character ${idx + 1}.`);
                 });
-            }, 50); // 50ms delay to ensure final stroke is rendered
+            }, 50);
           }
         });
 
+        // ---- NEW: Create overlay canvas for the grid ----
+        // HanziLookup.DrawingBoard creates a canvas inside boardElem
+        // Find that canvas:
+        const strokeCanvas = boardElem.querySelector('canvas');
+        strokeCanvas.style.position = 'relative'; // ensure baseline
 
+        // Create overlay canvas element
+        const overlayCanvas = document.createElement('canvas');
+        overlayCanvas.width = strokeCanvas.width;
+        overlayCanvas.height = strokeCanvas.height;
+        overlayCanvas.style.position = 'absolute';
+        overlayCanvas.style.top = '0';
+        overlayCanvas.style.left = '0';
+        overlayCanvas.style.pointerEvents = 'none'; // so pointer events go to strokeCanvas
+        boardElem.appendChild(overlayCanvas);
 
-        _drawingBoards.push(board);
+        const overlayCtx = overlayCanvas.getContext('2d');
 
-        // Undo button
+        // Function to draw the grid lines on overlay canvas
+        function drawGrid(ctx, w, h) {
+          ctx.clearRect(0, 0, w, h);
+          ctx.setLineDash([1, 1]);
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'grey';
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, 0);
+          ctx.lineTo(w, h);
+          ctx.lineTo(0, h);
+          ctx.lineTo(0, 0);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w, 0);
+          ctx.lineTo(0, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w / 2, 0);
+          ctx.lineTo(w / 2, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, h / 2);
+          ctx.lineTo(w, h / 2);
+          ctx.stroke();
+        }
+
+        drawGrid(overlayCtx, overlayCanvas.width, overlayCanvas.height);
+
+        // ---- Buttons handlers (undo, clear, recognize) ----
         wrap.querySelector('.cmdUndo').onclick = () => {
           board.undoStroke();
           board.redraw();
           lookup(board, resOrig, resMMAH);
         };
 
-        // Clear button
         wrap.querySelector('.cmdClear').onclick = () => {
           board.clearCanvas();
           board.redraw();
-          board._ocrSent = false; // allow re-trigger
+          board._ocrSent = false;
           lookup(board, resOrig, resMMAH);
         };
 
-        // Recognize button
         const recognizeButton = wrap.querySelector('.cmdRecognize');
-
         recognizeButton.onclick = () => {
-          console.log('board:', board);
-          const dataUrl = board.exportImage();
-          console.log(dataUrl)
-
-          //board.redraw(); // ensure latest stroke is rendered
-          
-
           lookup(board, resOrig, resMMAH);
+
+          const dataUrl = board.exportImage();
 
           fetch('http://127.0.0.1:5000/recognize', {
             method: 'POST',
@@ -223,9 +263,11 @@
               recognizeButton.style.color = '#000';
             });
         };
+
+        window._drawingBoards.push(board);
       });
 
-
+      // Check All button handler unchanged...
       document.getElementById('checkAllButton').onclick = () => {
         let allCorrect = true;
 
@@ -251,8 +293,8 @@
         const btn = document.getElementById('checkAllButton');
         btn.style.backgroundColor = allCorrect ? '#a6e3a1' : '#f28b82';
       };
-
     }
+
 
     // ----- 4.  lookup helpers -----
     function lookup(board, elmOrig, elmMMAH) {

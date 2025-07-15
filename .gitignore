@@ -1,0 +1,14 @@
+**/bin
+**/obj
+node_modules
+work
+**/project.lock.json
+library/style/*.css
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.dll
+*.so
+*.dylib
+**/venv/

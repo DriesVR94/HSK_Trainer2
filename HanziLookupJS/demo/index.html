@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>HanziLookupJS demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
+    div, h1, h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
+    h1 { margin-bottom: 8px; }  h2 { font-weight: normal; margin-bottom: 8px; }
+    .content, .header { width: 810px; margin: 0 auto; background-color: #6688aa; padding: 20px; color: #f0f0f0; border-radius: 8px; float: none; }
+    .header { text-align: center; margin-bottom: 20px; }  .header a { color: #fce566; text-decoration: none; }
+    .colLeft_2 { width: 100%; margin-bottom: 20px; }
+    .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
+    .colLeft > .boardWrap { flex: 0 0 auto; }
+    .drawingBoard { width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
+    .commands { width: 100%; margin-top: 3px; display: flex; gap: 10px; }
+    .cmd { flex: 1; background-color: #fce7c0; text-align: center; cursor: default; padding: 3px; color: #606060; user-select: none; }
+    .cmd:hover { background-color: #f1d7a6; }
+    .charPicker { width: 100%; border: 1px solid #a0a0a0; padding: 3px; height: 70px; font-size: 48px; background-color: #fafafa; overflow: hidden; color: #606060; }
+    .targetCharBox { width: 200px; height: 100px; font-size: 20px; background-color: #fafafa; border: 2px solid #ccc; border-radius: 8px; text-align: center; line-height: 100px; color: #333; margin-top: 10px; font-family: "Noto Sans", "Arial", sans-serif; }
+    .colRight { width: 100%; margin-top: 20px; }
+    .feedbackBar { height: 6px; width: 100%; margin: 8px 0; border-radius: 3px; opacity: 0; transition: opacity 0.3s, background-color 0.3s; }
+    .feedbackBar.correct { background-color: #a6e3a1; opacity: 1; }
+    .feedbackBar.incorrect { background-color: #f28b82; opacity: 1;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>HanziLookupJS demo</h1>
+    <a href="https://github.com/gugray/HanziLookupJS">github.com/gugray/HanziLookupJS</a>
+  </div>
+
+  <div class="content">
+    <div class="colLeft_2">
+      <h1>Write this character: </h1>
+      <div class="targetCharBox">loading…</div>
+    </div>
+
+    <!-- dynamic boards go here -->
+    <div class="colLeft" id="drawingBoardsContainer"></div>
+    <div style="text-align: center; margin: 20px 0;">
+      <div class="cmd" id="checkAllButton" style="width: 200px; margin: auto;">✅ Check All</div>
+    </div>
+  </div>
+
+  <script src="../library/lib/jquery-3.1.1.min.js"></script>
+  <script src="../dist/hanzilookup.min.js"></script>
+  <script src="../dist/HSK_Level_1.json"></script>
+  <script>
+    // ----- 1.  fetch random HSK character -----
+    let hanziLoaded = false, assetsLoaded = false;
+    fetch('HSK_Level_1.json')
+      .then(response => response.json())
+      .then(hanziList => {
+        const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+        const displayText = `${randomEntry.pinyin} - ${randomEntry.english}`;
+        document.querySelector('.targetCharBox').innerText = displayText;
+
+        // Store globally
+        window.targetHanziEntry = randomEntry;
+        window.targetCharacter = randomEntry.chinese;
+
+        // ✅ Mark HSK data as loaded
+        hanziLoaded = true;
+        maybeInitBoards();
+      })
+      .catch(err => {
+        console.error(err);
+        document.querySelector('.targetCharBox').innerText = '⚠️ load error';
+      });
+
+    // ----- 2.  load HanziLookup data files -----
+    let filesToLoad = 2;
+    function fileLoaded(ok) {
+      if (!ok) { filesToLoad = -1; return; }
+      if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
+    }
+    HanziLookup.init('mmah', '../dist/mmah.json', fileLoaded);
+    HanziLookup.init('orig', '../dist/orig.json', fileLoaded);
+
+    // ----- 3.  create boards when BOTH kinds of data are ready -----
+    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) buildBoards(); }
+
+    function buildBoards() {
+      const container = document.getElementById('drawingBoardsContainer');
+      container.innerHTML = '';
+
+      const chars = [...window.targetCharacter].slice(0, window.targetHanziEntry.charCount);
+      const count = window.targetHanziEntry.charCount;
+
+      const totalWidth = 810;    // matches .colLeft width
+      const gap = 20;            // match CSS gap
+      const availableWidth = totalWidth - gap * (count - 1);
+      let boxSize = Math.floor(availableWidth / count);
+      boxSize = Math.max(150, Math.min(250, boxSize));  // clamp between 150–250
+
+      const fontSize = Math.max(12, Math.min(20, boxSize / 12)); // adaptive font
+
+      window._drawingBoards = [];
+
+      chars.forEach((char, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'boardWrap';
+        wrap.style.flex = `0 0 ${boxSize}px`;  // fixed width, no stretch
+
+        wrap.innerHTML = `
+          <h1 style="font-size: ${fontSize}px;">Stroke input (${idx + 1}/${count})</h1>
+          <div class="drawingBoard" style="height: ${boxSize}px;"></div>
+          <div class="feedbackBar"></div>
+          <div class="commands">
+            <div class="cmd cmdUndo">Undo</div>
+            <div class="cmd cmdClear">Clear</div>
+          </div>
+          <h2 style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
+          <div class="charPicker hanziLookupChars"></div>
+          <h2 style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
+          <div class="charPicker mmahLookupChars"></div>
+        `;
+
+        const recognizeButton = document.createElement('div');
+        recognizeButton.className = 'cmd';
+        recognizeButton.innerText = '🔍 Recognize';
+        recognizeButton.onclick = () => {
+          const canvas = board.canvas[0];
+          const dataUrl = canvas.toDataURL('image/png');
+
+          fetch('http://127.0.0.1:5000/recognize', {  // your backend URL
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataUrl })
+          })
+          .then(res => res.json())
+          .then(data => {
+            alert(`OCR result: ${data.result}`);  // you can style or place this wherever you want
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Failed to recognize.');
+          });
+        };
+
+        // Add the recognize button to the command panel
+        wrap.querySelector('.commands').appendChild(recognizeButton);
+
+
+        // Set inner elements to match boxSize width
+        ['.drawingBoard', '.feedbackBar', '.commands', '.charPicker'].forEach(sel => {
+          wrap.querySelector(sel).style.width = `${boxSize}px`;
+        });
+
+        container.appendChild(wrap);
+
+        const boardElem = wrap.querySelector('.drawingBoard');
+        const resOrig = wrap.querySelector('.hanziLookupChars');
+        const resMMAH = wrap.querySelector('.mmahLookupChars');
+
+        const board = HanziLookup.DrawingBoard($(boardElem), () =>
+          lookup(board, resOrig, resMMAH)
+        );
+        _drawingBoards.push(board);
+
+        wrap.querySelector('.cmdUndo').onclick = () => {
+          board.undoStroke(); board.redraw(); lookup(board, resOrig, resMMAH);
+        };
+        wrap.querySelector('.cmdClear').onclick = () => {
+          board.clearCanvas(); board.redraw(); lookup(board, resOrig, resMMAH);
+        };
+      });
+
+      document.getElementById('checkAllButton').onclick = () => {
+        let allCorrect = true;
+
+        _drawingBoards.forEach((board, idx) => {
+          const expectedChar = chars[idx];
+          const wrap = container.children[idx];
+          const resOrig = wrap.querySelector('.hanziLookupChars');
+          const resMMAH = wrap.querySelector('.mmahLookupChars');
+          const feedbackBar = wrap.querySelector('.feedbackBar');
+
+          lookup(board, resOrig, resMMAH);
+
+          const got = resOrig.querySelector('span')?.textContent || '';
+          const correct = got === expectedChar;
+          allCorrect = allCorrect && correct;
+
+          feedbackBar.classList.remove('correct', 'incorrect');
+          feedbackBar.classList.add(correct ? 'correct' : 'incorrect');
+        });
+
+        const btn = document.getElementById('checkAllButton');
+        btn.style.backgroundColor = allCorrect ? '#a6e3a1' : '#f28b82';
+      };
+    }
+
+
+
+    // ----- 4.  lookup helpers -----
+    function lookup(board, elmOrig, elmMMAH) {
+      const analysed = new HanziLookup.AnalyzedCharacter(board.cloneStrokes());
+      new HanziLookup.Matcher('orig').match(analysed, 5, m => show(elmOrig, m));
+      new HanziLookup.Matcher('mmah').match(analysed, 5, m => show(elmMMAH, m));
+    }
+    function show(elm, matches) { elm.innerHTML = matches.map(o => `<span>${o.character}</span>`).join(''); }
+  </script>
+</body>
+</html>

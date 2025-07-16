@@ -20,7 +20,12 @@
     .charPicker { width: 100%; border: 1px solid #a0a0a0; padding: 3px; height: 70px; font-size: 48px; background-color: #fafafa; overflow: hidden; color: #606060; }
     .targetCharBox { width: 200px; height: 100px; font-size: 20px; background-color: #fafafa; border: 2px solid #ccc; border-radius: 8px; text-align: center; line-height: 100px; color: #333; margin-top: 10px; font-family: "Noto Sans", "Arial", sans-serif; }
     .colRight { width: 100%; margin-top: 20px; }
-    .feedbackBar { height: 6px; width: 100%; margin: 8px 0; border-radius: 3px; opacity: 0; transition: opacity 0.3s, background-color 0.3s; }
+    .feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; text-align: center;}
+    .segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.2; transition: background-color 0.3s; color: black; }
+    .noob { background-color: #e74c3c; color: black; }
+    .familiar { background-color: #e67e22; color: black; }
+    .good { background-color: #f1c40f; color: black; }
+    .expert { background-color: #2ecc71; color: black; }
     .feedbackBar.correct { background-color: #a6e3a1; opacity: 1; }
     .feedbackBar.incorrect { background-color: #f28b82; opacity: 1;}
     .ocrResultBox { width: 100%; text-align: center; font-size: 48px; padding: 8px; margin-top: 10px; border-top: 1px dashed #aaa; color: #444; font-family: "Noto Sans", "Arial", sans-serif; }
@@ -111,7 +116,12 @@
           <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
             <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
           </div>
-          <div class="feedbackBar"></div>
+          <div class="feedbackBar">
+            <div class="segment noob">Noob</div>
+            <div class="segment familiar">Familiar</div>
+            <div class="segment good">Good</div>
+            <div class="segment expert">Expert</div>
+          </div>
           <div class="commands">
             <div class="cmd cmdUndo">Undo</div>
             <div class="cmd cmdClear">Clear</div>
@@ -287,8 +297,16 @@
           const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
           allCorrect = allCorrect && correct;
 
-          feedbackBar.classList.remove('correct', 'incorrect');
-          feedbackBar.classList.add(correct ? 'correct' : 'incorrect');
+          // Reset all segments to low opacity
+          feedbackBar.querySelectorAll('.segment').forEach(seg => {
+            seg.style.opacity = '0.1';
+          });
+
+          // Make only the relevant segment fully opaque
+          const highlightSegment = feedbackBar.querySelector(correct ? '.expert' : '.noob');
+          if (highlightSegment) {
+            highlightSegment.style.opacity = '1';
+          }
         });
 
         const btn = document.getElementById('checkAllButton');

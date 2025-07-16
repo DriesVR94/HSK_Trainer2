@@ -111,15 +111,14 @@
         wrap.style.flex = `0 0 ${boxSize}px`;
 
         wrap.innerHTML = `
-          
-          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
-            <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
-          </div>
           <div class="feedbackBar">
             <div class="segment noob">Noob</div>
             <div class="segment familiar">Familiar</div>
             <div class="segment good">Good</div>
             <div class="segment expert">Expert</div>
+          </div>
+          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
+            <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
           </div>
           <div class="commands">
             <div class="cmd cmdUndo">Undo</div>

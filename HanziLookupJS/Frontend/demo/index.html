@@ -8,9 +8,9 @@
     body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
     div, h1, h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
     h1 { margin-bottom: 8px; }  h2 { font-weight: normal; margin-bottom: 8px; }
-    .content, .header { width: 810px; margin: 0 auto; background-color: #6688aa; padding: 20px; color: #f0f0f0; border-radius: 8px; float: none; }
+    .content, .header { width: 95%; margin: 0 auto; background-color: #6688aa; padding: 20px; color: #f0f0f0; border-radius: 8px; float: none; }
     .header { text-align: center; margin-bottom: 20px; }  .header a { color: #fce566; text-decoration: none; }
-    .colLeft_2 { width: 100%; margin-bottom: 20px; }
+    .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
     .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
     .colLeft > .boardWrap { flex: 0 0 auto; }
     .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
@@ -39,7 +39,6 @@
 
   <div class="content">
     <div class="colLeft_2">
-      <h1>Write this character: </h1>
       <div class="targetCharBox">loading…</div>
     </div>
 
@@ -61,7 +60,7 @@
       .then(response => response.json())
       .then(hanziList => {
         const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
-        const displayText = `${randomEntry.pinyin} - ${randomEntry.english}`;
+        const displayText = `${randomEntry.english} - ${randomEntry.pinyin}`;
         document.querySelector('.targetCharBox').innerText = displayText;
 
         // Store globally
@@ -112,7 +111,7 @@
         wrap.style.flex = `0 0 ${boxSize}px`;
 
         wrap.innerHTML = `
-          <h1 style="font-size: ${fontSize}px;">Stroke input (${idx + 1}/${count})</h1>
+          
           <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
             <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
           </div>

@@ -132,6 +132,7 @@
           <h2 style="font-size: ${fontSize - 2}px;">OCR Result</h2>
           <div class="ocrResultBox">…</div>
           <div class="strokeCounter">Strokes: 0</div>
+          <div class="timeTaken">Time: 0.00s</div>
         `;
 
         container.appendChild(wrap);
@@ -144,7 +145,10 @@
         const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
         
         let strokeCount = 0;
-        const strokeCounterElement = wrap.querySelector('.strokeCounter');  
+        let startTime = null;
+        let endTime = null;
+        const strokeCounterElement = wrap.querySelector('.strokeCounter'); 
+        const timeTakenElement = wrap.querySelector('.timeTaken'); 
 
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
           // Increment the stroke counter
@@ -154,6 +158,10 @@
           lookup(board, resOrig, resMMAH);
 
           const strokes = board.cloneStrokes();
+         
+          if (strokeCount === 1) {
+            startTime = performance.now();
+          }
 
           if (strokes.length === maxStrokes && !board._ocrSent) {
             board._ocrSent = true;
@@ -180,6 +188,12 @@
                   alert(`Failed to recognize character ${idx + 1}.`);
                 });
             }, 50);
+
+            if (startTime && !endTime) {
+              endTime = performance.now();
+              const elapsed = (endTime - startTime) / 1000;
+              timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
+            }
           }
         });
 

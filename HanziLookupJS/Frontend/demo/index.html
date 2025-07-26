@@ -46,6 +46,7 @@
     <div class="colLeft" id="drawingBoardsContainer"></div>
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="checkAllButton" style="width: 200px; margin: auto;">✅ Check All</div>
+      <div id="strokeCounter">Strokes: 0</div>
     </div>
   </div>
 
@@ -141,8 +142,15 @@
 
         // Create the drawing board (this will create a canvas inside .drawingBoard div)
         const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
+        
+        let strokeCount = 0;
+        const strokeCounterElement = document.getElementById('strokeCounter');  
 
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
+          // Increment the stroke counter
+          strokeCount++;
+          strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
+          
           lookup(board, resOrig, resMMAH);
 
           const strokes = board.cloneStrokes();

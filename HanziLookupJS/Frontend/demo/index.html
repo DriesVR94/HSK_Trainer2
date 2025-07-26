@@ -46,7 +46,6 @@
     <div class="colLeft" id="drawingBoardsContainer"></div>
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="checkAllButton" style="width: 200px; margin: auto;">✅ Check All</div>
-      <div id="strokeCounter">Strokes: 0</div>
     </div>
   </div>
 
@@ -132,6 +131,7 @@
           <div class="charPicker mmahLookupChars"></div>
           <h2 style="font-size: ${fontSize - 2}px;">OCR Result</h2>
           <div class="ocrResultBox">…</div>
+          <div class="strokeCounter">Strokes: 0</div>
         `;
 
         container.appendChild(wrap);
@@ -144,7 +144,7 @@
         const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
         
         let strokeCount = 0;
-        const strokeCounterElement = document.getElementById('strokeCounter');  
+        const strokeCounterElement = wrap.querySelector('.strokeCounter');  
 
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
           // Increment the stroke counter

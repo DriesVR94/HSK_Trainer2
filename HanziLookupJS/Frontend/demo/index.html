@@ -22,6 +22,7 @@
     .colRight { width: 100%; margin-top: 20px; }
     .feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; text-align: center;}
     .segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.2; transition: background-color 0.3s; color: black; }
+    .segment.highlight { opacity: 1 !important; border: 2px solid black; font-weight: bold; }
     .noob { background-color: #e74c3c; color: black; }
     .familiar { background-color: #e67e22; color: black; }
     .good { background-color: #f1c40f; color: black; }
@@ -308,24 +309,49 @@
           const resOrig = wrap.querySelector('.hanziLookupChars');
           const resMMAH = wrap.querySelector('.mmahLookupChars');
           const feedbackBar = wrap.querySelector('.feedbackBar');
+          const timeTakenElement = wrap.querySelector('.timeTaken');
 
           lookup(board, resOrig, resMMAH);
 
           const gotOrig = resOrig.querySelector('span')?.textContent || '';
           const gotMMAH = resMMAH.querySelector('span')?.textContent || '';
-
           const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
+          
           allCorrect = allCorrect && correct;
+
+          // --- Get elapsed time from DOM ---
+          const timeText = timeTakenElement?.textContent || '';
+          const match = timeText.match(/([\d.]+)s/);
+          const elapsedTime = match ? parseFloat(match[1]) : 0;
+
+          // --- Calculate average time per stroke ---
+          const strokes = board.cloneStrokes().length;
+          const avgTimePerStroke = strokes > 0 ? elapsedTime / strokes : 0;
+
+          // --- Determine level ---
+          let levelClass = 'noob';
+          if (correct) {
+            if (avgTimePerStroke <= 0.365) {
+              levelClass = 'expert';
+            } else if (avgTimePerStroke <= 0.5) {
+              levelClass = 'good';
+            } else {
+              levelClass = 'familiar';
+            }
+          }
 
           // Reset all segments to low opacity
           feedbackBar.querySelectorAll('.segment').forEach(seg => {
             seg.style.opacity = '0.1';
+            //seg.classList.remove('highlight');
           });
 
           // Make only the relevant segment fully opaque
-          const highlightSegment = feedbackBar.querySelector(correct ? '.expert' : '.noob');
+          //const highlightSegment = feedbackBar.querySelector(correct ? '.expert' : '.noob');
+          const highlightSegment = feedbackBar.querySelector(`.${levelClass}`);
           if (highlightSegment) {
             highlightSegment.style.opacity = '1';
+            //highlightSegment.classList.add('highlight');
           }
         });
 

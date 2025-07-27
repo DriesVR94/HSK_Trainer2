@@ -55,6 +55,10 @@
   <script src="../dist/hanzilookup.min.js"></script>
 
   <script>
+
+    // Choose between development or production
+    const isDev = false; // set to false before deploying
+
     // ----- 1.  fetch random HSK character -----
     let hanziLoaded = false, assetsLoaded = false;
     let hanziList = [];
@@ -131,19 +135,20 @@
           <div class="commands">
             <div class="cmd cmdUndo">Undo</div>
             <div class="cmd cmdClear">Clear</div>
-            <div class="cmd cmdRecognize">Recognize</div>
+            <div class="cmd cmdRecognize dev-only">Recognize</div>
           </div>
-          <h2 style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
-          <div class="charPicker hanziLookupChars"></div>
-          <h2 style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
-          <div class="charPicker mmahLookupChars"></div>
-          <h2 style="font-size: ${fontSize - 2}px;">OCR Result</h2>
-          <div class="ocrResultBox">…</div>
-          <div class="strokeCounter">Strokes: 0</div>
-          <div class="timeTaken">Time: 0.00s</div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
+          <div class="charPicker hanziLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
+          <div class="charPicker mmahLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">OCR Result</h2>
+          <div class="ocrResultBox dev-only">…</div>
+          <div class="strokeCounter dev-only">Strokes: 0</div>
+          <div class="timeTaken dev-only">Time: 0.00s</div>
         `;
 
         container.appendChild(wrap);
+        if (!isDev) {document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');}
 
         const boardElem = wrap.querySelector('.drawingBoard');
         const resOrig = wrap.querySelector('.hanziLookupChars');

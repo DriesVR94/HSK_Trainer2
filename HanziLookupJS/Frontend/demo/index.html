@@ -47,6 +47,7 @@
     <div class="colLeft" id="drawingBoardsContainer"></div>
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="checkAllButton" style="width: 200px; margin: auto;">✅ Check All</div>
+      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">➡️ Next</div>
     </div>
   </div>
 
@@ -57,21 +58,29 @@
   <script>
     // ----- 1.  fetch random HSK character -----
     let hanziLoaded = false, assetsLoaded = false;
+    
+    let hanziList = [];
+
+    function loadRandomHanzi() {
+      const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+      const displayText = `${randomEntry.english} - ${randomEntry.pinyin}`;
+      document.querySelector('.targetCharBox').innerText = displayText;
+
+      // Store globally
+      window.targetHanziEntry = randomEntry;
+      window.targetCharacter = randomEntry.chinese;
+
+      buildBoards();
+    }
+
     fetch('../dist/HSK_Level_1.json')
       .then(response => response.json())
-      .then(hanziList => {
-        const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
-        const displayText = `${randomEntry.english} - ${randomEntry.pinyin}`;
-        document.querySelector('.targetCharBox').innerText = displayText;
-
-        // Store globally
-        window.targetHanziEntry = randomEntry;
-        window.targetCharacter = randomEntry.chinese;
-
-        // ✅ Mark HSK data as loaded
+      .then(data => {
+        hanziList = data;
         hanziLoaded = true;
-        maybeInitBoards();
+        maybeInitBoards();  // wait until assets are ready
       })
+
       .catch(err => {
         console.error(err);
         document.querySelector('.targetCharBox').innerText = '⚠️ load error';
@@ -87,7 +96,7 @@
     HanziLookup.init('orig', '../dist/orig.json', fileLoaded);
 
     // ----- 3.  create boards when BOTH kinds of data are ready -----
-    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) buildBoards(); }
+    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) loadRandomHanzi(); }
 
     function buildBoards() {
       const container = document.getElementById('drawingBoardsContainer');
@@ -142,7 +151,6 @@
         const resOrig = wrap.querySelector('.hanziLookupChars');
         const resMMAH = wrap.querySelector('.mmahLookupChars');
 
-        // Create the drawing board (this will create a canvas inside .drawingBoard div)
         const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
         
         let strokeCount = 0;
@@ -151,6 +159,7 @@
         const strokeCounterElement = wrap.querySelector('.strokeCounter'); 
         const timeTakenElement = wrap.querySelector('.timeTaken'); 
 
+        // Create the drawing board (this will create a canvas inside .drawingBoard div)
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
           // Increment the stroke counter
           strokeCount++;
@@ -359,6 +368,11 @@
         btn.style.backgroundColor = allCorrect ? '#a6e3a1' : '#f28b82';
       };
     }
+
+    document.getElementById('nextButton').onclick = () => {
+      loadRandomHanzi();
+    };
+
 
 
     // ----- 4.  lookup helpers -----

@@ -157,61 +157,68 @@
         const resOrig = wrap.querySelector('.hanziLookupChars');
         const resMMAH = wrap.querySelector('.mmahLookupChars');
 
-        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
-        
         let strokeCount = 0;
         let startTime = null;
         let endTime = null;
         const strokeCounterElement = wrap.querySelector('.strokeCounter'); 
         const timeTakenElement = wrap.querySelector('.timeTaken'); 
+    
+        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
 
-        // Create the drawing board (this will create a canvas inside .drawingBoard div)
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
-          // Increment the stroke counter
           strokeCount++;
           strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
-          
+
           lookup(board, resOrig, resMMAH);
 
           const strokes = board.cloneStrokes();
-         
-          if (strokeCount === 1) {
-            startTime = performance.now();
+
+         if (strokeCount === 1) {
+          startTime = performance.now();
+          endTime = null;
+        }
+
+        if (strokes.length === maxStrokes && !board._ocrSent) {
+          board._ocrSent = true;
+
+          // Calculate and display elapsed time
+          if (startTime && !endTime) {
+            endTime = performance.now();
+            const elapsed = (endTime - startTime) / 1000;
+            timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
           }
 
-          if (strokes.length === maxStrokes && !board._ocrSent) {
-            board._ocrSent = true;
+          setTimeout(() => {
+            const dataUrl = board.exportImage();
 
-            setTimeout(() => {
-              const dataUrl = board.exportImage();
-              console.log("PNG Data URL:", dataUrl); 
-              console.log(board.exportImage())
-
-              fetch('http://127.0.0.1:5000/recognize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: dataUrl }),
+            fetch('http://127.0.0.1:5000/recognize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: dataUrl }),
+            })
+              .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch');
+                return res.json();
               })
-                .then(res => {
-                  if (!res.ok) throw new Error('Failed to fetch');
-                  return res.json();
-                })
-                .then(data => {
-                  wrap.querySelector('.ocrResultBox').textContent = data.result;
-                })
-                .catch(err => {
-                  console.error(err);
-                  alert(`Failed to recognize character ${idx + 1}.`);
-                });
-            }, 50);
+              .then(data => {
+                wrap.querySelector('.ocrResultBox').textContent = data.result;
+              })
+              .catch(err => {
+                console.error(err);
+                alert(`Failed to recognize character ${idx + 1}.`);
+              });
+          }, 50);
 
             if (startTime && !endTime) {
               endTime = performance.now();
               const elapsed = (endTime - startTime) / 1000;
               timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
             }
-          }
-        });
+
+          updateFeedbackBarForBoard(board,wrap,idx);
+          
+        }
+      });
 
         // ---- NEW: Create overlay canvas for the grid ----
         // HanziLookup.DrawingBoard creates a canvas inside boardElem
@@ -313,71 +320,59 @@
 
         window._drawingBoards.push(board);
       });
-
-      // Check All button handler unchanged...
-      document.getElementById('checkAllButton').onclick = () => {
-        let allCorrect = true;
-
-        window._drawingBoards.forEach((board, idx) => {
-          const expectedChar = window.targetCharacter[idx];
-          const wrap = container.children[idx];
-          const resOrig = wrap.querySelector('.hanziLookupChars');
-          const resMMAH = wrap.querySelector('.mmahLookupChars');
-          const feedbackBar = wrap.querySelector('.feedbackBar');
-          const timeTakenElement = wrap.querySelector('.timeTaken');
-
-          lookup(board, resOrig, resMMAH);
-
-          const gotOrig = resOrig.querySelector('span')?.textContent || '';
-          const gotMMAH = resMMAH.querySelector('span')?.textContent || '';
-          const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
-          
-          allCorrect = allCorrect && correct;
-
-          // --- Get elapsed time from DOM ---
-          const timeText = timeTakenElement?.textContent || '';
-          const match = timeText.match(/([\d.]+)s/);
-          const elapsedTime = match ? parseFloat(match[1]) : 0;
-
-          // --- Calculate average time per stroke ---
-          const strokes = board.cloneStrokes().length;
-          const avgTimePerStroke = strokes > 0 ? elapsedTime / strokes : 0;
-
-          // --- Determine level ---
-          let levelClass = 'noob';
-          if (correct) {
-            if (avgTimePerStroke <= 0.365) {
-              levelClass = 'expert';
-            } else if (avgTimePerStroke <= 0.5) {
-              levelClass = 'good';
-            } else {
-              levelClass = 'familiar';
-            }
-          }
-
-          // Reset all segments to low opacity
-          feedbackBar.querySelectorAll('.segment').forEach(seg => {
-            seg.style.opacity = '0.1';
-            //seg.classList.remove('highlight');
-          });
-
-          // Make only the relevant segment fully opaque
-          //const highlightSegment = feedbackBar.querySelector(correct ? '.expert' : '.noob');
-          const highlightSegment = feedbackBar.querySelector(`.${levelClass}`);
-          if (highlightSegment) {
-            highlightSegment.style.opacity = '1';
-            //highlightSegment.classList.add('highlight');
-          }
-        });
-
-        const btn = document.getElementById('checkAllButton');
-        btn.style.backgroundColor = allCorrect ? '#a6e3a1' : '#f28b82';
-      };
     }
 
     document.getElementById('nextButton').onclick = () => {
       loadRandomHanzi();
     };
+
+
+    function updateFeedbackBarForBoard(board, wrap, idx) {
+      const expectedChar = window.targetCharacter[idx];
+      const resOrig = wrap.querySelector('.hanziLookupChars');
+      const resMMAH = wrap.querySelector('.mmahLookupChars');
+      const feedbackBar = wrap.querySelector('.feedbackBar');
+      const timeTakenElement = wrap.querySelector('.timeTaken');
+
+      lookup(board, resOrig, resMMAH);
+
+      const gotOrig = resOrig.querySelector('span')?.textContent || '';
+      const gotMMAH = resMMAH.querySelector('span')?.textContent || '';
+      const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
+
+      // Get elapsed time from DOM
+      const timeText = timeTakenElement?.textContent || '';
+      const match = timeText.match(/([\d.]+)s/);
+      const elapsedTime = match ? parseFloat(match[1]) : 0;
+
+      // Calculate average time per stroke
+      const strokes = board.cloneStrokes().length;
+      const avgTimePerStroke = strokes > 0 ? elapsedTime / strokes : 0;
+
+      // Determine level class
+      let levelClass = 'noob';
+      if (correct) {
+        if (avgTimePerStroke <= 0.365) {
+          levelClass = 'expert';
+        } else if (avgTimePerStroke <= 0.5) {
+          levelClass = 'good';
+        } else {
+          levelClass = 'familiar';
+        }
+      }
+
+      // Reset all segments opacity
+      feedbackBar.querySelectorAll('.segment').forEach(seg => {
+        seg.style.opacity = '0.1';
+      });
+
+      // Highlight the correct segment
+      const highlightSegment = feedbackBar.querySelector(`.${levelClass}`);
+      if (highlightSegment) {
+        highlightSegment.style.opacity = '1';
+      }
+    }
+
 
 
 

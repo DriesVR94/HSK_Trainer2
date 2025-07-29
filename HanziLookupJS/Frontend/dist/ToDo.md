@@ -1,3 +1,6 @@
+- [] Let user choose which level he/she wants to train.
+- [] Let user choose how many chars should be tested in 1 run.
+- [] Add a 'report an error button'
 - [ ] Add "databases" with vocabulary for all different HSK levels
     - [x] Level 1
     - [ ] Level 2

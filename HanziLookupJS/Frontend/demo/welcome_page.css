@@ -19,7 +19,6 @@ header{
     justify-content: center;
 }
 .logo-text {
-
     font-size: 1.5rem;
 }
 nav{
@@ -60,6 +59,37 @@ nav img{
 .landing{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 5vh 5vh;
+}
+.landing div{
+    width: 50%;
+}
+.call_to_action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0vh 5vh;
+}
+.call_to_action h1{
+    font-size: clamp(1.5rem, 6vw, 4rem);
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+.call_to_action p{
+    font-size: clamp(0.5rem, 2vw, 1.3rem);
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+div.video_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0vh 0vw;
+    width: calc();
+    height: auto;
+}
+.word_character{
+    color: #ee1c25;
 }

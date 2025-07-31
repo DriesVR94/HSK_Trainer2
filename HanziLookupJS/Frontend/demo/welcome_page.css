@@ -13,6 +13,13 @@ header{
     background-size: cover;
     position: relative;
 }
+section{
+    padding: 5vh 5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .logo_bar{
     display: flex;
     align-items: center;
@@ -58,9 +65,10 @@ nav img{
 }
 .landing{
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    padding: 5vh 5vh;
+    height: 60vh;
 }
 .landing div{
     width: 50%;

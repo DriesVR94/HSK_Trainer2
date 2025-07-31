@@ -79,8 +79,25 @@ nav img{
 }
 .call_to_action p{
     font-size: clamp(0.5rem, 2vw, 1.3rem);
-    margin-top: 0%;
+    margin-top: 8%;
     margin-bottom: 0%;
+}
+.call_to_action button{
+    font-size: clamp(0.5rem, 3vw, 1.3rem);
+    margin-top: 8%;
+    margin-bottom: 0%;
+    background-color:#ee1c25;
+    border-radius: 10px;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    color: #000f18;
+}
+.call_to_action button:hover{
+    padding-left: 5%;
+    padding-right: 5%;
+    transition: 0.5s;
 }
 div.video_container{
     display: flex;

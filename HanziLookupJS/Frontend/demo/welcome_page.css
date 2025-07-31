@@ -123,3 +123,13 @@ div.video_container{
   text-decoration-color: #ee1c25;
   text-decoration-thickness: 2px;
 }
+.pricing_boxes{
+    display: flex;
+    flex-direction: row;
+}
+.pricing_boxes div{
+    width: 15vw;
+    height: 60vh;
+    text-align: center;
+
+}

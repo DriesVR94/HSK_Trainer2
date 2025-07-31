@@ -110,3 +110,8 @@ div.video_container{
 .word_character{
     color: #ee1c25;
 }
+.underline {
+  text-decoration: underline;
+  text-decoration-color: #ee1c25;
+  text-decoration-thickness: 2px;
+}

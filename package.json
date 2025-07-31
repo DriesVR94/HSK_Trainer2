@@ -1,0 +1,24 @@
+{
+  "name": "hsk_project",
+  "version": "1.0.0",
+  "description": "```diff\r - UPDATE: A Rust/WebAssembly version is now available -\r ```\r Check out [hanzi_lookup](https://github.com/gugray/hanzi_lookup), a Rust + WebAssembly port of this library, for a faster and more modern component.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tailwindcss -i ./tailwind.css -o ./welcome_page.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DriesVR94/HSK_Trainer2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DriesVR94/HSK_Trainer2/issues"
+  },
+  "homepage": "https://github.com/DriesVR94/HSK_Trainer2#readme",
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
+  }
+}

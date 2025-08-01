@@ -54,8 +54,8 @@
             </video>
         </section>
         <section class="pricing">
-             <h1>Pricing</h1>
-             <div class="pricing_boxes">
+            <h1>Pricing</h1>
+            <div class="pricing_boxes">
                 <div>
                     <h1>Free</h1>
                     <p>€0</p>
@@ -72,7 +72,8 @@
                     <h1>Lifetime</h1>
                     <p>€131.40</p>
                 </div> 
-             </div>
+            </div>
+            <button>Become a Hero</button>
         </section>
         <section class="faq">
              
@@ -80,6 +81,16 @@
 
     </main>
 
+    <script>
+    const boxes = document.querySelectorAll('.pricing_boxes div');
+
+    boxes.forEach(box => {
+        box.addEventListener('click', () => {
+        boxes.forEach(b => b.classList.remove('selected')); // Remove from all
+        box.classList.add('selected'); // Add to clicked one
+        });
+    });
+    </script>
 
 </body>
 </html>

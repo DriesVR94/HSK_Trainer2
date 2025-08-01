@@ -2,6 +2,15 @@
     box-sizing: border-box;
 }
 
+.fa-apple {
+  color: white;
+}
+
+.fa-google{
+  color: #000f18;
+}
+
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: #fff;
@@ -14,8 +23,7 @@ body {
 }
 
 .container {
-    width: 100%;
-    max-width: 400px;
+    width: 40vw;
     padding: 2rem;
     text-align: center;
     background-color: white;
@@ -42,11 +50,9 @@ body {
       border-radius: 10px;
       font-weight: 600;
       display: flex;
-      align-items: center;
       justify-content: center;
       gap: 0.5rem;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
 
     .social-button.apple {
@@ -142,3 +148,4 @@ body {
     .terms a:hover {
       text-decoration: underline;
     }
+

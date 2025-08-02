@@ -1,95 +1,11 @@
-*{
-    font-family: "Titillium Web", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    background-color: #000f18;
-    color: white;
+*{ 
+    font-family: "Titillium Web", sans-serif; 
+    font-weight: 700; 
+    font-style: normal; 
+    background-color: #000f18; 
+    color: white; 
 }
 
-header{
-    min-height: 10vh;
-    width: 100%;
-    background-position: center;
-    background-size: cover;
-    position: relative;
-}
-section{
-    padding: 5vh 5vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.logo_bar{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo-text {
-    font-size: 1.5rem;
-}
-nav{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-nav img{
-    width: 75px;
-}
-.nav-links{
-    flex: 1;
-    text-align: right;
-    margin-right: 5%;
-}
-.nav-links ul li{
-    list-style: none;
-    display: inline-block;
-    padding: 8px 20px;
-    position: relative;
-}
-.nav-links ul li a {
-    color: white;
-    text-decoration: none;
-}
-.nav-links ul li::after{
-    content: '';
-    width: 0%;
-    height: 2px;
-    background: #ee1c25;
-    display: block;
-    margin: auto;
-    transition: 0.25s;
-}
-.nav-links ul li:hover::after{
-    width: 100%;
-}
-.landing{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 60vh;
-}
-.landing div{
-    width: 50%;
-}
-.call_to_action{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0vh 5vh;
-}
-.call_to_action h1{
-    font-size: clamp(1.5rem, 6vw, 4rem);
-    margin-top: 0%;
-    margin-bottom: 0%;
-}
-.call_to_action p{
-    font-size: clamp(0.5rem, 2vw, 1.3rem);
-    margin-top: 8vh;
-    margin-bottom: 0%;
-}
 button{
     font-size: clamp(0.5rem, 3vw, 1.3rem);
     margin-top: 8vh;
@@ -104,11 +20,33 @@ button{
     color: #000f18;
     cursor: pointer;
 }
+
 button:hover{
     padding-left: 2.5vw;
     padding-right: 2.5vw;
     transition: 0.5s;
 }
+
+.call_to_action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0vh 5vh;
+}
+
+.call_to_action h1{
+    font-size: clamp(1.5rem, 6vw, 4rem);
+    margin-top: 0%;
+    margin-bottom: 0%;
+}
+
+.call_to_action p{
+    font-size: clamp(0.5rem, 2vw, 1.3rem);
+    margin-top: 8vh;
+    margin-bottom: 0%;
+}
+
 div.video_container{
     display: flex;
     align-items: center;
@@ -117,28 +55,84 @@ div.video_container{
     width: calc();
     height: auto;
 }
-.word_character{
-    background: white;
-    color: #000f18;
-    padding: 0.02em 0.2em;
-    transform: rotate(-2deg);
+
+header{ 
+    min-height: 10vh; 
+    width: 100%; 
+    background-position: center; 
+    background-size: cover; 
+    position: relative; 
+}
+
+.landing{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+}
+
+.landing div{
+    width: 50%;
+}
+
+.logo_bar{ 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.logo-text {
+    font-size: 1.5rem;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav img{
+    width: 75px;
+}
+
+.nav-links{
+    flex: 1;
+    text-align: right;
+    margin-right: 5%;
+}
+
+.nav-links ul li{
+    list-style: none;
     display: inline-block;
+    padding: 8px 20px;
+    position: relative;
 }
-.unrotate {
-    display: inline-block;
-    transform: rotate(2deg); 
-    background-color: rgba(255, 255, 255, 0);
-    color: #000f18;
+
+.nav-links ul li a {
+    color: white;
+    text-decoration: none;
 }
-.underline {
-  text-decoration: underline;
-  text-decoration-color: #ee1c25;
-  text-decoration-thickness: 2px;
+
+.nav-links ul li::after{
+    content: '';
+    width: 0%;
+    height: 2px;
+    background: #ee1c25;
+    display: block;
+    margin: auto;
+    transition: 0.25s;
 }
+
+.nav-links ul li:hover::after{
+    width: 100%;
+}
+
 .pricing_boxes{
     display: flex;
     flex-direction: row;
 }
+
 .pricing_boxes div{
     width: 12.5vw;
     height: 10vh;
@@ -148,11 +142,43 @@ div.video_container{
     border-radius: 10px;
     cursor: pointer;
 }
+
 .pricing_boxes div h1, .pricing_boxes div p{
     background-color: white;
     color: #000f18;
 }
+
 .pricing_boxes div.selected{
     border: 4px solid #ee1c25;
 }
+
+section{
+    padding: 5vh 5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.unrotate {
+    display: inline-block;
+    transform: rotate(2deg); 
+    background-color: rgba(255, 255, 255, 0);
+    color: #000f18;
+}
+
+.underline {
+  text-decoration: underline;
+  text-decoration-color: #ee1c25;
+  text-decoration-thickness: 2px;
+}
+
+.word_character{
+    background: white;
+    color: #000f18;
+    padding: 0.02em 0.2em;
+    transform: rotate(-2deg);
+    display: inline-block;
+}
+
 

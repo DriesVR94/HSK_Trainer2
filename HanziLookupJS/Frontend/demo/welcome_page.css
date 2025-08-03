@@ -6,6 +6,12 @@
     color: white; 
 }
 
+.about_hsk p{
+    font-size: clamp(1rem, 3vw, 1.75rem);
+    text-align: center;
+    max-width: 65vw;
+}
+
 button{
     font-size: clamp(0.5rem, 3vw, 1.3rem);
     margin-top: 8vh;
@@ -42,7 +48,7 @@ button:hover{
 }
 
 .call_to_action p{
-    font-size: clamp(0.5rem, 2vw, 1.3rem);
+    font-size: clamp(1rem, 3vw, 1.75rem);
     margin-top: 8vh;
     margin-bottom: 0%;
     max-width: 750px;

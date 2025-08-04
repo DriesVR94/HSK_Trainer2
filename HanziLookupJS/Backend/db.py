@@ -43,9 +43,16 @@ def register():
         conn.close()
     return "User registered successfully!"
 
-@app.route('/')
-def index():
+@app.route('/welcome_page')
+def show_welcome_page():
+    return render_template('welcome_page.html')
+
+@app.route('/registration_page')
+def show_registration_page():
     return render_template('registration_page.html')  
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

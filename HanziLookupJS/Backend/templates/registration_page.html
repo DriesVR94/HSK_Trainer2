@@ -6,7 +6,7 @@
   <title>Create Account</title>
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="registration_page.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='registration_page.css') }}">
   <style>
 
   </style>
@@ -22,16 +22,16 @@
 
     <div class="divider">or</div>
 
-    <form>
-      <input type="email" placeholder="Email" required>
+    <form action="/register" method="POST">
+      <input type="email" name="email" placeholder="Email" required>
 
       <div class="input-group">
-        <input type="password" placeholder="Password (min 8 characters)" minlength="8" required>
+        <input type="password" name="password" placeholder="Password (min 8 characters)" minlength="8" required>
         <span class="eye-icon"><i class="fa-solid fa-eye"></i></span>
       </div>
 
       <div class="input-group">
-        <input type="password" placeholder="Confirm password" minlength="8" required>
+        <input type="password" name="confirm_password" placeholder="Confirm password" minlength="8" required>
         <span class="eye-icon"><i class="fa-solid fa-eye"></i></span>
       </div>
 

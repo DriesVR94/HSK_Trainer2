@@ -51,7 +51,9 @@ def show_welcome_page():
 def show_registration_page():
     return render_template('registration_page.html')  
 
-
+@app.route('/home_page')
+def show_home_page():
+    return render_template('home_page.html')
 
 
 if __name__ == '__main__':

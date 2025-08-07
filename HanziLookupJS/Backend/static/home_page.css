@@ -1,0 +1,28 @@
+*{ 
+    font-family: "Titillium Web", sans-serif; 
+    font-weight: 700; 
+    font-style: normal; 
+    background-color: #000f18; 
+    color: white; 
+}
+
+header{ 
+    min-height: 10vh; 
+    width: 100%; 
+}
+
+.HSK2_0, .HSK3_0{
+    display: flex;
+    justify-content: center;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+}
+
+section{
+    padding: 0vh 5vw;
+    background-color: wheat;
+    border-radius: 8px;
+}

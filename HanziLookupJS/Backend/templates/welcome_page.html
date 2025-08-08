@@ -13,7 +13,7 @@
     <header>
         <nav>
             <div class="logo_bar">
-                <img src="C:\Users\Dries Van Ranst\OneDrive\Bureaublad\VS_Code\HSK_Project\LogoHSKHero2.png" alt="HSK Hero Logo" class="logo">
+                <img src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}" alt="HSK Hero Logo" class="logo">
                 <span class="logo-text">HSK Hero</span>
             </div>
             
@@ -31,14 +31,14 @@
         <section class="landing">
             <div class="call_to_action">
                 <h1>Master the stroke, <br> own the <span class="word_character"><span class="unrotate">character.</span></span></h1>
-                <p>Writing characters engages your motor system and memory together, strengthening <span class="underline">recall</span> and <span class="underline">long-term retention</span>.</p>
+                <p>Writing engages your motor system and memory together, strengthening <span class="underline">recall</span> and <span class="underline">long-term retention</span>.</p>
                 <a href="#pricing">
                     <button>Become a Hero</button>
                 </a>
             </div>
             <div class="video_container">
                 <video autoplay muted loop>
-                    <source src="C:\Users\Dries Van Ranst\OneDrive\Bureaublad\shui.mp4" type="video/mp4">
+                    <source src="{{ url_for('static', filename='images/shui.mp4') }}" type="video/mp4">
                     Your browser does not support this demo.
                 </video>
             </div>

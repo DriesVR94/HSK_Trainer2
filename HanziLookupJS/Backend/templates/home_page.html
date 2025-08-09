@@ -24,6 +24,7 @@
         <section>
             <p>You haven't started any levels yet.</p>
             <div class="HSK2_0">
+                <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current version</h2>
                 <ol>
                     <li>Level 1</li>
                     <li>Level 2</li>
@@ -34,6 +35,7 @@
                 </ol>
             </div>
             <div class="HSK3_0">
+                <h2 class="header_selected_levels_newHSK">HSK 3.0 - New version</h2>
                 <ol>
                     <li>Level 1</li>
                     <li>Level 2</li>
@@ -49,26 +51,26 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2>HSK 2.0 (Current version)</h2>
-                    <form id="levelForm">
-                    <label><input type="checkbox" name="level" value="current Level 1"> Level 1</label><br>
-                    <label><input type="checkbox" name="level" value="current Level 2"> Level 2</label><br>
-                    <label><input type="checkbox" name="level" value="current Level 3"> Level 3</label><br>
-                    <label><input type="checkbox" name="level" value="current Level 4"> Level 4</label><br>
-                    <label><input type="checkbox" name="level" value="currentLevel 5"> Level 5</label><br>
-                    <label><input type="checkbox" name="level" value="current Level 6"> Level 6</label><br>
-                    <!-- Add more as needed --> 
+                    <form id="levelForm_current">
+                        <label><input type="checkbox" name="level" value="current Level 1"> Level 1</label><br>
+                        <label><input type="checkbox" name="level" value="current Level 2"> Level 2</label><br>
+                        <label><input type="checkbox" name="level" value="current Level 3"> Level 3</label><br>
+                        <label><input type="checkbox" name="level" value="current Level 4"> Level 4</label><br>
+                        <label><input type="checkbox" name="level" value="current Level 5"> Level 5</label><br>
+                        <label><input type="checkbox" name="level" value="current Level 6"> Level 6</label><br>
+                    </form>
                     <h2>HSK 3.0 (New version)</h2>
-                    <form id="levelForm">
-                    <label><input type="checkbox" name="level" value="new Level 1"> Level 1</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 2"> Level 2</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 3"> Level 3</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 4"> Level 4</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 5"> Level 5</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 6"> Level 6</label><br>
-                    <label><input type="checkbox" name="level" value="new Level 7-9"> Level 7 - 9</label><br>
+                    <form id="levelForm_new">
+                        <label><input type="checkbox" name="level" value="new Level 1"> Level 1</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 2"> Level 2</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 3"> Level 3</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 4"> Level 4</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 5"> Level 5</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 6"> Level 6</label><br>
+                        <label><input type="checkbox" name="level" value="new Level 7-9"> Level 7 - 9</label><br>
+                    </form>
                     <br>
                     <button type="submit">Confirm</button>
-                    </form>
                 </div>
             </div>
         </section>
@@ -95,70 +97,78 @@
             }
         }
 
-        // Optional: Handle form submission
-        const form = document.getElementById("levelForm");
-        form.onsubmit = function(e) {
-            e.preventDefault(); // Prevent actual form submission
-
-            const levels = Array.from(form.elements['level'])
-            .filter(input => input.checked)
-            .map(input => input.value);
-
-            alert("Selected levels: " + levels.join(", "));
-            levelSelectionBtn.style.display = "none";
-        }
-
         document.addEventListener("DOMContentLoaded", () => {
-            const hsk2ListItems = document.querySelectorAll(".HSK2_0 li");
-            const hsk3ListItems = document.querySelectorAll(".HSK3_0 li");
-            const checkboxes = document.querySelectorAll("#levelSelectionBtn input[type='checkbox']");
-            const message = document.querySelector("section > p"); // Select the message
+            const currentForm = document.querySelector("#levelForm_current");
+            const newForm = document.querySelector("#levelForm_new");
 
-            // Function to update the visibility of the message
-            function updateMessageVisibility() {
-                const anySelected = Array.from(checkboxes).some(cb => cb.checked);
-                message.style.display = anySelected ? "none" : "block";
+            const currentHeader = document.querySelector(".header_selected_levels_currentHSK");
+            const newHeader = document.querySelector(".header_selected_levels_newHSK");
+
+            const currentLevelsList = document.querySelector(".HSK2_0 ol");
+            const newLevelsList = document.querySelector(".HSK3_0 ol");
+
+            // Hide all levels initially
+            currentLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
+            newLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
+
+            function updateVisibility(form, header, levelsList, storageKey) {
+                const checkboxes = form.querySelectorAll("input[type='checkbox']");
+                let anyChecked = false;
+                let selectedValues = [];
+
+                checkboxes.forEach((cb, i) => {
+                    if (cb.checked) {
+                        levelsList.children[i].style.display = "list-item";
+                        anyChecked = true;
+                        selectedValues.push(cb.value);
+                    } else {
+                        levelsList.children[i].style.display = "none";
+                    }
+                });
+
+                // Save selections in localStorage
+                localStorage.setItem(storageKey, JSON.stringify(selectedValues));
+
+                // Toggle header visibility
+                header.style.display = anyChecked ? "block" : "none";
             }
 
-            // Load saved selections from localStorage
-            const savedSelections = JSON.parse(localStorage.getItem("levelSelections")) || {};
+            function restoreSelections(form, header, levelsList, storageKey) {
+                const savedSelections = JSON.parse(localStorage.getItem(storageKey) || "[]");
+                const checkboxes = form.querySelectorAll("input[type='checkbox']");
 
-            // Apply saved selections on page load
-            checkboxes.forEach((checkbox, index) => {
-                const isHSK2 = index < 6; 
-                const listItems = isHSK2 ? hsk2ListItems : hsk3ListItems;
-                const listIndex = isHSK2 ? index : index - 6;
+                checkboxes.forEach((cb, i) => {
+                    cb.checked = savedSelections.includes(cb.value);
+                    levelsList.children[i].style.display = cb.checked ? "list-item" : "none";
+                });
 
-                if (savedSelections[checkbox.value]) {
-                    checkbox.checked = true;
-                    listItems[listIndex].style.display = "list-item";
-                } else {
-                    listItems[listIndex].style.display = "none";
-                }
+                // Show header if any saved selections
+                header.style.display = savedSelections.length > 0 ? "block" : "none";
+            }
+
+            // Restore selections on load
+            restoreSelections(currentForm, currentHeader, currentLevelsList, "currentLevels");
+            restoreSelections(newForm, newHeader, newLevelsList, "newLevels");
+
+            // Event listeners for updates
+            currentForm.addEventListener("change", () => {
+                updateVisibility(currentForm, currentHeader, currentLevelsList, "currentLevels");
             });
 
-            updateMessageVisibility(); // Check at page load
+            newForm.addEventListener("change", () => {
+                updateVisibility(newForm, newHeader, newLevelsList, "newLevels");
+            });
 
-            // Listen for checkbox changes
-            checkboxes.forEach((checkbox, index) => {
-                checkbox.addEventListener("change", () => {
-                    const isHSK2 = index < 6;
-                    const listItems = isHSK2 ? hsk2ListItems : hsk3ListItems;
-                    const listIndex = isHSK2 ? index : index - 6;
+            document.querySelector(".modal-content button[type='submit']").addEventListener("click", (e) => {
+                e.preventDefault();
 
-                    if (checkbox.checked) {
-                        listItems[listIndex].style.display = "list-item";
-                        savedSelections[checkbox.value] = true;
-                    } else {
-                        listItems[listIndex].style.display = "none";
-                        delete savedSelections[checkbox.value];
-                    }
+                const selectedLevels = [
+                    ...Array.from(document.querySelectorAll("#levelForm_current input:checked")),
+                    ...Array.from(document.querySelectorAll("#levelForm_new input:checked"))
+                ].map(input => input.value);
 
-                    // Save updated selections
-                    localStorage.setItem("levelSelections", JSON.stringify(savedSelections));
-
-                    updateMessageVisibility(); // Update after any change
-                });
+                alert("Selected levels: " + selectedLevels.join(", "));
+                levelSelectionBtn.style.display = "none";
             });
         });
         </script>

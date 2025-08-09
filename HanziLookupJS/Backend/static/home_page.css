@@ -61,3 +61,7 @@ section{
 .close:hover {
   color: red;
 }
+
+.header_selected_levels_currentHSK, .header_selected_levels_newHSK{
+    display: none;
+}

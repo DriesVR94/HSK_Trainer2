@@ -11,9 +11,8 @@ header{
     width: 100%; 
 }
 
-.HSK2_0, .HSK3_0{
-    display: flex;
-    justify-content: center;
+.HSK2_0 li, .HSK3_0 li{
+    display: none;
 }
 
 nav{

@@ -24,6 +24,7 @@
         <button>HSK 2.0</button>
         <button>HSK 3.0</button>
         <section>
+            <p>You haven't started any levels yet.</p>
             <div class="HSK2_0">
                 <ol>
                     <li>Level 1</li>
@@ -45,9 +46,69 @@
                     <li>Levels 7 - 9</li>
                 </ol>
             </div>
-            <button>Add New Level</button>
+            <button id="levelBtn">Add New Level</button>
+            <div id="levelSelectionBtn" class="levelSelectionBtn">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>HSK 2.0 (Current version)</h2>
+                    <form id="levelForm">
+                    <label><input type="checkbox" name="level" value="Level 1"> Level 1</label><br>
+                    <label><input type="checkbox" name="level" value="Level 2"> Level 2</label><br>
+                    <label><input type="checkbox" name="level" value="Level 3"> Level 3</label><br>
+                    <label><input type="checkbox" name="level" value="Level 1"> Level 4</label><br>
+                    <label><input type="checkbox" name="level" value="Level 2"> Level 5</label><br>
+                    <label><input type="checkbox" name="level" value="Level 3"> Level 6</label><br>
+                    <!-- Add more as needed --> 
+                    <h2>HSK 3.0 (New version)</h2>
+                    <form id="levelForm">
+                    <label><input type="checkbox" name="level" value="Level 1"> Level 1</label><br>
+                    <label><input type="checkbox" name="level" value="Level 2"> Level 2</label><br>
+                    <label><input type="checkbox" name="level" value="Level 3"> Level 3</label><br>
+                    <label><input type="checkbox" name="level" value="Level 1"> Level 4</label><br>
+                    <label><input type="checkbox" name="level" value="Level 2"> Level 5</label><br>
+                    <label><input type="checkbox" name="level" value="Level 3"> Level 6</label><br>
+                    <label><input type="checkbox" name="level" value="Level 3"> Level 7 - 9</label><br>
+                    <br>
+                    <button type="submit">Confirm</button>
+                    </form>
+                </div>
+            </div>
         </section>
-
     </main>
+    <script>
+        const levelSelectionBtn = document.getElementById("levelSelectionBtn");
+        const openBtn = document.getElementById("levelBtn");
+        const closeBtn = document.querySelector(".levelSelectionBtn .close");
+
+        // Open modal
+        openBtn.onclick = () => {
+            levelSelectionBtn.style.display = "block";
+        }
+
+        // Close modal
+        closeBtn.onclick = () => {
+            levelSelectionBtn.style.display = "none";
+        }
+
+        // Close modal when clicking outside of modal content
+        window.onclick = (event) => {
+            if (event.target == levelSelectionBtn) {
+            levelSelectionBtn.style.display = "none";
+            }
+        }
+
+        // Optional: Handle form submission
+        const form = document.getElementById("levelForm");
+        form.onsubmit = function(e) {
+            e.preventDefault(); // Prevent actual form submission
+
+            const levels = Array.from(form.elements['level'])
+            .filter(input => input.checked)
+            .map(input => input.value);
+
+            alert("Selected levels: " + levels.join(", "));
+            levelSelectionBtn.style.display = "none";
+        }
+        </script>
 </body>
 </html>

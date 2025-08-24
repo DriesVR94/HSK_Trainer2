@@ -1,3 +1,5 @@
+- [] When a user registers, he/she should be shown the home_page (instead of 'User Registered Successfully.')
+    - The home page should be empty initially. Next the user is asked to select levels
 - [] Let user choose which level he/she wants to train.
 - [] Let user choose how many chars should be tested in 1 run.
 - [] Add a 'report an error button'

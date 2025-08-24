@@ -22,7 +22,7 @@
     </header>
     <main>
         <section>
-            <p>You haven't started any levels yet.</p>
+            <p id="no_level_selected_msg">You haven't started any levels yet.</p>
             <div class="HSK2_0">
                 <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current version</h2>
                 <ol>
@@ -107,6 +107,19 @@
             const currentLevelsList = document.querySelector(".HSK2_0 ol");
             const newLevelsList = document.querySelector(".HSK3_0 ol");
 
+            const no_level_selected_msg = document.getElementById("no_level_selected_msg");
+
+            // Function to update the visibility of the no-levels message
+            function update_no_level_selected_msg() {
+                const currentSelected = JSON.parse(localStorage.getItem("currentLevels") || "[]");
+                const newSelected = JSON.parse(localStorage.getItem("newLevels") || "[]");
+                if (currentSelected.length > 0 || newSelected.length > 0) {
+                    no_level_selected_msg.style.display = "none";
+                } else {
+                    no_level_selected_msg.style.display = "block";
+                }
+            }
+
             // Hide all levels initially
             currentLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
             newLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
@@ -149,14 +162,17 @@
             // Restore selections on load
             restoreSelections(currentForm, currentHeader, currentLevelsList, "currentLevels");
             restoreSelections(newForm, newHeader, newLevelsList, "newLevels");
+            update_no_level_selected_msg();
 
             // Event listeners for updates
             currentForm.addEventListener("change", () => {
                 updateVisibility(currentForm, currentHeader, currentLevelsList, "currentLevels");
+                update_no_level_selected_msg();
             });
 
             newForm.addEventListener("change", () => {
                 updateVisibility(newForm, newHeader, newLevelsList, "newLevels");
+                update_no_level_selected_msg();
             });
 
             document.querySelector(".modal-content button[type='submit']").addEventListener("click", (e) => {

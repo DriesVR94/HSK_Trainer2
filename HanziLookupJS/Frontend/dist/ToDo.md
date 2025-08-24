@@ -3,8 +3,8 @@
 - [] Add a database table for the following levels:
     - [] HSK 2.0
         - [x] Level 1
-        - [] Level 2
-        - [] Level 3
+        - [x] Level 2
+        - [x] Level 3
         - [] Level 4
         - [] Level 5
         - [] Level 6

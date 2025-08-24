@@ -1,9 +1,25 @@
 - [] When a user registers, he/she should be shown the home_page (instead of 'User Registered Successfully.')
     - The home page should be empty initially. Next the user is asked to select levels
+- [] Add a database table for the following levels:
+    - [] HSK 2.0
+        - [x] Level 1
+        - [] Level 2
+        - [] Level 3
+        - [] Level 4
+        - [] Level 5
+        - [] Level 6
+    - [] HSK 3.0
+        - [] Level 1
+        - [] Level 2
+        - [] Level 3
+        - [] Level 4
+        - [] Level 5
+        - [] Level 6
+        - [] Level 7 - 9
 - [] Let user choose which level he/she wants to train.
 - [] Let user choose how many chars should be tested in 1 run.
 - [] Add a 'report an error button'
-- [ ] Add "databases" with vocabulary for all different HSK levels
+- [ ] Add "databases" with vocabulary for all different HSK levels as a JSON array
     - [x] Level 1
     - [ ] Level 2
     - [ ] Level 3

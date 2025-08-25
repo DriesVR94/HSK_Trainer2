@@ -24,9 +24,9 @@
         - [x] Level 1
         - [x] Level 2
         - [x] Level 3
-        - [] Level 4  !! UNFINISHED !!
-        - [ ] Level 5
-        - [ ] Level 6
+        - [x] Level 4  
+        - [ ] Level 5 !! UNFINISHED !!
+        - [ ] Level 6 !! UNFINISHED !!
     - [] HSK 3.0
         - [x] Level 1
         - [ ] Level 2

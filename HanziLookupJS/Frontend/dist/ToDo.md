@@ -19,14 +19,14 @@
 - [] Let user choose which level he/she wants to train.
 - [] Let user choose how many chars should be tested in 1 run.
 - [] Add a 'report an error button'
-- [ ] Add "databases" with vocabulary for all different HSK levels as a JSON array
+- [ ] Add vocabulary for all different HSK levels as a JSON array
     - [] HSK 2.0
         - [x] Level 1
         - [x] Level 2
         - [x] Level 3
         - [x] Level 4  
-        - [ ] Level 5 !! UNFINISHED !!
-        - [ ] Level 6 !! UNFINISHED !!
+        - [x] Level 5
+        - [x] Level 6
     - [] HSK 3.0
         - [x] Level 1
         - [ ] Level 2

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='signin_page.css') }}">
+</head>
+<body>
+  <main class="container" aria-labelledby="signin-title">
+    <div class="brand">
+      <div class="logo" aria-hidden>SI</div>
+      <div>
+        <h1 id="signin-title">Sign in to your account</h1>
+        <p class="lead">Enter your email and password to continue. It's quick and secure.</p>
+      </div>
+    </div>
+
+    <form id="signinForm" novalidate>
+      <div>
+        <label for="email">Email</label>
+        <input id="email" class="input" name="email" type="email" inputmode="email" placeholder="you@company.com" required aria-required="true">
+        <div id="emailError" class="error" aria-live="polite" style="display:none"></div>
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <div style="position:relative">
+          <input id="password" class="input" name="password" type="password" placeholder="Enter password" minlength="8" required aria-required="true" style="padding-right:96px">
+          <button id="togglePwd" type="button" aria-label="Show password" style="position:absolute;right:8px;top:6px;padding:8px;border-radius:8px;border:0;background:transparent;cursor:pointer;font-size:13px">Show</button>
+        </div>
+        <div id="pwdError" class="error" aria-live="polite" style="display:none"></div>
+      </div>
+
+      <div class="row">
+        <label class="checkbox"><input id="remember" type="checkbox"> <span class="small">Remember me</span></label>
+        <a href="#" class="small">Forgot password?</a>
+      </div>
+
+      <div>
+        <button class="btn" type="submit">Sign in</button>
+      </div>
+
+      <div class="divider small">Or continue with</div>
+
+      <div class="socials">
+        <button type="button" class="social-btn" aria-label="Sign in with Google">Google</button>
+        <button type="button" class="social-btn" aria-label="Sign in with GitHub">GitHub</button>
+        <button type="button" class="social-btn" aria-label="Sign in with Microsoft">Microsoft</button>
+      </div>
+
+      <p class="muted" style="margin-top:14px">Don't have an account? <a href="#">Create one</a></p>
+    </form>
+
+    <script>
+      (function(){
+        const form = document.getElementById('signinForm');
+        const email = document.getElementById('email');
+        const pwd = document.getElementById('password');
+        const toggle = document.getElementById('togglePwd');
+        const emailError = document.getElementById('emailError');
+        const pwdError = document.getElementById('pwdError');
+
+        toggle.addEventListener('click', ()=>{
+          const isPwd = pwd.type === 'password';
+          pwd.type = isPwd ? 'text' : 'password';
+          toggle.textContent = isPwd ? 'Hide' : 'Show';
+          toggle.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+        });
+
+        function validateEmail(value){
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        function showError(el, msg){ el.textContent = msg; el.style.display = 'block'; }
+        function hideError(el){ el.textContent=''; el.style.display='none'; }
+
+        form.addEventListener('submit', function(ev){
+          ev.preventDefault();
+          let ok = true;
+          hideError(emailError); hideError(pwdError);
+
+          if(!validateEmail(email.value.trim())){ showError(emailError,'Please enter a valid email address.'); ok = false; }
+          if(pwd.value.length < 8){ showError(pwdError,'Password must be at least 8 characters.'); ok = false; }
+
+          if(!ok) return;
+
+          const payload = { email: email.value.trim(), password: pwd.value, remember: document.getElementById('remember').checked };
+          console.log('Signing in with', payload);
+
+          const btn = form.querySelector('.btn');
+          btn.disabled = true; btn.textContent = 'Signing in...';
+
+          setTimeout(()=>{
+            btn.disabled = false; btn.textContent = 'Sign in';
+            alert('Signed in (demo). Replace with real authentication flow.');
+            form.reset();
+          }, 900);
+        });
+
+        email.addEventListener('input', ()=>{ if(email.value.length && !validateEmail(email.value)) showError(emailError,'Invalid email'); else hideError(emailError); });
+        pwd.addEventListener('input', ()=>{ if(pwd.value.length && pwd.value.length < 8) showError(pwdError,'Too short'); else hideError(pwdError); });
+      })();
+    </script>
+  </main>
+</body>
+</html>

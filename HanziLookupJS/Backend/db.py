@@ -55,6 +55,10 @@ def show_registration_page():
 def show_home_page():
     return render_template('home_page.html')
 
+@app.route('/signin_page')
+def show_signin_page():
+    return render_template('signin_page.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

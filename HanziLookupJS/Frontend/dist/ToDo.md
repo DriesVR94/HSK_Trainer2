@@ -1,3 +1,4 @@
+- [] Link the sign-in button on the registration page to the sign-in page
 - [] When a user registers, he/she should be shown the home_page (instead of 'User Registered Successfully.')
     - The home page should be empty initially. Next the user is asked to select levels
 - [] Add a database table for the following levels:

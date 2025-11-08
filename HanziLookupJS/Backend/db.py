@@ -1,9 +1,11 @@
-from flask import Flask, request, redirect, render_template
-import sqlite3
+from flask import Flask, request, redirect, render_template, session, jsonify, url_for
+import sqlite3, hashlib, os, json
 import hashlib
 import os
 
 app = Flask(__name__)
+app.secret_key = "replace_this_with_a_strong_secret_key"
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(BASE_DIR, 'users.db')
@@ -53,7 +55,23 @@ def show_registration_page():
 
 @app.route('/home_page')
 def show_home_page():
-    return render_template('home_page.html')
+    if 'user_email' not in session:
+        return redirect(url_for('show_signin_page'))
+
+    email = session['user_email']
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT selected_levels FROM users WHERE email = ?', (email,))
+    row = cursor.fetchone()
+    conn.close()
+
+    # Safely load JSON from database or default to an empty list
+    selected_levels = json.loads(row[0]) if row and row[0] else []
+
+    # ✅ Don't call json.dumps() here
+    # ✅ Match variable name with template (savedLevels, not saved_levels)
+    return render_template('home_page.html', user_email=email, savedLevels=selected_levels)
+
 
 @app.route('/signin_page')
 def show_signin_page():
@@ -77,12 +95,31 @@ def signin():
     conn.close()
 
     if result and result[0] == hashed_pw:
+        session['user_email'] = email
         print(f"✅ Successful login for: {email}")
         return {"success": True}, 200
     else:
         print(f"❌ Failed login attempt for: {email}")
         return {"success": False, "message": "Invalid email or password."}, 401
+    
+@app.route('/save_levels', methods=['POST'])
+def save_levels():
+    if 'user_email' not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
 
+    data = request.get_json()
+    levels = data.get('levels', [])
+
+    email = session['user_email']
+    conn = create_connection()
+    cursor = conn.cursor()
+    # Use the correct column
+    cursor.execute('UPDATE users SET selected_levels = ? WHERE email = ?', (json.dumps(levels), email))
+    conn.commit()
+    conn.close()
+
+    print(f"💾 Saved levels for {email}: {levels}")
+    return jsonify({"success": True})
 
 
 if __name__ == '__main__':

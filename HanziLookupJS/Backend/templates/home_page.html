@@ -76,117 +76,78 @@
         </section>
     </main>
     <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const selectedLevels = JSON.parse(`{{ savedLevels | tojson | safe }}`);
+        const currentForm = document.querySelector("#levelForm_current");
+        const newForm = document.querySelector("#levelForm_new");
+        const currentHeader = document.querySelector(".header_selected_levels_currentHSK");
+        const newHeader = document.querySelector(".header_selected_levels_newHSK");
+        const currentLevelsList = document.querySelector(".HSK2_0 ol");
+        const newLevelsList = document.querySelector(".HSK3_0 ol");
+        const no_level_selected_msg = document.getElementById("no_level_selected_msg");
         const levelSelectionBtn = document.getElementById("levelSelectionBtn");
-        const openBtn = document.getElementById("levelBtn");
-        const closeBtn = document.querySelector(".levelSelectionBtn .close");
 
-        // Open modal
-        openBtn.onclick = () => {
-            levelSelectionBtn.style.display = "block";
+        function update_no_level_selected_msg() {
+            const currentSelected = JSON.parse(localStorage.getItem("currentLevels") || "[]");
+            const newSelected = JSON.parse(localStorage.getItem("newLevels") || "[]");
+            no_level_selected_msg.style.display = (currentSelected.length || newSelected.length) ? "none" : "block";
         }
 
-        // Close modal
-        closeBtn.onclick = () => {
-            levelSelectionBtn.style.display = "none";
-        }
-
-        // Close modal when clicking outside of modal content
-        window.onclick = (event) => {
-            if (event.target == levelSelectionBtn) {
-            levelSelectionBtn.style.display = "none";
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const currentForm = document.querySelector("#levelForm_current");
-            const newForm = document.querySelector("#levelForm_new");
-
-            const currentHeader = document.querySelector(".header_selected_levels_currentHSK");
-            const newHeader = document.querySelector(".header_selected_levels_newHSK");
-
-            const currentLevelsList = document.querySelector(".HSK2_0 ol");
-            const newLevelsList = document.querySelector(".HSK3_0 ol");
-
-            const no_level_selected_msg = document.getElementById("no_level_selected_msg");
-
-            // Function to update the visibility of the no-levels message
-            function update_no_level_selected_msg() {
-                const currentSelected = JSON.parse(localStorage.getItem("currentLevels") || "[]");
-                const newSelected = JSON.parse(localStorage.getItem("newLevels") || "[]");
-                if (currentSelected.length > 0 || newSelected.length > 0) {
-                    no_level_selected_msg.style.display = "none";
-                } else {
-                    no_level_selected_msg.style.display = "block";
-                }
-            }
-
-            // Hide all levels initially
-            currentLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
-            newLevelsList.querySelectorAll("li").forEach(li => li.style.display = "none");
-
-            function updateVisibility(form, header, levelsList, storageKey) {
-                const checkboxes = form.querySelectorAll("input[type='checkbox']");
-                let anyChecked = false;
-                let selectedValues = [];
-
-                checkboxes.forEach((cb, i) => {
-                    if (cb.checked) {
-                        levelsList.children[i].style.display = "list-item";
-                        anyChecked = true;
-                        selectedValues.push(cb.value);
-                    } else {
-                        levelsList.children[i].style.display = "none";
-                    }
-                });
-
-                // Save selections in localStorage
-                localStorage.setItem(storageKey, JSON.stringify(selectedValues));
-
-                // Toggle header visibility
-                header.style.display = anyChecked ? "block" : "none";
-            }
-
-            function restoreSelections(form, header, levelsList, storageKey) {
-                const savedSelections = JSON.parse(localStorage.getItem(storageKey) || "[]");
-                const checkboxes = form.querySelectorAll("input[type='checkbox']");
-
-                checkboxes.forEach((cb, i) => {
-                    cb.checked = savedSelections.includes(cb.value);
-                    levelsList.children[i].style.display = cb.checked ? "list-item" : "none";
-                });
-
-                // Show header if any saved selections
-                header.style.display = savedSelections.length > 0 ? "block" : "none";
-            }
-
-            // Restore selections on load
-            restoreSelections(currentForm, currentHeader, currentLevelsList, "currentLevels");
-            restoreSelections(newForm, newHeader, newLevelsList, "newLevels");
+        function applySavedLevels(levels) {
+            document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+                cb.checked = levels.includes(cb.value);
+            });
+            updateVisibility(currentForm, currentHeader, currentLevelsList, "currentLevels");
+            updateVisibility(newForm, newHeader, newLevelsList, "newLevels");
             update_no_level_selected_msg();
+        }
 
-            // Event listeners for updates
-            currentForm.addEventListener("change", () => {
-                updateVisibility(currentForm, currentHeader, currentLevelsList, "currentLevels");
-                update_no_level_selected_msg();
+        function updateVisibility(form, header, levelsList, storageKey) {
+            const checkboxes = form.querySelectorAll("input[type='checkbox']");
+            let anyChecked = false;
+            const selectedValues = [];
+
+            checkboxes.forEach((cb, i) => {
+                if (cb.checked) {
+                    levelsList.children[i].style.display = "list-item";
+                    anyChecked = true;
+                    selectedValues.push(cb.value);
+                } else {
+                    levelsList.children[i].style.display = "none";
+                }
             });
 
-            newForm.addEventListener("change", () => {
-                updateVisibility(newForm, newHeader, newLevelsList, "newLevels");
-                update_no_level_selected_msg();
+            localStorage.setItem(storageKey, JSON.stringify(selectedValues));
+            header.style.display = anyChecked ? "block" : "none";
+        }
+
+        async function saveLevelsToDB() {
+            const selectedLevels = [
+                ...document.querySelectorAll("#levelForm_current input:checked"),
+                ...document.querySelectorAll("#levelForm_new input:checked")
+            ].map(input => input.value);
+
+            await fetch("/save_levels", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ levels: selectedLevels })
             });
 
-            document.querySelector(".modal-content button[type='submit']").addEventListener("click", (e) => {
-                e.preventDefault();
+            // Update UI immediately after saving
+            applySavedLevels(selectedLevels);
+        }
 
-                const selectedLevels = [
-                    ...Array.from(document.querySelectorAll("#levelForm_current input:checked")),
-                    ...Array.from(document.querySelectorAll("#levelForm_new input:checked"))
-                ].map(input => input.value);
-
-                alert("Selected levels: " + selectedLevels.join(", "));
-                levelSelectionBtn.style.display = "none";
-            });
+        // Button event listener
+        document.querySelector(".modal-content button[type='submit']").addEventListener("click", async (e) => {
+            e.preventDefault();
+            await saveLevelsToDB();
+            levelSelectionBtn.style.display = "none";
         });
-        </script>
+
+        // Initial setup: apply user’s saved levels from database
+        applySavedLevels(selectedLevels);
+    });
+    </script>
+
 </body>
 </html>

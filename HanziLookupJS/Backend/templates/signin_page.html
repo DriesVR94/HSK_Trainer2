@@ -47,4 +47,78 @@
 
       <div class="socials">
         <button type="button" class="social-btn" aria-label="Sign in with Google">Google</button>
-        <button type="button" class="social-btn" aria-la
+        <button type="button" class="social-btn" aria-label="Sign in with GitHub">GitHub</button>
+        <button type="button" class="social-btn" aria-label="Sign in with Microsoft">Microsoft</button>
+      </div>
+
+      <p class="muted" style="margin-top:14px">Don't have an account? <a href="#">Create one</a></p>
+    </form>
+
+    <script>
+      (function(){
+        const form = document.getElementById('signinForm');
+        const email = document.getElementById('email');
+        const pwd = document.getElementById('password');
+        const toggle = document.getElementById('togglePwd');
+        const emailError = document.getElementById('emailError');
+        const pwdError = document.getElementById('pwdError');
+
+        toggle.addEventListener('click', ()=>{
+          const isPwd = pwd.type === 'password';
+          pwd.type = isPwd ? 'text' : 'password';
+          toggle.textContent = isPwd ? 'Hide' : 'Show';
+          toggle.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+        });
+
+        function validateEmail(value){
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
+        function showError(el, msg){ el.textContent = msg; el.style.display = 'block'; }
+        function hideError(el){ el.textContent=''; el.style.display='none'; }
+
+        // ✅ Updated login flow
+        form.addEventListener('submit', async function(ev){
+          ev.preventDefault();
+          hideError(emailError); hideError(pwdError);
+
+          if(!validateEmail(email.value.trim())){ showError(emailError,'Please enter a valid email address.'); return; }
+          if(pwd.value.length < 8){ showError(pwdError,'Password must be at least 8 characters.'); return; }
+
+          const payload = {
+            email: email.value.trim(),
+            password: pwd.value,
+            remember: document.getElementById('remember').checked
+          };
+
+          const btn = form.querySelector('.btn');
+          btn.disabled = true; btn.textContent = 'Signing in...';
+
+          try {
+            const res = await fetch('/signin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+              // ✅ Redirect to home page
+              window.location.href = '/home_page';
+            } else {
+              showError(pwdError, data.message || 'Invalid credentials');
+            }
+          } catch (err) {
+            showError(pwdError, 'Network error. Please try again.');
+          } finally {
+            btn.disabled = false; btn.textContent = 'Sign in';
+          }
+        });
+
+        email.addEventListener('input', ()=>{ if(email.value.length && !validateEmail(email.value)) showError(emailError,'Invalid email'); else hideError(emailError); });
+        pwd.addEventListener('input', ()=>{ if(pwd.value.length && pwd.value.length < 8) showError(pwdError,'Too short'); else hideError(pwdError); });
+      })();
+    </script>
+  </main>
+</body>
+</html>

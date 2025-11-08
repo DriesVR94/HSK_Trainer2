@@ -59,6 +59,31 @@ def show_home_page():
 def show_signin_page():
     return render_template('signin_page.html')
 
+@app.route('/signin', methods=['POST'])
+def signin():
+    data = request.get_json()
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return {"success": False, "message": "Email and password are required."}, 400
+
+    hashed_pw = hashlib.sha256(password.encode()).hexdigest()
+
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT password FROM users WHERE email = ?', (email,))
+    result = cursor.fetchone()
+    conn.close()
+
+    if result and result[0] == hashed_pw:
+        print(f"✅ Successful login for: {email}")
+        return {"success": True}, 200
+    else:
+        print(f"❌ Failed login attempt for: {email}")
+        return {"success": False, "message": "Invalid email or password."}, 401
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

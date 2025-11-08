@@ -1,4 +1,5 @@
 - [] When a user signs in, he should be redirected to his personal user's page.
+- [] User's username and password are shown in the URL. Unsafe. Remove.
 - [] When a user registers, he/she should be shown the home_page (instead of 'User Registered Successfully.')
     - The home page should be empty initially. Next the user is asked to select levels
 - [] Add a database table for the following levels:

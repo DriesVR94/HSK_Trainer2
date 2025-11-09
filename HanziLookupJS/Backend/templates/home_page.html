@@ -35,7 +35,7 @@
       <button class="toggle-btn" id="btnHSK3">HSK 3.0</button>
     </div>
 
-    <!-- Progress Bar -->
+    <!-- Global Progress Bar -->
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -44,13 +44,34 @@
     <section class="HSK2_0">
       <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current Version</h2>
       <ol>
-        <li>Level 1</li>
-        <li>Level 2</li>
-        <li>Level 3</li>
-        <li>Level 4</li>
-        <li>Level 5</li>
-        <li>Level 6</li>
-      </ol>
+        <li>
+            <div class="level-title">Level 1</div>
+            <div class="level-progress">
+            <div class="progress-bar-inner" style="width: 0%;"></div>
+            </div>
+            <div class="level-count">{{ counts["HSK2_0__Level_1"] }} characters</div>
+        </li>
+
+        <li>
+            <div class="level-title">Level 2</div>
+            <div class="level-progress">
+            <div class="progress-bar-inner" style="width: 0%;"></div>
+            </div>
+            <div class="level-count">{{ counts["HSK2_0__Level_2"] }} characters</div>
+        </li>
+
+        <li>
+            <div class="level-title">Level 3</div>
+            <div class="level-progress">
+            <div class="progress-bar-inner" style="width: 0%;"></div>
+            </div>
+            <div class="level-count">{{ counts["HSK2_0__Level_3"] }} characters</div>
+        </li>
+
+        <li><div class="level-title">Level 4</div></li>
+        <li><div class="level-title">Level 5</div></li>
+        <li><div class="level-title">Level 6</div></li>
+        </ol>
     </section>
 
     <!-- HSK 3.0 Section -->
@@ -76,7 +97,6 @@
       const hsk3Section = document.querySelector(".HSK3_0");
       const progressBar = document.getElementById("progressBar");
 
-      // Show HSK 2.0 by default
       showHSK("2.0");
 
       function showHSK(version) {
@@ -85,7 +105,7 @@
           hsk3Section.style.display = "none";
           btnHSK2.classList.add("active");
           btnHSK3.classList.remove("active");
-          updateProgress(6, 6); // Full completion for demo
+          updateProgress(3, 6); // Example: 3 of 6 levels completed
         } else {
           hsk2Section.style.display = "none";
           hsk3Section.style.display = "block";

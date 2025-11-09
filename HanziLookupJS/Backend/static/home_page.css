@@ -1,67 +1,194 @@
-*{ 
-    font-family: "Titillium Web", sans-serif; 
-    font-weight: 700; 
-    font-style: normal; 
-    background-color: #000f18; 
-    color: white; 
+/* --- GLOBAL STYLE --- */
+* {
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    background-color: #000f18;
+    color: white;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-header{ 
-    min-height: 10vh; 
-    width: 100%; 
+header {
+    min-height: 10vh;
+    width: 100%;
+    background-color: #000f18;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    z-index: 10;
 }
 
-.HSK2_0 li, .HSK3_0 li{
-    display: none;
-}
-
-nav{
+/* --- NAVBAR STYLING (matching welcome_page) --- */
+nav {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    padding: 1vh 5vw;
 }
 
-section{
+.logo_bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 75px;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    flex: 1;
+    text-align: right;
+    margin-right: 5%;
+}
+
+.nav-links ul {
+    list-style: none;
+}
+
+.nav-links ul li {
+    display: inline-block;
+    padding: 8px 20px;
+    position: relative;
+}
+
+.nav-links ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links ul li::after {
+    content: '';
+    width: 0%;
+    height: 2px;
+    background: #ee1c25;
+    display: block;
+    margin: auto;
+    transition: width 0.25s;
+}
+
+.nav-links ul li:hover::after {
+    width: 100%;
+}
+
+/* --- HOME PAGE SECTIONS --- */
+section {
     padding: 0vh 5vw;
     background-color: wheat;
     border-radius: 8px;
+    color: #000f18;
 }
 
-/* Modal background */
+.HSK2_0 li,
+.HSK3_0 li {
+    display: none;
+}
+
+/* --- MODAL --- */
 .levelSelectionBtn {
-  display: none; /* Hidden by default */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5); /* Dim background */
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal content box */
 .modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  width: 300px;
-  border-radius: 8px;
-  text-align: center;
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    width: 300px;
+    border-radius: 8px;
+    text-align: center;
+    color: #000f18;
 }
 
-/* Close button (X) */
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .close:hover {
-  color: red;
+    color: red;
 }
 
-.header_selected_levels_currentHSK, .header_selected_levels_newHSK{
+.header_selected_levels_currentHSK,
+.header_selected_levels_newHSK {
     display: none;
+}
+
+/* --- PROGRESS BAR --- */
+.progress-container {
+  width: 80%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem; /* small gap below nav */
+  flex-direction: center;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ee1c25, #ffb347);
+  transition: width 0.4s ease;
+  border-radius: 4px;
+}
+
+/* --- HSK Version Toggle Buttons --- */
+.hsk-toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 1rem 2rem 0.5rem 0; /* top/right/bottom/left spacing */
+}
+
+.toggle-btn {
+  background-color: #12232e;
+  color: white;
+  border: 2px solid #ee1c25;
+  border-radius: 8px;
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #ee1c25;
+  color: #000f18;
+}
+
+.toggle-btn.active {
+  background-color: #ee1c25;
+  color: #000f18;
+}
+
+
+/* --- RESPONSIVE NAV --- */
+@media (max-width: 900px) {
+    nav {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-links ul li {
+        padding: 5px 10px;
+    }
 }

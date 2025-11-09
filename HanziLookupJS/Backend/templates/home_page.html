@@ -8,20 +8,36 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='home_page.css') }}">
 </head>
-<body>
+    <body>
     <header>
         <nav>
-            <div>
+            <div class="logo_bar">
                 <img src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}" alt="HSK Hero Logo" class="logo">
-                
+                <span class="logo-text">HSK Hero</span>
             </div>
-            <div>
-                <img src="" alt="Profile">
+
+            <div class="nav-links">
+                <ul>
+                    <li><a href="{{ url_for('show_welcome_page') }}">Home</a></li>
+                    <li><a href="">About HSK</a></li>
+                    <li><a href="">FAQ</a></li>
+                    <li><a href="">Profile</a></li>
+                </ul>
             </div>
         </nav>
     </header>
     <main>
         <section>
+        <!-- HSK Version Toggle -->
+        <div class="hsk-toggle-container">
+            <button class="toggle-btn active" id="btnHSK2">HSK 2.0</button>
+            <button class="toggle-btn" id="btnHSK3">HSK 3.0</button>
+        </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
             <p id="no_level_selected_msg">You haven't started any levels yet.</p>
             <div class="HSK2_0">
                 <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current version</h2>
@@ -137,6 +153,13 @@
             applySavedLevels(selectedLevels);
         }
 
+        function updateHSKProgress() {
+            const totalLevels = 13; // 6 (HSK 2.0) + 7 (HSK 3.0)
+            const selectedCount = document.querySelectorAll("input[type='checkbox']:checked").length;
+            const progressPercent = (selectedCount / totalLevels) * 100;
+            document.getElementById("progressBar").style.width = progressPercent + "%";
+        }
+
         // Button event listener
         document.querySelector(".modal-content button[type='submit']").addEventListener("click", async (e) => {
             e.preventDefault();
@@ -163,6 +186,8 @@
                 levelSelectionBtn.style.display = "none";
             }
         });
+
+        updateHSKProgress();
 
     });
     </script>

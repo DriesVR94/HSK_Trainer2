@@ -3,24 +3,26 @@
     font-family: "Titillium Web", sans-serif;
     font-weight: 700;
     font-style: normal;
-    background-color: #000f18;
-    color: white;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+body {
+    background-color: #000f18;
+    color: white;
+}
+
+/* --- HEADER --- */
 header {
     min-height: 10vh;
     width: 100%;
     background-color: #000f18;
-    background-position: center;
-    background-size: cover;
     position: relative;
     z-index: 10;
 }
 
-/* --- NAVBAR STYLING (matching welcome_page) --- */
+/* --- NAVBAR STYLING --- */
 nav {
     display: flex;
     align-items: center;
@@ -31,7 +33,6 @@ nav {
 .logo_bar {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
 }
 
@@ -79,76 +80,10 @@ nav {
     width: 100%;
 }
 
-/* --- HOME PAGE SECTIONS --- */
-section {
-    padding: 0vh 5vw;
-    background-color: wheat;
-    border-radius: 8px;
-    color: #000f18;
-}
-
-.HSK2_0 li,
-.HSK3_0 li {
-    display: none;
-}
-
-/* --- MODAL --- */
-.levelSelectionBtn {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    width: 300px;
-    border-radius: 8px;
-    text-align: center;
-    color: #000f18;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: red;
-}
-
-.header_selected_levels_currentHSK,
-.header_selected_levels_newHSK {
-    display: none;
-}
-
-/* --- PROGRESS BAR --- */
-.progress-container {
-  width: 80%;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 0.5rem; /* small gap below nav */
-  flex-direction: center;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #ee1c25, #ffb347);
-  transition: width 0.4s ease;
-  border-radius: 4px;
+/* --- MAIN SECTION --- */
+main {
+    padding: 2rem 5vw;
+    background-color: #000f18;
 }
 
 /* --- HSK Version Toggle Buttons --- */
@@ -156,7 +91,7 @@ section {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  margin: 1rem 2rem 0.5rem 0; /* top/right/bottom/left spacing */
+  margin-bottom: 1rem;
 }
 
 .toggle-btn {
@@ -180,6 +115,57 @@ section {
   color: #000f18;
 }
 
+/* --- PROGRESS BAR --- */
+.progress-container {
+  width: 80%;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto 1.5rem auto;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ee1c25, #ffb347);
+  transition: width 0.4s ease;
+  border-radius: 4px;
+}
+
+/* --- HSK SECTIONS --- */
+section {
+    background-color: wheat;
+    border-radius: 8px;
+    color: #000f18;
+    padding: 1.5rem;
+    margin: 1rem auto;
+    max-width: 800px;
+}
+
+.header_selected_levels_currentHSK,
+.header_selected_levels_newHSK {
+    color: #000f18;
+    margin-bottom: 0.75rem;
+}
+
+.HSK2_0 ol,
+.HSK3_0 ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+}
+
+.HSK2_0 li,
+.HSK3_0 li {
+    margin: 0.6rem 0;
+    color: #000f18;
+    font-weight: 600;
+}
+
+/* Hide HSK 3.0 by default */
+.HSK3_0 {
+    display: none;
+}
 
 /* --- RESPONSIVE NAV --- */
 @media (max-width: 900px) {
@@ -190,5 +176,9 @@ section {
 
     .nav-links ul li {
         padding: 5px 10px;
+    }
+
+    .progress-container {
+        width: 95%;
     }
 }

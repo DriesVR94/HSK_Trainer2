@@ -8,189 +8,101 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='home_page.css') }}">
 </head>
-    <body>
-    <header>
-        <nav>
-            <div class="logo_bar">
-                <img src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}" alt="HSK Hero Logo" class="logo">
-                <span class="logo-text">HSK Hero</span>
-            </div>
 
-            <div class="nav-links">
-                <ul>
-                    <li><a href="{{ url_for('show_welcome_page') }}">Home</a></li>
-                    <li><a href="">About HSK</a></li>
-                    <li><a href="">FAQ</a></li>
-                    <li><a href="">Profile</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <main>
-        <section>
-        <!-- HSK Version Toggle -->
-        <div class="hsk-toggle-container">
-            <button class="toggle-btn active" id="btnHSK2">HSK 2.0</button>
-            <button class="toggle-btn" id="btnHSK3">HSK 3.0</button>
-        </div>
+<body>
+  <header>
+    <nav>
+      <div class="logo_bar">
+        <img src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}" alt="HSK Hero Logo" class="logo">
+        <span class="logo-text">HSK Hero</span>
+      </div>
 
-            <!-- Progress Bar -->
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            <p id="no_level_selected_msg">You haven't started any levels yet.</p>
-            <div class="HSK2_0">
-                <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current version</h2>
-                <ol>
-                    <li>Level 1</li>
-                    <li>Level 2</li>
-                    <li>Level 3</li>
-                    <li>Level 4</li>
-                    <li>Level 5</li>
-                    <li>Level 6</li>
-                </ol>
-            </div>
-            <div class="HSK3_0">
-                <h2 class="header_selected_levels_newHSK">HSK 3.0 - New version</h2>
-                <ol>
-                    <li>Level 1</li>
-                    <li>Level 2</li>
-                    <li>Level 3</li>
-                    <li>Level 4</li>
-                    <li>Level 5</li>
-                    <li>Level 6</li>
-                    <li>Levels 7 - 9</li>
-                </ol>
-            </div>
-            <button id="levelBtn">Add New Level</button>
-            <div id="levelSelectionBtn" class="levelSelectionBtn">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>HSK 2.0 (Current version)</h2>
-                    <form id="levelForm_current">
-                        <label><input type="checkbox" name="level" value="HSK2.0_1"> Level 1</label><br>
-                        <label><input type="checkbox" name="level" value="HSK2.0_2"> Level 2</label><br>
-                        <label><input type="checkbox" name="level" value="HSK2.0_3"> Level 3</label><br>
-                        <label><input type="checkbox" name="level" value="HSK2.0_4"> Level 4</label><br>
-                        <label><input type="checkbox" name="level" value="HSK2.0_5"> Level 5</label><br>
-                        <label><input type="checkbox" name="level" value="HSK2.0_6"> Level 6</label><br>
-                    </form>
-                    <h2>HSK 3.0 (New version)</h2>
-                    <form id="levelForm_new">
-                        <label><input type="checkbox" name="level" value="HSK3.0_1"> Level 1</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_2"> Level 2</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_3"> Level 3</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_4"> Level 4</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_5"> Level 5</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_6"> Level 6</label><br>
-                        <label><input type="checkbox" name="level" value="HSK3.0_789"> Level 7 - 9</label><br>
-                    </form>
-                    <br>
-                    <button type="submit">Confirm</button>
-                </div>
-            </div>
-        </section>
-    </main>
-    <script>
+      <div class="nav-links">
+        <ul>
+          <li><a href="{{ url_for('show_welcome_page') }}">Home</a></li>
+          <li><a href="#">About HSK</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Toggle Buttons -->
+    <div class="hsk-toggle-container">
+      <button class="toggle-btn active" id="btnHSK2">HSK 2.0</button>
+      <button class="toggle-btn" id="btnHSK3">HSK 3.0</button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- HSK 2.0 Section -->
+    <section class="HSK2_0">
+      <h2 class="header_selected_levels_currentHSK">HSK 2.0 - Current Version</h2>
+      <ol>
+        <li>Level 1</li>
+        <li>Level 2</li>
+        <li>Level 3</li>
+        <li>Level 4</li>
+        <li>Level 5</li>
+        <li>Level 6</li>
+      </ol>
+    </section>
+
+    <!-- HSK 3.0 Section -->
+    <section class="HSK3_0">
+      <h2 class="header_selected_levels_newHSK">HSK 3.0 - New Version</h2>
+      <ol>
+        <li>Level 1</li>
+        <li>Level 2</li>
+        <li>Level 3</li>
+        <li>Level 4</li>
+        <li>Level 5</li>
+        <li>Level 6</li>
+        <li>Levels 7 - 9</li>
+      </ol>
+    </section>
+  </main>
+
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const selectedLevels = JSON.parse(`{{ savedLevels | tojson | safe }}`);
-        const currentForm = document.querySelector("#levelForm_current");
-        const newForm = document.querySelector("#levelForm_new");
-        const currentHeader = document.querySelector(".header_selected_levels_currentHSK");
-        const newHeader = document.querySelector(".header_selected_levels_newHSK");
-        const currentLevelsList = document.querySelector(".HSK2_0 ol");
-        const newLevelsList = document.querySelector(".HSK3_0 ol");
-        const no_level_selected_msg = document.getElementById("no_level_selected_msg");
-        const levelSelectionBtn = document.getElementById("levelSelectionBtn");
+      const btnHSK2 = document.getElementById("btnHSK2");
+      const btnHSK3 = document.getElementById("btnHSK3");
+      const hsk2Section = document.querySelector(".HSK2_0");
+      const hsk3Section = document.querySelector(".HSK3_0");
+      const progressBar = document.getElementById("progressBar");
 
-        function update_no_level_selected_msg() {
-            const currentSelected = JSON.parse(localStorage.getItem("currentLevels") || "[]");
-            const newSelected = JSON.parse(localStorage.getItem("newLevels") || "[]");
-            no_level_selected_msg.style.display = (currentSelected.length || newSelected.length) ? "none" : "block";
+      // Show HSK 2.0 by default
+      showHSK("2.0");
+
+      function showHSK(version) {
+        if (version === "2.0") {
+          hsk2Section.style.display = "block";
+          hsk3Section.style.display = "none";
+          btnHSK2.classList.add("active");
+          btnHSK3.classList.remove("active");
+          updateProgress(6, 6); // Full completion for demo
+        } else {
+          hsk2Section.style.display = "none";
+          hsk3Section.style.display = "block";
+          btnHSK2.classList.remove("active");
+          btnHSK3.classList.add("active");
+          updateProgress(7, 7);
         }
+      }
 
-        function applySavedLevels(levels) {
-            document.querySelectorAll("input[type='checkbox']").forEach(cb => {
-                cb.checked = levels.includes(cb.value);
-            });
-            updateVisibility(currentForm, currentHeader, currentLevelsList, "currentLevels");
-            updateVisibility(newForm, newHeader, newLevelsList, "newLevels");
-            update_no_level_selected_msg();
-        }
+      function updateProgress(completed, total) {
+        const percent = (completed / total) * 100;
+        progressBar.style.width = percent + "%";
+      }
 
-        function updateVisibility(form, header, levelsList, storageKey) {
-            const checkboxes = form.querySelectorAll("input[type='checkbox']");
-            let anyChecked = false;
-            const selectedValues = [];
-
-            checkboxes.forEach((cb, i) => {
-                if (cb.checked) {
-                    levelsList.children[i].style.display = "list-item";
-                    anyChecked = true;
-                    selectedValues.push(cb.value);
-                } else {
-                    levelsList.children[i].style.display = "none";
-                }
-            });
-
-            localStorage.setItem(storageKey, JSON.stringify(selectedValues));
-            header.style.display = anyChecked ? "block" : "none";
-        }
-
-        async function saveLevelsToDB() {
-            const selectedLevels = [
-            ...document.querySelectorAll("#levelForm_current input:checked"),
-            ...document.querySelectorAll("#levelForm_new input:checked")
-           ].map(input => input.value);
-
-            await fetch("/save_levels", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ levels: selectedLevels })
-            });
-
-            // Update UI immediately after saving
-            applySavedLevels(selectedLevels);
-        }
-
-        function updateHSKProgress() {
-            const totalLevels = 13; // 6 (HSK 2.0) + 7 (HSK 3.0)
-            const selectedCount = document.querySelectorAll("input[type='checkbox']:checked").length;
-            const progressPercent = (selectedCount / totalLevels) * 100;
-            document.getElementById("progressBar").style.width = progressPercent + "%";
-        }
-
-        // Button event listener
-        document.querySelector(".modal-content button[type='submit']").addEventListener("click", async (e) => {
-            e.preventDefault();
-            await saveLevelsToDB();
-            levelSelectionBtn.style.display = "none";
-        });
-
-        // Initial setup: apply user’s saved levels from database
-        applySavedLevels(selectedLevels);
-
-        // Open the level selection modal
-        document.getElementById("levelBtn").addEventListener("click", () => {
-            levelSelectionBtn.style.display = "block";
-        });
-
-        // Close the modal when clicking the "×" span
-        document.querySelector(".close").addEventListener("click", () => {
-            levelSelectionBtn.style.display = "none";
-        });
-
-        // Optional: close modal when clicking outside content
-        window.addEventListener("click", (event) => {
-            if (event.target === levelSelectionBtn) {
-                levelSelectionBtn.style.display = "none";
-            }
-        });
-
-        updateHSKProgress();
-
+      btnHSK2.addEventListener("click", () => showHSK("2.0"));
+      btnHSK3.addEventListener("click", () => showHSK("3.0"));
     });
-    </script>
-
+  </script>
 </body>
 </html>

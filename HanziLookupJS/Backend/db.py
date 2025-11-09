@@ -102,24 +102,31 @@ def signin():
         print(f"❌ Failed login attempt for: {email}")
         return {"success": False, "message": "Invalid email or password."}, 401
     
-@app.route('/save_levels', methods=['POST'])
+@app.route("/save_levels", methods=["POST"])
 def save_levels():
     if 'user_email' not in session:
-        return jsonify({"success": False, "message": "Not logged in"}), 401
-
-    data = request.get_json()
-    levels = data.get('levels', [])
+        return jsonify({"success": False, "message": "User not logged in"}), 401
 
     email = session['user_email']
-    conn = create_connection()
-    cursor = conn.cursor()
-    # Use the correct column
-    cursor.execute('UPDATE users SET selected_levels = ? WHERE email = ?', (json.dumps(levels), email))
-    conn.commit()
-    conn.close()
+    data = request.get_json() or {}
+    levels = data.get('levels', [])
 
-    print(f"💾 Saved levels for {email}: {levels}")
-    return jsonify({"success": True})
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            'UPDATE users SET selected_levels = ? WHERE email = ?',
+            (json.dumps(levels), email)
+        )
+        conn.commit()
+        conn.close()
+
+        print(f"💾 Saved levels for {email}: {levels}")
+        return jsonify({"success": True})
+    except Exception as e:
+        print("❌ Error saving levels:", e)
+        return jsonify({"success": False, "message": str(e)}), 500
+
 
 
 if __name__ == '__main__':

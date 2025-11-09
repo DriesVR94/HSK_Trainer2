@@ -52,22 +52,22 @@
                     <span class="close">&times;</span>
                     <h2>HSK 2.0 (Current version)</h2>
                     <form id="levelForm_current">
-                        <label><input type="checkbox" name="level" value="current Level 1"> Level 1</label><br>
-                        <label><input type="checkbox" name="level" value="current Level 2"> Level 2</label><br>
-                        <label><input type="checkbox" name="level" value="current Level 3"> Level 3</label><br>
-                        <label><input type="checkbox" name="level" value="current Level 4"> Level 4</label><br>
-                        <label><input type="checkbox" name="level" value="current Level 5"> Level 5</label><br>
-                        <label><input type="checkbox" name="level" value="current Level 6"> Level 6</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_1"> Level 1</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_2"> Level 2</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_3"> Level 3</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_4"> Level 4</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_5"> Level 5</label><br>
+                        <label><input type="checkbox" name="level" value="HSK2.0_6"> Level 6</label><br>
                     </form>
                     <h2>HSK 3.0 (New version)</h2>
                     <form id="levelForm_new">
-                        <label><input type="checkbox" name="level" value="new Level 1"> Level 1</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 2"> Level 2</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 3"> Level 3</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 4"> Level 4</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 5"> Level 5</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 6"> Level 6</label><br>
-                        <label><input type="checkbox" name="level" value="new Level 7-9"> Level 7 - 9</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_1"> Level 1</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_2"> Level 2</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_3"> Level 3</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_4"> Level 4</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_5"> Level 5</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_6"> Level 6</label><br>
+                        <label><input type="checkbox" name="level" value="HSK3.0_789"> Level 7 - 9</label><br>
                     </form>
                     <br>
                     <button type="submit">Confirm</button>
@@ -123,9 +123,9 @@
 
         async function saveLevelsToDB() {
             const selectedLevels = [
-                ...document.querySelectorAll("#levelForm_current input:checked"),
-                ...document.querySelectorAll("#levelForm_new input:checked")
-            ].map(input => input.value);
+            ...document.querySelectorAll("#levelForm_current input:checked"),
+            ...document.querySelectorAll("#levelForm_new input:checked")
+           ].map(input => input.value);
 
             await fetch("/save_levels", {
                 method: "POST",
@@ -146,6 +146,24 @@
 
         // Initial setup: apply user’s saved levels from database
         applySavedLevels(selectedLevels);
+
+        // Open the level selection modal
+        document.getElementById("levelBtn").addEventListener("click", () => {
+            levelSelectionBtn.style.display = "block";
+        });
+
+        // Close the modal when clicking the "×" span
+        document.querySelector(".close").addEventListener("click", () => {
+            levelSelectionBtn.style.display = "none";
+        });
+
+        // Optional: close modal when clicking outside content
+        window.addEventListener("click", (event) => {
+            if (event.target === levelSelectionBtn) {
+                levelSelectionBtn.style.display = "none";
+            }
+        });
+
     });
     </script>
 

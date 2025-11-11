@@ -356,6 +356,7 @@
   {"id": 355, "chinese": "叫（介）", "pinyin": "jiào", "english": "(preposition)", "charCount": 1, "strokeCounts": [5]},
   {"id": 356, "chinese": "较", "pinyin": "jiào", "english": "compare; comparatively; relatively; fairly; quite; rather", "charCount": 1, "strokeCounts": [10]},
   {"id": 357, "chinese": "教材", "pinyin": "jiàocái", "english": "teaching material", "charCount": 2, "strokeCounts": [11, 10]},
+  {"id": 358, "chinese": "教练", "pinyin": "jiàoliàn", "english": "coach", "charCount": 2, "strokeCounts": [11,8]},
   {"id": 359, "chinese": "结实", "pinyin": "jiēshi", "english": "strong", "charCount": 2, "strokeCounts": [7, 8]},
   {"id": 360, "chinese": "接待", "pinyin": "jiēdài", "english": "Reception", "charCount": 2, "strokeCounts": [11, 5]},
   {"id": 361, "chinese": "接近", "pinyin": "jiējìn", "english": "near", "charCount": 2, "strokeCounts": [11, 7]},

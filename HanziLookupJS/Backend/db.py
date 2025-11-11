@@ -80,7 +80,7 @@ def show_home_page():
     counts = {}
 
     try:
-        # 🟩 HSK 2.0 levels (assuming level_id = 8–13)
+        # 🟩 HSK 2.0 levels (assuming level_id = 1–6)
         for i in range(1, 7):
             cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i,))
             counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]

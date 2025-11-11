@@ -49,8 +49,7 @@
   {"id": 48, "chinese": "吵", "pinyin": "chǎo", "english": "Noisy", "charCount": 1, "strokeCounts": [7]},
   {"id": 49, "chinese": "车库", "pinyin": "chēkù", "english": "Garage", "charCount": 2, "strokeCounts": [4, 7]},
   {"id": 50, "chinese": "彻底", "pinyin": "chèdǐ", "english": "thorough", "charCount": 2, "strokeCounts": [7, 8]},
-
-    {"id": 51, "chinese": "趁", "pinyin": "chèn", "english": "while", "charCount": 1, "strokeCounts": [12]},
+  {"id": 51, "chinese": "趁", "pinyin": "chèn", "english": "while", "charCount": 1, "strokeCounts": [12]},
   {"id": 52, "chinese": "称", "pinyin": "chēng", "english": "call", "charCount": 1, "strokeCounts": [10]},
   {"id": 53, "chinese": "称赞", "pinyin": "chēngzàn", "english": "Praise", "charCount": 2, "strokeCounts": [10, 16]},
   {"id": 54, "chinese": "承担", "pinyin": "chéngdān", "english": "bear", "charCount": 2, "strokeCounts": [8, 8]},

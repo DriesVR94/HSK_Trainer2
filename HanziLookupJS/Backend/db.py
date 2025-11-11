@@ -22,14 +22,34 @@ def register():
     conn = create_connection()
     cursor = conn.cursor()
     try:
+        # 1️⃣ Insert user
         cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, hashed_pw))
+        user_id = cursor.lastrowid  # get the auto-incremented user ID
+
+        # 2️⃣ Fetch all word IDs from 'words'
+        cursor.execute('SELECT word_id FROM words')
+        word_ids = [row[0] for row in cursor.fetchall()]
+
+        # 3️⃣ Prepare entries for 'user_word_proficiency'
+        # Each entry = (user_id, word_id, proficiency)
+        entries = [(user_id, wid, 0) for wid in word_ids]
+
+        # 4️⃣ Insert all in one batch
+        cursor.executemany(
+            'INSERT INTO user_word_proficiency (user_id, word_id, proficiency_level) VALUES (?, ?, ?)',
+            entries
+        )
+
         conn.commit()
     except sqlite3.IntegrityError:
         return "Email already exists!"
+    except Exception as e:
+        print("❌ Error registering user:", e)
+        return "An error occurred while creating your account."
     finally:
         conn.close()
-    return "User registered successfully!"
 
+    return "User registered successfully!"
 
 @app.route('/welcome_page')
 def show_welcome_page():

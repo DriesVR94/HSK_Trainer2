@@ -56,20 +56,24 @@ def show_home_page():
     row = cursor.fetchone()
     selected_levels = json.loads(row[0]) if row and row[0] else []
 
-    # --- Fetch number of characters per level (for HSK 2.0 only for now) ---
+    # --- Fetch number of characters per level from 'words' table ---
     counts = {}
+
     try:
-        for i in range(1, 4):  # Levels 1–3
-            table_name = f"HSK2_0__Level_{i}"
-            cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-            counts[table_name] = cursor.fetchone()[0]
+        # 🟩 HSK 2.0 levels (assuming level_id = 8–13)
+        for i in range(1, 7):
+            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i,))
+            counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
+
+        # 🟦 HSK 3.0 levels (assuming level_id = 7–13)
+        for i in range(1, 8):
+            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i + 6,))
+            counts[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
+
     except sqlite3.OperationalError as e:
-        print("⚠️ Could not fetch HSK level counts:", e)
-        counts = {
-            "HSK2_0__Level_1": 0,
-            "HSK2_0__Level_2": 0,
-            "HSK2_0__Level_3": 0
-        }
+        print("⚠️ Could not fetch HSK level counts from words:", e)
+        counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
+        counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
 
     conn.close()
 

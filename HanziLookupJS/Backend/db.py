@@ -76,19 +76,51 @@ def show_home_page():
     row = cursor.fetchone()
     selected_levels = json.loads(row[0]) if row and row[0] else []
 
-    # --- Fetch number of characters per level from 'words' table ---
+        # --- Fetch total word counts per level + user mastery counts ---
     counts = {}
+    mastered = {}
 
     try:
-        # 🟩 HSK 2.0 levels (assuming level_id = 1–6)
+        # 🟩 Get user_id from email
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        user_row = cursor.fetchone()
+        user_id = user_row[0] if user_row else None
+
+        # 🟩 HSK 2.0: total counts
         for i in range(1, 7):
             cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i,))
             counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
 
-        # 🟦 HSK 3.0 levels (assuming level_id = 7–13)
+        # 🟩 HSK 2.0: mastered counts
+        for i in range(1, 7):
+            cursor.execute("""
+                SELECT COUNT(*) 
+                FROM user_word_proficiency
+                JOIN words ON user_word_proficiency.word_id = words.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+            """, (user_id, i))
+            mastered[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
+
+        # 🟦 HSK 3.0: total counts
         for i in range(1, 8):
             cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i + 6,))
             counts[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
+
+        # 🟦 HSK 3.0: mastered counts
+        for i in range(1, 8):
+            cursor.execute("""
+                SELECT COUNT(*) 
+                FROM user_word_proficiency
+                JOIN words ON user_word_proficiency.word_id = words.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+            """, (user_id, i + 6))
+            mastered[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
+
+    except sqlite3.OperationalError as e:
+        print("⚠️ Could not fetch counts:", e)
+        counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
+        counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
+        mastered = {k: 0 for k in counts.keys()}
 
     except sqlite3.OperationalError as e:
         print("⚠️ Could not fetch HSK level counts from words:", e)
@@ -98,11 +130,12 @@ def show_home_page():
     conn.close()
 
     return render_template(
-        'home_page.html',
-        user_email=email,
-        savedLevels=selected_levels,
-        counts=counts
-    )
+    'home_page.html',
+    user_email=email,
+    savedLevels=selected_levels,
+    counts=counts,
+    mastered=mastered
+)
 
 
 @app.route('/signin_page')

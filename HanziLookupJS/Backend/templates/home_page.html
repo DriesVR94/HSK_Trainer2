@@ -47,9 +47,11 @@
         <li>
           <div class="level-title">Level 1</div>
           <div class="level-progress">
-            <div class="progress-bar-inner" style="width: 0%;"></div>
+            <div class="progress-bar-inner"></div>
           </div>
-          <div class="level-count">
+          <div class="level-count"
+              data-mastered="{{ mastered['HSK2_0__Level_1'] }}"
+              data-total="{{ counts['HSK2_0__Level_1'] }}">
             {{ mastered["HSK2_0__Level_1"] }}/{{ counts["HSK2_0__Level_1"] }} words mastered
           </div>
         </li>
@@ -57,9 +59,11 @@
         <li>
           <div class="level-title">Level 2</div>
           <div class="level-progress">
-            <div class="progress-bar-inner" style="width: 0%;"></div>
+            <div class="progress-bar-inner"></div>
           </div>
-          <div class="level-count">
+          <div class="level-count"
+              data-mastered="{{ mastered['HSK2_0__Level_2'] }}"
+              data-total="{{ counts['HSK2_0__Level_2'] }}">
             {{ mastered["HSK2_0__Level_2"] }}/{{ counts["HSK2_0__Level_2"] }} words mastered
           </div>
         </li>
@@ -190,6 +194,7 @@
       const hsk3Section = document.querySelector(".HSK3_0");
       const progressBar = document.getElementById("progressBar");
 
+      // ---- EXISTING CODE ----
       showHSK("2.0");
 
       function showHSK(version) {
@@ -198,7 +203,7 @@
           hsk3Section.style.display = "none";
           btnHSK2.classList.add("active");
           btnHSK3.classList.remove("active");
-          updateProgress(3, 6); // Example: 3 of 6 levels completed
+          updateProgress(3, 6); 
         } else {
           hsk2Section.style.display = "none";
           hsk3Section.style.display = "block";
@@ -215,7 +220,24 @@
 
       btnHSK2.addEventListener("click", () => showHSK("2.0"));
       btnHSK3.addEventListener("click", () => showHSK("3.0"));
+
+      // --------------------------------------------------
+      // ✅ NEW CODE: Update each level's progress bar
+      // --------------------------------------------------
+      document.querySelectorAll(".level-count").forEach((countDiv) => {
+        const mastered = parseInt(countDiv.dataset.mastered);
+        const total = parseInt(countDiv.dataset.total);
+
+        const percent = total > 0 ? (mastered / total) * 100 : 0;
+
+        const bar = countDiv.parentElement.querySelector(".progress-bar-inner");
+        if (bar) {
+          bar.style.width = percent + "%";
+        }
+      });
+      // --------------------------------------------------
     });
   </script>
+
 </body>
 </html>

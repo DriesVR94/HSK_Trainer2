@@ -51,8 +51,8 @@
     </div>
   </div>
 
-  <script src="../library/lib/jquery-3.1.1.min.js"></script>
-  <script src="../dist/hanzilookup.min.js"></script>
+  <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
 
   <script>
 
@@ -77,7 +77,7 @@
       buildBoards();
     }
 
-    fetch('../dist/HSK_Level_1.json')
+    fetch("{{ url_for('static', filename='dist/HSK2_0__Level_1.json') }}")
       .then(response => response.json())
       .then(data => {
         hanziList = data;
@@ -96,8 +96,8 @@
       if (!ok) { filesToLoad = -1; return; }
       if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
     }
-    HanziLookup.init('mmah', '../dist/mmah.json', fileLoaded);
-    HanziLookup.init('orig', '../dist/orig.json', fileLoaded);
+    HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
+    HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
 
     // ----- 3.  create boards when BOTH kinds of data are ready -----
     function maybeInitBoards() { if (hanziLoaded && assetsLoaded) loadRandomHanzi(); }

@@ -98,7 +98,7 @@
     {"id":97,"chinese":"狗","pinyin":"gǒu","english":"dog","charCount":1,"strokeCounts":[8]},
     {"id":98,"chinese":"东西","pinyin":"dōngxi","english":"thing","charCount":2,"strokeCounts":[5,6]},
     {"id":99,"chinese":"人","pinyin":"rén","english":"person","charCount":1,"strokeCounts":[2]},
-    {"id":100,"chinese":"名字","pinyin":"míngzi","english":"name","charCount":2,"strokeCounts":[6,3]},
+    {"id":100,"chinese":"名字","pinyin":"míngzi","english":"name","charCount":2,"strokeCounts":[6,6]},
     {"id":101,"chinese":"书","pinyin":"shū","english":"book","charCount":1,"strokeCounts":[4]},
     {"id":102,"chinese":"汉语","pinyin":"hànyǔ","english":"mandarin Chinese","charCount":2,"strokeCounts":[5,9]},
     {"id":103,"chinese":"字","pinyin":"zì","english":"character","charCount":1,"strokeCounts":[6]},

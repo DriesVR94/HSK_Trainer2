@@ -216,7 +216,6 @@
       const hsk3Section = document.querySelector(".HSK3_0");
       const progressBar = document.getElementById("progressBar");
 
-      // ---- EXISTING CODE ----
       showHSK("2.0");
 
       function showHSK(version) {
@@ -243,9 +242,6 @@
       btnHSK2.addEventListener("click", () => showHSK("2.0"));
       btnHSK3.addEventListener("click", () => showHSK("3.0"));
 
-      // --------------------------------------------------
-      // ✅ NEW CODE: Update each level's progress bar
-      // --------------------------------------------------
       document.querySelectorAll(".level-count").forEach((countDiv) => {
         const mastered = parseInt(countDiv.dataset.mastered);
         const total = parseInt(countDiv.dataset.total);
@@ -257,7 +253,6 @@
           bar.style.width = percent + "%";
         }
       });
-      // --------------------------------------------------
     });
   </script>
 

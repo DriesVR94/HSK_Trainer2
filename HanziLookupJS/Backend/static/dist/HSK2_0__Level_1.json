@@ -132,7 +132,7 @@
     {"id":131,"chinese":"坐","pinyin":"zuò","english":"sit","charCount":1,"strokeCounts":[7]},
     {"id":132,"chinese":"住","pinyin":"zhù","english":"live","charCount":1,"strokeCounts":[7]},
     {"id":133,"chinese":"学习","pinyin":"xuéxí","english":"study","charCount":2,"strokeCounts":[8,3]},
-    {"id":134,"chinese":"工作","pinyin":"gōngzuò","english":"work","charCount":2,"strokeCounts":[4,7]},
+    {"id":134,"chinese":"工作","pinyin":"gōngzuò","english":"work","charCount":2,"strokeCounts":[3,7]},
     {"id":135,"chinese":"下雨","pinyin":"xiàyǔ","english":"rain","charCount":2,"strokeCounts":[3,8]},
     {"id":136,"chinese":"爱","pinyin":"ài","english":"love","charCount":1,"strokeCounts":[10]},
     {"id":137,"chinese":"喜欢","pinyin":"xǐhuān","english":"love, like","charCount":2,"strokeCounts":[12,6]},

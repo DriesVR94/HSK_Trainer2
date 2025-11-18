@@ -137,6 +137,89 @@ def show_home_page():
     mastered=mastered
 )
 
+@app.get("/api/get_next_word")
+def get_next_word():
+    if "user_email" not in session:
+        return {"error": "Not logged in"}, 401
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # Get user_id
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return {"error": "User not found"}, 404
+    user_id = row[0]
+
+    # Fetch next word by proficiency order + last_practiced
+    cursor.execute("""
+        SELECT words.word, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
+        FROM user_word_proficiency
+        JOIN words ON user_word_proficiency.word_id = words.word_id
+        WHERE user_word_proficiency.user_id = ?
+        ORDER BY 
+            user_word_proficiency.proficiency_level ASC,      -- noob → expert
+            COALESCE(user_word_proficiency.last_practiced, 0) ASC
+        LIMIT 1
+    """, (user_id,))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return {"error": "No words found"}, 404
+
+    return {
+        "word": row[0],
+        "proficiency": row[1],
+        "last_practiced": row[2]
+    }
+
+
+@app.post("/api/update_proficiency")
+def update_proficiency():
+    data = request.json
+    user_email = session.get("user_email")
+
+    if not user_email:
+        return {"success": False, "error": "Not logged in"}, 401
+
+    word = data["word"]
+    new_level = data["proficiency"]
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # Get user_id
+    cursor.execute("SELECT id FROM users WHERE email = ?", (user_email,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return {"success": False, "error": "User not found"}, 404
+    user_id = row[0]
+
+    # Get word_id
+    cursor.execute("SELECT word_id FROM words WHERE word = ?", (word,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return {"success": False, "error": "Word not found"}, 404
+    word_id = row[0]
+
+    # Update proficiency + last practised
+    cursor.execute("""
+        UPDATE user_word_proficiency
+        SET proficiency_level = ?, last_practiced = CURRENT_TIMESTAMP
+        WHERE user_id = ? AND word_id = ?
+    """, (new_level, user_id, word_id))
+
+    conn.commit()
+    conn.close()
+
+    return {"success": True}
+
 
 @app.route('/signin_page')
 def show_signin_page():

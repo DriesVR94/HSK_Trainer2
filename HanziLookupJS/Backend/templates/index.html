@@ -77,18 +77,20 @@
       buildBoards();
     }
 
-    fetch("{{ url_for('static', filename='dist/HSK2_0__Level_1.json') }}")
-      .then(response => response.json())
-      .then(data => {
-        hanziList = data;
-        hanziLoaded = true;
-        maybeInitBoards();  // wait until assets are ready
-      })
 
-      .catch(err => {
-        console.error(err);
-        document.querySelector('.targetCharBox').innerText = '⚠️ load error';
-      });
+    function loadHanziFromDatabase() {
+      return fetch('/api/get_next_word')
+        .then(response => response.json())
+        .then(entry => {
+          window.targetCharacter = entry.word;
+          window.targetHanziEntry = {
+            chinese: entry.word,
+            // Optional fields (strokeCounts etc.)
+          };
+        });
+    }
+
+
 
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;

@@ -26,8 +26,8 @@ def register():
         cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, hashed_pw))
         user_id = cursor.lastrowid  # get the auto-incremented user ID
 
-        # 2️⃣ Fetch all word IDs from 'words'
-        cursor.execute('SELECT word_id FROM words')
+        # 2️⃣ Fetch all word IDs from 'vocabulary'
+        cursor.execute('SELECT word_id FROM vocabulary')
         word_ids = [row[0] for row in cursor.fetchall()]
 
         # 3️⃣ Prepare entries for 'user_word_proficiency'
@@ -88,7 +88,7 @@ def show_home_page():
 
         # 🟩 HSK 2.0: total counts
         for i in range(1, 7):
-            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i,))
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i,))
             counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟩 HSK 2.0: mastered counts
@@ -96,14 +96,14 @@ def show_home_page():
             cursor.execute("""
                 SELECT COUNT(*) 
                 FROM user_word_proficiency
-                JOIN words ON user_word_proficiency.word_id = words.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
             """, (user_id, i))
             mastered[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟦 HSK 3.0: total counts
         for i in range(1, 8):
-            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i + 6,))
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i + 6,))
             counts[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟦 HSK 3.0: mastered counts
@@ -111,8 +111,8 @@ def show_home_page():
             cursor.execute("""
                 SELECT COUNT(*) 
                 FROM user_word_proficiency
-                JOIN words ON user_word_proficiency.word_id = words.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
             """, (user_id, i + 6))
             mastered[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
 
@@ -123,7 +123,7 @@ def show_home_page():
         mastered = {k: 0 for k in counts.keys()}
 
     except sqlite3.OperationalError as e:
-        print("⚠️ Could not fetch HSK level counts from words:", e)
+        print("⚠️ Could not fetch HSK level counts from vocabulary:", e)
         counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
         counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
 
@@ -155,9 +155,9 @@ def get_next_word():
 
     # Fetch next word by proficiency order + last_practiced
     cursor.execute("""
-        SELECT words.word, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
+        SELECT vocabulary.word, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
         FROM user_word_proficiency
-        JOIN words ON user_word_proficiency.word_id = words.word_id
+        JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
         WHERE user_word_proficiency.user_id = ?
         ORDER BY 
             user_word_proficiency.proficiency_level ASC,      -- noob → expert
@@ -201,7 +201,7 @@ def update_proficiency():
     user_id = row[0]
 
     # Get word_id
-    cursor.execute("SELECT word_id FROM words WHERE word = ?", (word,))
+    cursor.execute("SELECT word_id FROM vocabulary WHERE word = ?", (word,))
     row = cursor.fetchone()
     if not row:
         conn.close()

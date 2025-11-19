@@ -155,7 +155,7 @@ def get_next_word():
 
     # Fetch next word by proficiency order + last_practiced
     cursor.execute("""
-        SELECT vocabulary.word, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
+        SELECT vocabulary.word_id, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
         FROM user_word_proficiency
         JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
         WHERE user_word_proficiency.user_id = ?

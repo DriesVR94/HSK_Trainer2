@@ -16,7 +16,7 @@
     .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
     .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
     .colLeft > .boardWrap { flex: 0 0 auto; }
-    .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
+    .drawing-board { width: 300px; height: 300px; background-color: #fafafa; border: 1px solid #ccc; border-radius: 8px;}
     .commands { width: 100%; margin: 8px; display: flex;  justify-content: center; }
     .cmd { flex: 0.2; background-color: #f1c40f; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
     .cmd:hover { background-color: #f1d7a6; }
@@ -43,7 +43,7 @@
 
   <div class="content">
     <div class="colLeft_2">
-      <div class="targetCharBox">loading…</div>
+      <div id="targetWord" class="targetCharBox">loading…</div>
     </div>
 
     <!-- dynamic boards go here -->
@@ -78,15 +78,27 @@
       return fetch('/api/get_next_word')
         .then(r => r.json())
         .then(entry => {
+
+          // store data globally
           window.targetCharacter = entry.word;
+          window.targetPinyin = entry.pinyin;
+          window.targetEnglish = entry.english;
+
           window.targetHanziEntry = {
             chinese: entry.word,
             charCount: [...entry.word].length,
             strokeCounts: entry.stroke_counts || []
           };
-          document.getElementById('targetWord').textContent = entry.word;
+
+          // Display --> pinyin - english
+          const targetBox = document.getElementById('targetWord');
+          targetBox.textContent = `${entry.pinyin} - ${entry.english}`;
         });
     }
+
+
+
+
 
 
     // ====== Initialize Boards ======
@@ -98,28 +110,25 @@
 
     // ====== Build Drawing Boards ======
     function buildBoards() {
-      const container = document.getElementById('boardsContainer');
+      const container = document.getElementById('drawingBoardsContainer');
       container.innerHTML = '';
-
 
       const chars = [...window.targetCharacter];
 
-
       chars.forEach((char, index) => {
         const boardWrapper = document.createElement('div');
-        boardWrapper.className = 'board-wrapper';
+        boardWrapper.className = 'boardWrap';
 
-
+        // drawing area
         const canvas = document.createElement('canvas');
         canvas.width = 300;
         canvas.height = 300;
         canvas.className = 'drawing-board';
         boardWrapper.appendChild(canvas);
 
-
         container.appendChild(boardWrapper);
 
-
+        // create drawing board
         const board = new HanziLookup.DrawingBoard(canvas, char, {
           showOutline: true,
           maxStrokes: window.targetHanziEntry.strokeCounts[index] || 50,
@@ -128,35 +137,6 @@
       });
     }
 
-
-    // ====== When a Character is Completed ======
-    function handleCharComplete(char, index, board) {
-      const pngData = board.getImage();
-
-      fetch('/api/recognize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          image: pngData,
-          expected: char
-        })
-      })
-      .then(r => r.json())
-      .then(result => {
-        console.log('OCR Result:', result);
-
-
-      // Update proficiency
-      fetch('/api/update_proficiency', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          word: window.targetCharacter,
-          correct: result.correct
-        })
-      });
-    });
-  }
 
   // ====== Next button ======
   document.getElementById('nextButton').onclick = () => {

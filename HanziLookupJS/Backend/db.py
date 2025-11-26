@@ -153,14 +153,21 @@ def get_next_word():
         return {"error": "User not found"}, 404
     user_id = row[0]
 
-    # Fetch next word by proficiency order + last_practiced
+    # Fetch next word sorted by proficiency + last practiced
     cursor.execute("""
-        SELECT vocabulary.word_id, user_word_proficiency.proficiency_level, user_word_proficiency.last_practiced
+        SELECT 
+            vocabulary.word_id,
+            vocabulary.chinese,
+            vocabulary.pinyin,
+            vocabulary.english,
+            vocabulary.stroke_counts,
+            user_word_proficiency.proficiency_level,
+            user_word_proficiency.last_practiced
         FROM user_word_proficiency
         JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
         WHERE user_word_proficiency.user_id = ?
         ORDER BY 
-            user_word_proficiency.proficiency_level ASC,      -- noob → expert
+            user_word_proficiency.proficiency_level ASC,
             COALESCE(user_word_proficiency.last_practiced, 0) ASC
         LIMIT 1
     """, (user_id,))
@@ -171,10 +178,29 @@ def get_next_word():
     if not row:
         return {"error": "No words found"}, 404
 
+    # Unpack row values clearly
+    (word_id,
+     chinese_word,
+     pinyin,
+     english,
+     stroke_counts_raw,
+     proficiency,
+     last_practiced) = row
+
+    # Parse stored stroke count string → Python list
+    try:
+        stroke_counts = json.loads(stroke_counts_raw)
+    except:
+        stroke_counts = []  # Fallback (shouldn't happen if DB is valid)
+
     return {
-        "word": row[0],
-        "proficiency": row[1],
-        "last_practiced": row[2]
+        "word_id": word_id,
+        "word": chinese_word,
+        "pinyin": pinyin,
+        "english": english,
+        "strokeCounts": stroke_counts,
+        "proficiency": proficiency,
+        "last_practiced": last_practiced
     }
 
 

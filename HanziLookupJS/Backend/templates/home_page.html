@@ -226,19 +226,14 @@
           hsk3Section.style.display = "none";
           btnHSK2.classList.add("active");
           btnHSK3.classList.remove("active");
-          updateProgress(3, 6); 
+          loadProgress(1);   // HSK 2.0 Level 1
         } else {
           hsk2Section.style.display = "none";
           hsk3Section.style.display = "block";
           btnHSK2.classList.remove("active");
           btnHSK3.classList.add("active");
-          updateProgress(7, 7);
+          loadProgress(7);   // HSK 3.0 Level 7
         }
-      }
-
-      function updateProgress(completed, total) {
-        const percent = (completed / total) * 100;
-        progressBar.style.width = percent + "%";
       }
 
       btnHSK2.addEventListener("click", () => showHSK("2.0"));
@@ -256,6 +251,43 @@
         }
       });
     });
+
+    function loadProgress(level) {
+      fetch(`/get_progress?level=${level}`)
+        .then(res => res.json())
+        .then(data => {
+          renderProgressBar(data);
+        })
+        .catch(err => console.error("Progress fetch failed:", err));
+    }
+
+    function renderProgressBar(progress) {
+      const bar = document.getElementById("progressBar");
+      bar.innerHTML = "";
+
+      const total = progress.total;
+      if (total === 0) return;
+
+      const order = ["expert", "good", "familiar", "noob"];
+      const colors = {
+        expert: "#ee1c25",
+        good: "#f03d46",
+        familiar: "#f4676e",
+        noob: "#f79297"
+      };
+
+      order.forEach(type => {
+        const count = progress[type];
+        if (count === 0) return;
+
+        let seg = document.createElement("div");
+        seg.style.width = (count / total) * 100 + "%";
+        seg.style.height = "100%";
+        seg.style.backgroundColor = colors[type];
+        bar.appendChild(seg);
+      });
+    }
+
   </script>
 
 </body>

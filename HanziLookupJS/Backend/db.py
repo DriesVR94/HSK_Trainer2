@@ -88,7 +88,7 @@ def show_home_page():
 
         # 🟩 HSK 2.0: total counts
         for i in range(1, 7):
-            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i,))
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i,))
             counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟩 HSK 2.0: mastered counts
@@ -96,14 +96,14 @@ def show_home_page():
             cursor.execute("""
                 SELECT COUNT(*) 
                 FROM user_word_proficiency
-                JOIN words ON user_word_proficiency.word_id = words.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
             """, (user_id, i))
             mastered[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟦 HSK 3.0: total counts
         for i in range(1, 8):
-            cursor.execute("SELECT COUNT(*) FROM words WHERE level_id = ?", (i + 6,))
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i + 6,))
             counts[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
 
         # 🟦 HSK 3.0: mastered counts
@@ -111,8 +111,8 @@ def show_home_page():
             cursor.execute("""
                 SELECT COUNT(*) 
                 FROM user_word_proficiency
-                JOIN words ON user_word_proficiency.word_id = words.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND words.level_id = ?
+                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
+                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
             """, (user_id, i + 6))
             mastered[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
 
@@ -123,7 +123,7 @@ def show_home_page():
         mastered = {k: 0 for k in counts.keys()}
 
     except sqlite3.OperationalError as e:
-        print("⚠️ Could not fetch HSK level counts from words:", e)
+        print("⚠️ Could not fetch HSK level counts from vocabulary:", e)
         counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
         counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
 
@@ -222,6 +222,65 @@ def get_vocabulary():
     ]
 
     return jsonify(data)
+
+@app.route("/get_progress")
+def get_progress():
+    if "user_email" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    level = request.args.get("level", type=int)
+    if level is None:
+        return jsonify({"success": False, "message": "Missing level"}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # 1️⃣ Get user_id
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    user_id = row[0]
+
+    # 2️⃣ Query counts per proficiency from user_word_proficiency
+    cursor.execute("""
+        SELECT 
+            proficiency_level, 
+            COUNT(*) 
+        FROM user_word_proficiency uwp
+        JOIN vocabulary v ON uwp.word_id = v.word_id
+        WHERE uwp.user_id = ? AND v.level_id = ?
+        GROUP BY proficiency_level
+    """, (user_id, level))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    # 3️⃣ Map DB values → category names
+    result = {
+        "expert": 0,
+        "good": 0,
+        "familiar": 0,
+        "noob": 0,
+        "total": 0
+    }
+
+    mapping = {
+        3: "expert",
+        2: "good",
+        1: "familiar",
+        0: "noob"
+    }
+
+    for (prof_level, count) in rows:
+        key = mapping.get(prof_level)
+        if key:
+            result[key] = count
+            result["total"] += count
+
+    return jsonify(result)
 
 
 @app.route("/update_proficiency", methods=["POST"])

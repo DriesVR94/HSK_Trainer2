@@ -193,6 +193,53 @@ def save_levels():
         print("❌ Error saving levels:", e)
         return jsonify({"success": False, "message": str(e)}), 500
 
+@app.route('/get_vocabulary', methods=['GET'])
+def get_vocabulary():
+    """
+    Fetch vocabulary directly from the database instead of a JSON file.
+    Optional query params:
+        level=<number>  → return only that level
+        limit=<number>  → limit number of rows
+    """
+    level = request.args.get("level")
+    limit = request.args.get("limit")
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    query = "SELECT word_id, chinese, level_id, pinyin, english, char_count, stroke_counts FROM vocabulary"
+    params = []
+
+    # Filter by level if provided
+    if level:
+        query += " WHERE level_id = ?"
+        params.append(level)
+
+    # Limit if provided
+    if limit:
+        query += " LIMIT ?"
+        params.append(limit)
+
+    cursor.execute(query, params)
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Convert DB rows into JSON-ready objects
+    vocabulary = [
+        {
+            "word_id": row[0],
+            "chinese": row[1],
+            "level_id": row[2],
+            "pinyin": row[3],
+            "english": row[4],
+            "charCount": row[5],
+            "strokeCounts": json.loads(row[6]) if row[6] else []
+        }
+        for row in rows
+    ]
+
+    return jsonify(vocabulary)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

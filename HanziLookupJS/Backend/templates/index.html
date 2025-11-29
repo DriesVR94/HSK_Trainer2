@@ -77,18 +77,18 @@
       buildBoards();
     }
 
-    fetch("{{ url_for('static', filename='dist/HSK2_0__Level_1.json') }}")
-      .then(response => response.json())
-      .then(data => {
-        hanziList = data;
-        hanziLoaded = true;
-        maybeInitBoards();  // wait until assets are ready
-      })
+  fetch("/get_vocabulary?level=1")
+    .then(response => response.json())
+    .then(data => {
+      hanziList = data;
+      hanziLoaded = true;
+      maybeInitBoards();  // same callback you already use
+    })
+    .catch(err => {
+      console.error(err);
+      document.querySelector('.targetCharBox').innerText = '⚠️ load error';
+    });
 
-      .catch(err => {
-        console.error(err);
-        document.querySelector('.targetCharBox').innerText = '⚠️ load error';
-      });
 
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;

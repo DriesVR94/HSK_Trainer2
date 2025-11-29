@@ -89,6 +89,25 @@
       document.querySelector('.targetCharBox').innerText = '⚠️ load error';
     });
 
+  
+  // ---- Sends proficiency update to backend ----
+  function sendProficiencyUpdate(word_id, proficiency) {
+    fetch("/update_proficiency", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        word_id: word_id,
+        proficiency: proficiency
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) {
+        console.error("Update failed:", data.message);
+      }
+    })
+    .catch(err => console.error("Error updating proficiency:", err));
+  }
 
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;
@@ -360,6 +379,14 @@
         }
       }
 
+      let proficiencyValue = 0;
+      if (levelClass === "familiar") proficiencyValue = 1;
+      if (levelClass === "good") proficiencyValue = 2;
+      if (levelClass === "expert") proficiencyValue = 3;
+
+      sendProficiencyUpdate(window.targetHanziEntry.word_id, proficiencyValue);
+
+
       // Reset all segments opacity
       feedbackBar.querySelectorAll('.segment').forEach(seg => {
         seg.style.opacity = '0.1';
@@ -371,9 +398,6 @@
         highlightSegment.style.opacity = '1';
       }
     }
-
-
-
 
     // ----- 4.  lookup helpers -----
     function lookup(board, elmOrig, elmMMAH) {

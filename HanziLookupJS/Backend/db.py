@@ -26,8 +26,8 @@ def register():
         cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, hashed_pw))
         user_id = cursor.lastrowid  # get the auto-incremented user ID
 
-        # 2️⃣ Fetch all word IDs from 'words'
-        cursor.execute('SELECT word_id FROM words')
+        # 2️⃣ Fetch all word IDs from 'vocabulary'
+        cursor.execute('SELECT word_id FROM vocabulary')
         word_ids = [row[0] for row in cursor.fetchall()]
 
         # 3️⃣ Prepare entries for 'user_word_proficiency'
@@ -193,52 +193,72 @@ def save_levels():
         print("❌ Error saving levels:", e)
         return jsonify({"success": False, "message": str(e)}), 500
 
-@app.route('/get_vocabulary', methods=['GET'])
+@app.route("/get_vocabulary")
 def get_vocabulary():
-    """
-    Fetch vocabulary directly from the database instead of a JSON file.
-    Optional query params:
-        level=<number>  → return only that level
-        limit=<number>  → limit number of rows
-    """
-    level = request.args.get("level")
-    limit = request.args.get("limit")
+    level = request.args.get("level", type=int)
 
     conn = create_connection()
     cursor = conn.cursor()
 
-    query = "SELECT word_id, chinese, level_id, pinyin, english, char_count, stroke_counts FROM vocabulary"
-    params = []
+    cursor.execute("""
+        SELECT word_id, chinese, pinyin, english, char_count, stroke_counts
+        FROM vocabulary
+        WHERE level_id = ?
+    """, (level,))
 
-    # Filter by level if provided
-    if level:
-        query += " WHERE level_id = ?"
-        params.append(level)
-
-    # Limit if provided
-    if limit:
-        query += " LIMIT ?"
-        params.append(limit)
-
-    cursor.execute(query, params)
     rows = cursor.fetchall()
     conn.close()
 
-    # Convert DB rows into JSON-ready objects
-    vocabulary = [
+    data = [
         {
             "word_id": row[0],
             "chinese": row[1],
-            "level_id": row[2],
-            "pinyin": row[3],
-            "english": row[4],
-            "charCount": row[5],
-            "strokeCounts": json.loads(row[6]) if row[6] else []
+            "pinyin": row[2],
+            "english": row[3],
+            "charCount": row[4],
+            "strokeCounts": json.loads(row[5])
         }
         for row in rows
     ]
 
-    return jsonify(vocabulary)
+    return jsonify(data)
+
+
+@app.route("/update_proficiency", methods=["POST"])
+def update_proficiency():
+    if "user_email" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    data = request.get_json() or {}
+    word_id = data.get("word_id")
+    proficiency = data.get("proficiency")
+
+    if word_id is None or proficiency is None:
+        return jsonify({"success": False, "message": "Missing parameters"}), 400
+
+    # Get user_id
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    user_id = row[0]
+
+    # Update proficiency
+    cursor.execute("""
+        UPDATE user_word_proficiency
+        SET proficiency_level = ?
+        WHERE user_id = ? AND word_id = ?
+    """, (proficiency, user_id, word_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True})
 
 
 if __name__ == '__main__':

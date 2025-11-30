@@ -204,47 +204,7 @@ def get_next_word():
     }
 
 
-@app.post("/api/update_proficiency")
-def update_proficiency():
-    data = request.json
-    user_email = session.get("user_email")
 
-    if not user_email:
-        return {"success": False, "error": "Not logged in"}, 401
-
-    word = data["word"]
-    new_level = data["proficiency"]
-
-    conn = create_connection()
-    cursor = conn.cursor()
-
-    # Get user_id
-    cursor.execute("SELECT id FROM users WHERE email = ?", (user_email,))
-    row = cursor.fetchone()
-    if not row:
-        conn.close()
-        return {"success": False, "error": "User not found"}, 404
-    user_id = row[0]
-
-    # Get word_id
-    cursor.execute("SELECT word_id FROM vocabulary WHERE word = ?", (word,))
-    row = cursor.fetchone()
-    if not row:
-        conn.close()
-        return {"success": False, "error": "Word not found"}, 404
-    word_id = row[0]
-
-    # Update proficiency + last practised
-    cursor.execute("""
-        UPDATE user_word_proficiency
-        SET proficiency_level = ?, last_practiced = CURRENT_TIMESTAMP
-        WHERE user_id = ? AND word_id = ?
-    """, (new_level, user_id, word_id))
-
-    conn.commit()
-    conn.close()
-
-    return {"success": True}
 
 
 @app.route('/signin_page')

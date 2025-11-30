@@ -1,11 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HanziLookupJS demo</title>
-  <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
@@ -16,7 +14,7 @@
     .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
     .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
     .colLeft > .boardWrap { flex: 0 0 auto; }
-    .drawing-board { width: 300px; height: 300px; background-color: #fafafa; border: 1px solid #ccc; border-radius: 8px;}
+    .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
     .commands { width: 100%; margin: 8px; display: flex;  justify-content: center; }
     .cmd { flex: 0.2; background-color: #f1c40f; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
     .cmd:hover { background-color: #f1d7a6; }
@@ -43,7 +41,7 @@
 
   <div class="content">
     <div class="colLeft_2">
-      <div id="targetWord" class="targetCharBox">loading…</div>
+      <div class="targetCharBox">loading…</div>
     </div>
 
     <!-- dynamic boards go here -->
@@ -53,7 +51,8 @@
     </div>
   </div>
 
-
+  <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
 
   <script>
 
@@ -112,74 +111,132 @@
 
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;
-
     function fileLoaded(ok) {
       if (!ok) { filesToLoad = -1; return; }
-      if (--filesToLoad === 0) {
-        assetsLoaded = true;
-        maybeInitBoards();
-      }
+      if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
     }
+    HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
+    HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
 
+    // ----- 3.  create boards when BOTH kinds of data are ready -----
+    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) loadRandomHanzi(); }
 
-    HanziLookup.init('mmah', '/static/dist/mmah.json', fileLoaded);
-    HanziLookup.init('orig', '/static/dist/orig.json', fileLoaded);
-
-
-    // ====== Load DB Word ======
-    function loadHanziFromDatabase() {
-      return fetch('/api/get_next_word')
-        .then(r => r.json())
-        .then(entry => {
-
-          // store data globally
-          window.targetCharacter = entry.word;
-          window.targetPinyin = entry.pinyin;
-          window.targetEnglish = entry.english;
-
-          window.targetHanziEntry = {
-            chinese: entry.word,
-            charCount: [...entry.word].length,
-            strokeCounts: entry.stroke_counts || []
-          };
-
-          // Display --> pinyin - english
-          const targetBox = document.getElementById('targetWord');
-          targetBox.textContent = `${entry.pinyin} - ${entry.english}`;
-        });
-    }
-
-
-
-
-
-
-    // ====== Initialize Boards ======
-    function maybeInitBoards() {
-      if (!assetsLoaded) return;
-      loadHanziFromDatabase().then(() => buildBoards());
-    }
-
-
-    // ====== Build Drawing Boards ======
     function buildBoards() {
       const container = document.getElementById('drawingBoardsContainer');
       container.innerHTML = '';
 
-      const chars = [...window.targetCharacter];
+      const chars = [...window.targetCharacter].slice(0, window.targetHanziEntry.charCount);
+      const count = window.targetHanziEntry.charCount;
 
-      chars.forEach((char, index) => {
-        const boardWrapper = document.createElement('div');
-        boardWrapper.className = 'boardWrap';
+      const totalWidth = 810;    // matches .colLeft width
+      const gap = 20;            // match CSS gap
+      const availableWidth = totalWidth - gap * (count - 1);
+      let boxSize = Math.floor(availableWidth / count);
+      boxSize = Math.max(150, Math.min(250, boxSize));  // clamp between 150–250
 
-        // drawing area
-        const canvas = document.createElement('canvas');
-        canvas.width = 300;
-        canvas.height = 300;
-        canvas.className = 'drawing-board';
-        boardWrapper.appendChild(canvas);
+      const fontSize = Math.max(12, Math.min(20, boxSize / 12)); // adaptive font
 
-        container.appendChild(boardWrapper);
+      window._drawingBoards = [];
+
+      chars.forEach((char, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'boardWrap';
+        wrap.style.flex = `0 0 ${boxSize}px`;
+
+        wrap.innerHTML = `
+          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
+            <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
+          </div>
+          <div class="feedbackBar">
+            <div class="segment noob">Noob</div>
+            <div class="segment familiar">Familiar</div>
+            <div class="segment good">Good</div>
+            <div class="segment expert">Expert</div>
+          </div>
+          <div class="commands">
+            <div class="cmd cmdUndo"><i class="fa-solid fa-rotate-left"></i></div>
+            <div class="cmd cmdClear"><i class="fa-solid fa-xmark"></i></div>
+            <div class="cmd cmdRecognize dev-only">Recognize</div>
+          </div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
+          <div class="charPicker hanziLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
+          <div class="charPicker mmahLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">OCR Result</h2>
+          <div class="ocrResultBox dev-only">…</div>
+          <div class="strokeCounter dev-only">Strokes: 0</div>
+          <div class="timeTaken dev-only">Time: 0.00s</div>
+        `;
+
+        container.appendChild(wrap);
+        if (!isDev) {document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');}
+
+        const boardElem = wrap.querySelector('.drawingBoard');
+        const resOrig = wrap.querySelector('.hanziLookupChars');
+        const resMMAH = wrap.querySelector('.mmahLookupChars');
+
+        let strokeCount = 0;
+        let startTime = null;
+        let endTime = null;
+        const strokeCounterElement = wrap.querySelector('.strokeCounter'); 
+        const timeTakenElement = wrap.querySelector('.timeTaken'); 
+    
+        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
+
+        const board = HanziLookup.DrawingBoard($(boardElem), () => {
+          strokeCount++;
+          strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
+
+          lookup(board, resOrig, resMMAH);
+
+          const strokes = board.cloneStrokes();
+
+         if (strokeCount === 1) {
+          startTime = performance.now();
+          endTime = null;
+        }
+
+        if (strokes.length === maxStrokes && !board._ocrSent) {
+          board._ocrSent = true;
+
+          // Calculate and display elapsed time
+          if (startTime && !endTime) {
+            endTime = performance.now();
+            const elapsed = (endTime - startTime) / 1000;
+            timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
+          }
+
+          setTimeout(() => {
+            const dataUrl = board.exportImage();
+
+            fetch('http://127.0.0.1:5000/recognize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: dataUrl }),
+            })
+              .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch');
+                return res.json();
+              })
+              .then(data => {
+                wrap.querySelector('.ocrResultBox').textContent = data.result;
+              })
+              .catch(err => {
+                console.error(err);
+                alert(`Failed to recognize character ${idx + 1}.`);
+              });
+          }, 50);
+
+            if (startTime && !endTime) {
+              endTime = performance.now();
+              const elapsed = (endTime - startTime) / 1000;
+              timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
+            }
+
+          updateFeedbackBarForBoard(board,wrap,idx);
+
+        }
+      });
 
         // ---- NEW: Create overlay canvas for the grid ----
         // HanziLookup.DrawingBoard creates a canvas inside boardElem

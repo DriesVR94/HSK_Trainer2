@@ -302,6 +302,132 @@ def save_levels():
         print("❌ Error saving levels:", e)
         return jsonify({"success": False, "message": str(e)}), 500
 
+@app.route("/get_vocabulary")
+def get_vocabulary():
+    level = request.args.get("level", type=int)
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT word_id, chinese, pinyin, english, char_count, stroke_counts
+        FROM vocabulary
+        WHERE level_id = ?
+    """, (level,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    data = [
+        {
+            "word_id": row[0],
+            "chinese": row[1],
+            "pinyin": row[2],
+            "english": row[3],
+            "charCount": row[4],
+            "strokeCounts": json.loads(row[5])
+        }
+        for row in rows
+    ]
+
+    return jsonify(data)
+
+@app.route("/get_progress")
+def get_progress():
+    if "user_email" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    level = request.args.get("level", type=int)
+    if level is None:
+        return jsonify({"success": False, "message": "Missing level"}), 400
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    # 1️⃣ Get user_id
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    user_id = row[0]
+
+    # 2️⃣ Query counts per proficiency from user_word_proficiency
+    cursor.execute("""
+        SELECT 
+            proficiency_level, 
+            COUNT(*) 
+        FROM user_word_proficiency uwp
+        JOIN vocabulary v ON uwp.word_id = v.word_id
+        WHERE uwp.user_id = ? AND v.level_id = ?
+        GROUP BY proficiency_level
+    """, (user_id, level))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    # 3️⃣ Map DB values → category names
+    result = {
+        "expert": 0,
+        "good": 0,
+        "familiar": 0,
+        "noob": 0,
+        "total": 0
+    }
+
+    mapping = {
+        3: "expert",
+        2: "good",
+        1: "familiar",
+        0: "noob"
+    }
+
+    for (prof_level, count) in rows:
+        key = mapping.get(prof_level)
+        if key:
+            result[key] = count
+            result["total"] += count
+
+    return jsonify(result)
+
+
+@app.route("/update_proficiency", methods=["POST"])
+def update_proficiency():
+    if "user_email" not in session:
+        return jsonify({"success": False, "message": "Not logged in"}), 401
+
+    data = request.get_json() or {}
+    word_id = data.get("word_id")
+    proficiency = data.get("proficiency")
+
+    if word_id is None or proficiency is None:
+        return jsonify({"success": False, "message": "Missing parameters"}), 400
+
+    # Get user_id
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return jsonify({"success": False, "message": "User not found"}), 404
+
+    user_id = row[0]
+
+    # Update proficiency
+    cursor.execute("""
+        UPDATE user_word_proficiency
+        SET proficiency_level = ?
+        WHERE user_id = ? AND word_id = ?
+    """, (proficiency, user_id, word_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

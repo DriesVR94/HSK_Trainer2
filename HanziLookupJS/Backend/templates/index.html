@@ -56,8 +56,61 @@
 
 
   <script>
-    // ====== Asset Loading ======
-    let assetsLoaded = false;
+
+    // Choose between development or production
+    const isDev = false; // set to false before deploying
+
+    // ----- 1.  fetch random HSK character -----
+    let hanziLoaded = false, assetsLoaded = false;
+    let hanziList = [];
+
+    function loadRandomHanzi() {
+      const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+      const displayText = `${randomEntry.english} <br>-<br> <span style="font-style: italic;">${randomEntry.pinyin}</span>
+`;
+
+      document.querySelector('.targetCharBox').innerHTML = displayText;
+
+      // Store globally
+      window.targetHanziEntry = randomEntry;
+      window.targetCharacter = randomEntry.chinese;
+
+      buildBoards();
+    }
+
+  fetch("/get_vocabulary?level=1")
+    .then(response => response.json())
+    .then(data => {
+      hanziList = data;
+      hanziLoaded = true;
+      maybeInitBoards();  // same callback you already use
+    })
+    .catch(err => {
+      console.error(err);
+      document.querySelector('.targetCharBox').innerText = '⚠️ load error';
+    });
+
+  
+  // ---- Sends proficiency update to backend ----
+  function sendProficiencyUpdate(word_id, proficiency) {
+    fetch("/update_proficiency", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        word_id: word_id,
+        proficiency: proficiency
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data.success) {
+        console.error("Update failed:", data.message);
+      }
+    })
+    .catch(err => console.error("Error updating proficiency:", err));
+  }
+
+    // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;
 
     function fileLoaded(ok) {
@@ -128,20 +181,176 @@
 
         container.appendChild(boardWrapper);
 
-        // create drawing board
-        const board = new HanziLookup.DrawingBoard(canvas, char, {
-          showOutline: true,
-          maxStrokes: window.targetHanziEntry.strokeCounts[index] || 50,
-          onComplete: () => handleCharComplete(char, index, board)
-        });
+        // ---- NEW: Create overlay canvas for the grid ----
+        // HanziLookup.DrawingBoard creates a canvas inside boardElem
+        // Find that canvas:
+        const strokeCanvas = boardElem.querySelector('canvas');
+        strokeCanvas.style.position = 'relative'; // ensure baseline
+
+        // Create overlay canvas element
+        const overlayCanvas = document.createElement('canvas');
+        overlayCanvas.width = strokeCanvas.width;
+        overlayCanvas.height = strokeCanvas.height;
+        overlayCanvas.style.position = 'absolute';
+        overlayCanvas.style.top = '0';
+        overlayCanvas.style.left = '0';
+        overlayCanvas.style.pointerEvents = 'none'; // so pointer events go to strokeCanvas
+        boardElem.appendChild(overlayCanvas);
+
+        const overlayCtx = overlayCanvas.getContext('2d');
+
+        // Function to draw the grid lines on overlay canvas
+        function drawGrid(ctx, w, h) {
+          ctx.clearRect(0, 0, w, h);
+          ctx.setLineDash([1, 1]);
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'grey';
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, 0);
+          ctx.lineTo(w, h);
+          ctx.lineTo(0, h);
+          ctx.lineTo(0, 0);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w, 0);
+          ctx.lineTo(0, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w / 2, 0);
+          ctx.lineTo(w / 2, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, h / 2);
+          ctx.lineTo(w, h / 2);
+          ctx.stroke();
+        }
+
+        drawGrid(overlayCtx, overlayCanvas.width, overlayCanvas.height);
+
+        // ---- Buttons handlers (undo, clear, recognize) ----
+        wrap.querySelector('.cmdUndo').onclick = () => {
+          board.undoStroke();
+          board.redraw();
+          lookup(board, resOrig, resMMAH);
+        };
+
+        wrap.querySelector('.cmdClear').onclick = () => {
+          board.clearCanvas();
+          board.redraw();
+          board._ocrSent = false;
+          lookup(board, resOrig, resMMAH);
+        };
+
+        const recognizeButton = wrap.querySelector('.cmdRecognize');
+        recognizeButton.onclick = () => {
+          lookup(board, resOrig, resMMAH);
+
+          const dataUrl = board.exportImage();
+
+          fetch('http://127.0.0.1:5000/recognize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataUrl }),
+          })
+            .then(res => {
+              if (!res.ok) throw new Error('Failed to fetch');
+              return res.json();
+            })
+            .then(data => {
+              wrap.querySelector('.ocrResultBox').textContent = data.result;
+              recognizeButton.style.backgroundColor = '#a6e3a1'; // green
+              recognizeButton.style.color = '#000';
+            })
+            .catch(err => {
+              console.error(err);
+              alert('Failed to recognize.');
+              recognizeButton.style.backgroundColor = '#f28b82'; // red
+              recognizeButton.style.color = '#000';
+            });
+        };
+
+        window._drawingBoards.push(board);
       });
     }
 
+    document.getElementById('nextButton').onclick = () => {
+      loadRandomHanzi();
+    };
 
-  // ====== Next button ======
-  document.getElementById('nextButton').onclick = () => {
-    loadHanziFromDatabase().then(() => buildBoards());
-  };
+
+    function updateFeedbackBarForBoard(board, wrap, idx) {
+      const expectedChar = window.targetCharacter[idx];
+      const resOrig = wrap.querySelector('.hanziLookupChars');
+      const resMMAH = wrap.querySelector('.mmahLookupChars');
+      const feedbackBar = wrap.querySelector('.feedbackBar');
+      const timeTakenElement = wrap.querySelector('.timeTaken');
+
+      lookup(board, resOrig, resMMAH);
+
+      const gotOrig = resOrig.querySelector('span')?.textContent || '';
+      const gotMMAH = resMMAH.querySelector('span')?.textContent || '';
+      const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
+
+      // Get elapsed time from DOM
+      const timeText = timeTakenElement?.textContent || '';
+      const match = timeText.match(/([\d.]+)s/);
+      const elapsedTime = match ? parseFloat(match[1]) : 0;
+
+      // Calculate average time per stroke
+      const strokes = board.cloneStrokes().length;
+      const avgTimePerStroke = strokes > 0 ? elapsedTime / strokes : 0;
+
+      // Determine level class
+      let levelClass = 'noob';
+      if (correct) {
+        if (avgTimePerStroke <= 0.365) {
+          levelClass = 'expert';
+        } else if (avgTimePerStroke <= 0.5) {
+          levelClass = 'good';
+        } else {
+          levelClass = 'familiar';
+        }
+      }
+
+      let proficiencyValue = 0;
+      if (levelClass === "familiar") proficiencyValue = 1;
+      if (levelClass === "good") proficiencyValue = 2;
+      if (levelClass === "expert") proficiencyValue = 3;
+
+      sendProficiencyUpdate(window.targetHanziEntry.word_id, proficiencyValue);
+
+
+      // Reset all segments opacity
+      feedbackBar.querySelectorAll('.segment').forEach(seg => {
+        seg.style.opacity = '0.1';
+      });
+
+      // Highlight the correct segment
+      const highlightSegment = feedbackBar.querySelector(`.${levelClass}`);
+      if (highlightSegment) {
+        highlightSegment.style.opacity = '1';
+      }
+    }
+
+    // ----- 4.  lookup helpers -----
+    function lookup(board, elmOrig, elmMMAH) {
+      const analysed = new HanziLookup.AnalyzedCharacter(board.cloneStrokes());
+      new HanziLookup.Matcher('orig').match(analysed, 5, m => show(elmOrig, m));
+      new HanziLookup.Matcher('mmah').match(analysed, 5, m => show(elmMMAH, m));
+    }
+    function show(elm, matches) {
+      elm.innerHTML = matches.map(o => `<span>${o.character}</span>`).join('');
+    }
   </script>
 </body>
 </html>

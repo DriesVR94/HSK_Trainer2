@@ -1,28 +1,11 @@
-- [] When a user signs in, he should be redirected to his personal user's page.
+- [] The href of Level 1 on the home_page still points to a general index page. Instead, the index page should only show vocabulary from that specific level.
+
 - [] User's username and password are shown in the URL. Unsafe. Remove.
-- [] When a user registers, he/she should be shown the home_page (instead of 'User Registered Successfully.')
-    - The home page should be empty initially. Next the user is asked to select levels
-- [] Add a database table for the following levels:
-    - [] HSK 2.0
-        - [x] Level 1
-        - [x] Level 2
-        - [x] Level 3
-        - [x] Level 4
-        - [] Level 5
-        - [] Level 6
-    - [] HSK 3.0
-        - [] Level 1
-        - [] Level 2
-        - [] Level 3
-        - [] Level 4
-        - [] Level 5
-        - [] Level 6
-        - [] Level 7 - 9
+
 - [] Let user choose which level he/she wants to train.
 - [] Let user choose how many chars should be tested in 1 run.
-- [] Add a 'report an error button'
-- [] Keep an account of which chars are well-known, lesser-known, unknown, etc.   
-- [ ] Allow different users to make a profile and track their progress
+- [] Add a 'report an error button'   
+
 - [ ] Gamify the webpage
     - [ ] Add an achievement badge for the first 10 characters learned
     - [ ] Add an achievement badge for the first 25 characters learned

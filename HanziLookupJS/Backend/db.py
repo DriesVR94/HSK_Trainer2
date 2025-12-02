@@ -76,66 +76,83 @@ def show_home_page():
     row = cursor.fetchone()
     selected_levels = json.loads(row[0]) if row and row[0] else []
 
-        # --- Fetch total word counts per level + user mastery counts ---
     counts = {}
     mastered = {}
+    proficiency_counts = {}
 
     try:
-        # 🟩 Get user_id from email
+        # Get user_id
         cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         user_row = cursor.fetchone()
         user_id = user_row[0] if user_row else None
+        if not user_id:
+            raise ValueError("User not found")
 
-        # 🟩 HSK 2.0: total counts
-        for i in range(1, 7):
-            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i,))
-            counts[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
+        # --- HSK 2.0: total counts per level ---
+        for level in range(1, 7):
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (level,))
+            counts[f"HSK2_0__Level_{level}"] = cursor.fetchone()[0]
 
-        # 🟩 HSK 2.0: mastered counts
-        for i in range(1, 7):
+        # --- HSK 2.0: proficiency counts ---
+        for level in range(1, 7):
+            for prof in range(0, 4):
+                key = f"HSK2_0__Level_{level}__Prof_{prof}"
+                proficiency_counts[key] = 0  # default
+
             cursor.execute("""
-                SELECT COUNT(*) 
-                FROM user_word_proficiency
-                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
-            """, (user_id, i))
-            mastered[f"HSK2_0__Level_{i}"] = cursor.fetchone()[0]
+                WITH prof_levels AS (
+                    SELECT 0 AS prof
+                    UNION ALL SELECT 1
+                    UNION ALL SELECT 2
+                    UNION ALL SELECT 3
+                )
+                SELECT pl.prof, COUNT(uwp.word_id)
+                FROM prof_levels pl
+                LEFT JOIN user_word_proficiency uwp
+                    ON uwp.proficiency_level = pl.prof
+                    AND uwp.user_id = ?
+                    AND uwp.word_id IN (SELECT word_id FROM vocabulary WHERE level_id = ?)
+                GROUP BY pl.prof
+                ORDER BY pl.prof
+            """, (user_id, level))
 
-        # 🟦 HSK 3.0: total counts
-        for i in range(1, 8):
-            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (i + 6,))
-            counts[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
+            for prof_level, count in cursor.fetchall():
+                proficiency_counts[f"HSK2_0__Level_{level}__Prof_{prof_level}"] = count
 
-        # 🟦 HSK 3.0: mastered counts
-        for i in range(1, 8):
+        # --- HSK 3.0: total counts and mastered ---
+        for level in range(1, 8):
+            level_id = level + 6  # HSK3.0 levels start after HSK2.0
+            cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (level_id,))
+            counts[f"HSK3_0__Level_{level}"] = cursor.fetchone()[0]
+
             cursor.execute("""
-                SELECT COUNT(*) 
-                FROM user_word_proficiency
-                JOIN vocabulary ON user_word_proficiency.word_id = vocabulary.word_id
-                WHERE user_word_proficiency.user_id = ? AND user_word_proficiency.proficiency_level = 3 AND vocabulary.level_id = ?
-            """, (user_id, i + 6))
-            mastered[f"HSK3_0__Level_{i}"] = cursor.fetchone()[0]
+                SELECT COUNT(*)
+                FROM user_word_proficiency uwp
+                JOIN vocabulary v ON uwp.word_id = v.word_id
+                WHERE uwp.user_id = ? AND uwp.proficiency_level = 3 AND v.level_id = ?
+            """, (user_id, level_id))
+            mastered[f"HSK3_0__Level_{level}"] = cursor.fetchone()[0]
 
-    except sqlite3.OperationalError as e:
+    except Exception as e:
         print("⚠️ Could not fetch counts:", e)
+        # fallback defaults
         counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
         counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
         mastered = {k: 0 for k in counts.keys()}
+        proficiency_counts = {f"HSK2_0__Level_{i}__Prof_{p}": 0 for i in range(1, 7) for p in range(0, 4)}
 
-    except sqlite3.OperationalError as e:
-        print("⚠️ Could not fetch HSK level counts from vocabulary:", e)
-        counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
-        counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
-
-    conn.close()
+    finally:
+        conn.close()
 
     return render_template(
-    'home_page.html',
-    user_email=email,
-    savedLevels=selected_levels,
-    counts=counts,
-    mastered=mastered
-)
+        'home_page.html',
+        user_email=email,
+        savedLevels=selected_levels,
+        counts=counts,
+        mastered=mastered,
+        prof=proficiency_counts
+    )
+
 
 
 @app.route('/signin_page')

@@ -119,27 +119,59 @@ def show_home_page():
             for prof_level, count in cursor.fetchall():
                 proficiency_counts[f"HSK2_0__Level_{level}__Prof_{prof_level}"] = count
 
-        # --- HSK 3.0: total counts and mastered ---
+        # --- HSK 3.0: total counts + PROFICIENCY COUNTS (FULL FIX) ---
         for level in range(1, 8):
             level_id = level + 6  # HSK3.0 levels start after HSK2.0
+
+            # Total word counts
             cursor.execute("SELECT COUNT(*) FROM vocabulary WHERE level_id = ?", (level_id,))
             counts[f"HSK3_0__Level_{level}"] = cursor.fetchone()[0]
 
+            # Initialize all proficiency levels to 0
+            for prof_lv in range(0, 4):
+                proficiency_counts[f"HSK3_0__Level_{level}__Prof_{prof_lv}"] = 0
+
+            # Fetch proficiency breakdown
             cursor.execute("""
-                SELECT COUNT(*)
-                FROM user_word_proficiency uwp
-                JOIN vocabulary v ON uwp.word_id = v.word_id
-                WHERE uwp.user_id = ? AND uwp.proficiency_level = 3 AND v.level_id = ?
+                WITH prof_levels AS (
+                    SELECT 0 AS prof
+                    UNION ALL SELECT 1
+                    UNION ALL SELECT 2
+                    UNION ALL SELECT 3
+                )
+                SELECT pl.prof, COUNT(uwp.word_id)
+                FROM prof_levels pl
+                LEFT JOIN user_word_proficiency uwp
+                    ON uwp.proficiency_level = pl.prof
+                    AND uwp.user_id = ?
+                    AND uwp.word_id IN (
+                        SELECT word_id FROM vocabulary WHERE level_id = ?
+                    )
+                GROUP BY pl.prof
+                ORDER BY pl.prof
             """, (user_id, level_id))
-            mastered[f"HSK3_0__Level_{level}"] = cursor.fetchone()[0]
+
+            for prof_level, count in cursor.fetchall():
+                proficiency_counts[f"HSK3_0__Level_{level}__Prof_{prof_level}"] = count
+
+            # Expert words = Prof 3
+            mastered[f"HSK3_0__Level_{level}"] = \
+                proficiency_counts[f"HSK3_0__Level_{level}__Prof_3"]
+
 
     except Exception as e:
         print("⚠️ Could not fetch counts:", e)
-        # fallback defaults
+
         counts = {f"HSK2_0__Level_{i}": 0 for i in range(1, 7)}
         counts.update({f"HSK3_0__Level_{i}": 0 for i in range(1, 8)})
+
         mastered = {k: 0 for k in counts.keys()}
-        proficiency_counts = {f"HSK2_0__Level_{i}__Prof_{p}": 0 for i in range(1, 7) for p in range(0, 4)}
+
+        proficiency_counts = {
+            **{f"HSK2_0__Level_{i}__Prof_{p}": 0 for i in range(1, 7) for p in range(0, 4)},
+            **{f"HSK3_0__Level_{i}__Prof_{p}": 0 for i in range(1, 8) for p in range(0, 4)}
+        }
+
 
     finally:
         conn.close()
@@ -153,12 +185,9 @@ def show_home_page():
         prof=proficiency_counts
     )
 
-
-
 @app.route('/signin_page')
 def show_signin_page():
     return render_template('signin_page.html')
-
 
 @app.route('/signin', methods=['POST'])
 def signin():

@@ -58,9 +58,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_1'] }}"
-              data-total="{{ counts['HSK2_0__Level_1'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_1__Prof_3"] }}/{{ counts["HSK2_0__Level_1"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -82,9 +80,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_2'] }}"
-              data-total="{{ counts['HSK2_0__Level_2'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_2__Prof_3"] }}/{{ counts["HSK2_0__Level_2"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -106,9 +102,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_3'] }}"
-              data-total="{{ counts['HSK2_0__Level_3'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_3__Prof_3"] }}/{{ counts["HSK2_0__Level_3"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -130,9 +124,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_4'] }}"
-              data-total="{{ counts['HSK2_0__Level_4'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_4__Prof_3"] }}/{{ counts["HSK2_0__Level_4"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -154,9 +146,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_5'] }}"
-              data-total="{{ counts['HSK2_0__Level_5'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_5__Prof_3"] }}/{{ counts["HSK2_0__Level_5"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -178,9 +168,7 @@
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
           </div>
-          <div class="level-count"
-              data-mastered="{{ mastered['HSK2_0__Level_6'] }}"
-              data-total="{{ counts['HSK2_0__Level_6'] }}">
+          <div class="level-count">
             {{ prof["HSK2_0__Level_6__Prof_3"] }}/{{ counts["HSK2_0__Level_6"] }} words mastered
             <a href="{{ url_for('show_index_page') }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
@@ -196,12 +184,25 @@
       <ol>
         <li>
           <div class="level-title">Level 1</div>
-          <div class="level-progress"><div class="progress-bar-inner"></div></div>
+          <div class="level-progress segmented-bar"
+              data-total="{{ counts['HSK3_0__Level_1'] }}"
+              data-noob="{{ prof['HSK3_0__Level_1__Prof_0'] }}"
+              data-familiar="{{ prof['HSK3_0__Level_1__Prof_1'] }}"
+              data-good="{{ prof['HSK3_0__Level_1__Prof_2'] }}"
+              data-expert="{{ prof['HSK3_0__Level_1__Prof_3'] }}">
+            
+            <div class="seg expert"></div>
+            <div class="seg good"></div>
+            <div class="seg familiar"></div>
+            <div class="seg noob"></div>
+          </div>
           <div class="level-count"
               data-mastered="{{ mastered['HSK3_0__Level_1'] }}"
               data-total="{{ counts['HSK3_0__Level_1'] }}">
-            {{ mastered["HSK3_0__Level_1"] }}/{{ counts["HSK3_0__Level_1"] }} words mastered
-            <a href="#" class="level-arrow"><i class="fa-solid fa-arrow-right"></i></a>
+            {{ prof["HSK3_0__Level_1__Prof_3"] }}/{{ counts["HSK3_0__Level_1"] }} words mastered
+            <a href="{{ url_for('show_index_page') }}" class="level-arrow">
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
         </li>
 

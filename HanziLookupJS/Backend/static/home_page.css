@@ -187,19 +187,19 @@ section {
 
 /* Proficiency colors (fits your theme) */
 .level-progress .seg.expert {
-  background: #2ecc71;   /* green */
+  background: #b1121b;  /* deep crimson */
 }
 
 .level-progress .seg.good {
-  background: #3498db;   /* blue */
+  background: #ee1c25;  /* strong bright red */
 }
 
 .level-progress .seg.familiar {
-  background: #f1c40f;   /* yellow */
+  background: #f4676e;  /* soft rose */
 }
 
 .level-progress .seg.noob {
-  background: #ee1c25;   /* your theme red */
+  background: #f9a1a6;  /* very light blush */
 }
 
 /* Keep your text aligned nicely */

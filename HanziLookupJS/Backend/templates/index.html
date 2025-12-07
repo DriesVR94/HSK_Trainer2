@@ -57,7 +57,7 @@
   <script>
 
     // Choose between development or production
-    const isDev = false; // set to false before deploying
+    const isDev = true; // set to false before deploying
 
     // ----- 1.  fetch random HSK character -----
     let hanziLoaded = false, assetsLoaded = false;
@@ -209,7 +209,7 @@
           setTimeout(() => {
             const dataUrl = board.exportImage();
 
-            fetch('http://127.0.0.1:5000/recognize', {
+            fetch('/recognize', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ image: dataUrl }),
@@ -226,12 +226,6 @@
                 alert(`Failed to recognize character ${idx + 1}.`);
               });
           }, 50);
-
-            if (startTime && !endTime) {
-              endTime = performance.now();
-              const elapsed = (endTime - startTime) / 1000;
-              timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
-            }
 
           updateFeedbackBarForBoard(board,wrap,idx);
 
@@ -296,17 +290,33 @@
 
         // ---- Buttons handlers (undo, clear, recognize) ----
         wrap.querySelector('.cmdUndo').onclick = () => {
-          board.undoStroke();
-          board.redraw();
-          lookup(board, resOrig, resMMAH);
-        };
+        board.undoStroke();
+        board.redraw();
+        lookup(board, resOrig, resMMAH);
 
-        wrap.querySelector('.cmdClear').onclick = () => {
-          board.clearCanvas();
-          board.redraw();
-          board._ocrSent = false;
-          lookup(board, resOrig, resMMAH);
-        };
+        board._ocrSent = false;
+        strokeCount = board.cloneStrokes().length;
+        strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
+        startTime = null;
+        endTime = null;
+        timeTakenElement.textContent = `Time: 0.00s`;
+      };
+
+      wrap.querySelector('.cmdClear').onclick = () => {
+        board.clearCanvas();
+        board.redraw();
+
+        board._ocrSent = false;
+        strokeCount = 0;
+        startTime = null;
+        endTime = null;
+
+        strokeCounterElement.textContent = `Strokes: 0`;
+        timeTakenElement.textContent = `Time: 0.00s`;
+
+        lookup(board, resOrig, resMMAH);
+      };
+
 
         const recognizeButton = wrap.querySelector('.cmdRecognize');
         recognizeButton.onclick = () => {
@@ -314,7 +324,7 @@
 
           const dataUrl = board.exportImage();
 
-          fetch('http://127.0.0.1:5000/recognize', {
+          fetch('/recognize', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: dataUrl }),

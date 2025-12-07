@@ -1,7 +1,12 @@
+
+from flask_cors import CORS
+from ocr import ocr_bp   # ✅ IMPORT OCR MODULE
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
 import sqlite3, hashlib, os, json
+from ocr import ocr_bp
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 app.secret_key = "replace_this_with_a_strong_secret_key"
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -364,6 +369,8 @@ def update_proficiency():
     conn.close()
 
     return jsonify({"success": True})
+
+app.register_blueprint(ocr_bp)
 
 
 if __name__ == '__main__':

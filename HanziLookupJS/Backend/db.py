@@ -217,9 +217,11 @@ def signin():
     else:
         return {"success": False, "message": "Invalid email or password."}, 401
 
-@app.route('/index')
+@app.route("/index")
 def show_index_page():
-    return render_template("index.html")
+    level = request.args.get("level", 1, type=int)   # ✅ default fallback
+    return render_template("index.html", level=level)
+
 
 @app.route("/save_levels", methods=["POST"])
 def save_levels():

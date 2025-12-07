@@ -33,7 +33,7 @@
     .ocrResultBox { width: 100%; text-align: center; font-size: 48px; padding: 8px; margin-top: 10px; border-top: 1px dashed #aaa; color: #444; font-family: "Noto Sans", "Arial", sans-serif; }
   </style>
 </head>
-<body>
+<body data-level="{{ level }}">
   <div class="header">
     <h1>HanziLookupJS demo</h1>
     <a href="https://github.com/gugray/HanziLookupJS">github.com/gugray/HanziLookupJS</a>
@@ -59,6 +59,8 @@
     // Choose between development or production
     const isDev = true; // set to false before deploying
 
+    const START_LEVEL = Number(document.body.dataset.level) || 1;
+
     // ----- 1.  fetch random HSK character -----
     let hanziLoaded = false, assetsLoaded = false;
     let hanziList = [];
@@ -77,17 +79,7 @@
       buildBoards();
     }
 
-  fetch("/get_vocabulary?level=1")
-    .then(response => response.json())
-    .then(data => {
-      hanziList = data;
-      hanziLoaded = true;
-      maybeInitBoards();  // same callback you already use
-    })
-    .catch(err => {
-      console.error(err);
-      document.querySelector('.targetCharBox').innerText = '⚠️ load error';
-    });
+
 
   
   // ---- Sends proficiency update to backend ----
@@ -115,6 +107,24 @@
       if (!ok) { filesToLoad = -1; return; }
       if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
     }
+
+    function loadLevel(level) {
+      hanziLoaded = false;
+      document.querySelector('.targetCharBox').innerText = "loading…";
+
+      fetch(`/get_vocabulary?level=${level}`)
+        .then(r => r.json())
+        .then(data => {
+          hanziList = data;
+          hanziLoaded = true;
+          maybeInitBoards();
+        })
+        .catch(err => {
+          console.error(err);
+          document.querySelector('.targetCharBox').innerText = "⚠️ load error";
+        });
+    }
+
     HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
     HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
 
@@ -418,6 +428,9 @@
     function show(elm, matches) {
       elm.innerHTML = matches.map(o => `<span>${o.character}</span>`).join('');
     }
+
+  loadLevel(START_LEVEL);
+    
   </script>
 </body>
 </html>

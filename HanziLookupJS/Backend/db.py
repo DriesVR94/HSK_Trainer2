@@ -342,47 +342,62 @@ def update_proficiency():
         return jsonify({"success": False, "message": "Not logged in"}), 401
 
     data = request.get_json() or {}
-    word_id = data.get("word_id")
-    proficiency = data.get("proficiency")
+    word_id = data.get("word_id")          # the word, may be multiple characters
+    new_proficiency = data.get("proficiency")
 
-    if word_id is None or proficiency is None:
+    if word_id is None or new_proficiency is None:
         return jsonify({"success": False, "message": "Missing parameters"}), 400
 
     conn = create_connection()
     cursor = conn.cursor()
 
     # Get user_id
-    cursor.execute(
-        "SELECT id FROM users WHERE email = ?",
-        (session["user_email"],)
-    )
+    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
     row = cursor.fetchone()
     if not row:
         conn.close()
         return jsonify({"success": False, "message": "User not found"}), 404
-
     user_id = row[0]
 
-    # Determine success or fail
-    is_fail = 1 if proficiency == 0 else 0
-    is_success = 1 - is_fail
+    try:
+        # 1️⃣ Get all character IDs for this word
+        cursor.execute("""
+            SELECT word_id, proficiency_level
+            FROM user_word_proficiency
+            WHERE user_id = ? AND word_id = ?
+        """, (user_id, word_id))
+        characters = cursor.fetchall()
 
-    # Update DB: proficiency, last_practiced, times_practiced, successes, fails
-    cursor.execute("""
-        UPDATE user_word_proficiency
-        SET
-            proficiency_level = ?,
-            last_practiced = CURRENT_TIMESTAMP,
-            times_practiced = times_practiced + 1,
-            successes = successes + ?,
-            fails = fails + ?
-        WHERE user_id = ? AND word_id = ?
-    """, (proficiency, is_success, is_fail, user_id, word_id))
+        if not characters:
+            return jsonify({"success": False, "message": "Word not found"}), 404
 
-    conn.commit()
-    conn.close()
+        # 2️⃣ Determine worst current proficiency among characters
+        worst_current = min([c[1] for c in characters])
 
-    return jsonify({"success": True})
+        # 3️⃣ Determine new proficiency for word (worst of existing vs new)
+        updated_proficiency = min(worst_current, new_proficiency)
+
+        # 4️⃣ Determine if word is "noob" (fail) or not (success)
+        is_fail = 1 if updated_proficiency == 0 else 0
+        is_success = 1 - is_fail
+
+        # 5️⃣ Update all characters in the word, but only increment times_practiced once
+        cursor.execute(f"""
+            UPDATE user_word_proficiency
+            SET
+                proficiency_level = ?,
+                last_practiced = CURRENT_TIMESTAMP,
+                times_practiced = times_practiced + 1,
+                successes = successes + ?,
+                fails = fails + ?
+            WHERE user_id = ? AND word_id = ?
+        """, (updated_proficiency, is_success, is_fail, user_id, word_id))
+
+        conn.commit()
+        return jsonify({"success": True})
+
+    finally:
+        conn.close()
 
 app.register_blueprint(ocr_bp)
 

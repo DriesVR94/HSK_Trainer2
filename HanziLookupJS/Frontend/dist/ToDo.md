@@ -1,6 +1,10 @@
 - [] User's username and password are shown in the URL. Unsafe. Remove.
 
-- [] Let user choose which level he/she wants to train.
+- [] Apply a spaced learning algorithm.
+    - [] Add a 'last practiced' column.
+
+- [] Add a 'Show character' GIF during training.
+
 - [] Let user choose how many chars should be tested in 1 run.
 - [] Add a 'report an error button'   
 

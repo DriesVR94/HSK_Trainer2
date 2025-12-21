@@ -1,5 +1,3 @@
-- [] The href of Level 1 on the home_page still points to a general index page. Instead, the index page should only show vocabulary from that specific level.
-
 - [] User's username and password are shown in the URL. Unsafe. Remove.
 
 - [] Let user choose which level he/she wants to train.

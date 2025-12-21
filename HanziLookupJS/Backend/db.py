@@ -348,11 +348,14 @@ def update_proficiency():
     if word_id is None or proficiency is None:
         return jsonify({"success": False, "message": "Missing parameters"}), 400
 
-    # Get user_id
     conn = create_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM users WHERE email = ?", (session["user_email"],))
+    # Get user_id
+    cursor.execute(
+        "SELECT id FROM users WHERE email = ?",
+        (session["user_email"],)
+    )
     row = cursor.fetchone()
     if not row:
         conn.close()
@@ -360,10 +363,12 @@ def update_proficiency():
 
     user_id = row[0]
 
-    # Update proficiency
+    # 🔥 Update proficiency AND last_practiced
     cursor.execute("""
         UPDATE user_word_proficiency
-        SET proficiency_level = ?
+        SET
+            proficiency_level = ?,
+            last_practiced = CURRENT_TIMESTAMP
         WHERE user_id = ? AND word_id = ?
     """, (proficiency, user_id, word_id))
 

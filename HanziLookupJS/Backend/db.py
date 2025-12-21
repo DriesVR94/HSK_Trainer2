@@ -363,14 +363,21 @@ def update_proficiency():
 
     user_id = row[0]
 
-    # 🔥 Update proficiency AND last_practiced
+    # Determine success or fail
+    is_fail = 1 if proficiency == 0 else 0
+    is_success = 1 - is_fail
+
+    # Update DB: proficiency, last_practiced, times_practiced, successes, fails
     cursor.execute("""
         UPDATE user_word_proficiency
         SET
             proficiency_level = ?,
-            last_practiced = CURRENT_TIMESTAMP
+            last_practiced = CURRENT_TIMESTAMP,
+            times_practiced = times_practiced + 1,
+            successes = successes + ?,
+            fails = fails + ?
         WHERE user_id = ? AND word_id = ?
-    """, (proficiency, user_id, word_id))
+    """, (proficiency, is_success, is_fail, user_id, word_id))
 
     conn.commit()
     conn.close()

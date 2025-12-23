@@ -3,6 +3,7 @@ from flask_cors import CORS
 from ocr import ocr_bp   # ✅ IMPORT OCR MODULE
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
 import sqlite3, hashlib, os, json
+from datetime import datetime
 from ocr import ocr_bp
 
 app = Flask(__name__)
@@ -12,6 +13,18 @@ app.secret_key = "replace_this_with_a_strong_secret_key"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(BASE_DIR, 'users.db')
 print("Using database at:", db_path)
+
+average_stroke_count = 9 # The average HSK character contains ca. 9 strokes
+weighing_parameter = 5
+
+def recall_score(times_practiced, successes, fails, stroke_counts, time_passed, proficiency_score,):
+
+    max_strokes = max(stroke_counts)
+    r_h = times_practiced * (successes / (fails + 1))                   # r_h = review_history
+    f_r = max_strokes / (weighing_parameter * max(times_practiced, 1))  # f_r = forgetting_rate
+    d   = average_stroke_count / max_strokes                            # difficulty
+    r_s = (r_h - (f_r * time_passed) + d) * proficiency_score           # r = recall_score
+    return r_s
 
 
 def create_connection():
@@ -41,7 +54,7 @@ def register():
 
         # 4️⃣ Insert all in one batch
         cursor.executemany(
-            'INSERT INTO user_word_proficiency (user_id, word_id, proficiency_level) VALUES (?, ?, ?)',
+            'INSERT INTO user_word_proficiency_new (user_id, word_id, proficiency_level) VALUES (?, ?, ?)',
             entries
         )
 
@@ -113,7 +126,7 @@ def show_home_page():
                 )
                 SELECT pl.prof, COUNT(uwp.word_id)
                 FROM prof_levels pl
-                LEFT JOIN user_word_proficiency uwp
+                LEFT JOIN user_word_proficiency_new uwp
                     ON uwp.proficiency_level = pl.prof
                     AND uwp.user_id = ?
                     AND uwp.word_id IN (SELECT word_id FROM vocabulary WHERE level_id = ?)
@@ -146,7 +159,7 @@ def show_home_page():
                 )
                 SELECT pl.prof, COUNT(uwp.word_id)
                 FROM prof_levels pl
-                LEFT JOIN user_word_proficiency uwp
+                LEFT JOIN user_word_proficiency_new uwp
                     ON uwp.proficiency_level = pl.prof
                     AND uwp.user_id = ?
                     AND uwp.word_id IN (
@@ -302,7 +315,7 @@ def get_progress():
         SELECT 
             proficiency_level, 
             COUNT(*) 
-        FROM user_word_proficiency uwp
+        FROM user_word_proficiency_new uwp
         JOIN vocabulary v ON uwp.word_id = v.word_id
         WHERE uwp.user_id = ? AND v.level_id = ?
         GROUP BY proficiency_level
@@ -342,7 +355,7 @@ def update_proficiency():
         return jsonify({"success": False, "message": "Not logged in"}), 401
 
     data = request.get_json() or {}
-    word_id = data.get("word_id")          # the word, may be multiple characters
+    word_id = data.get("word_id")
     new_proficiency = data.get("proficiency")
 
     if word_id is None or new_proficiency is None:
@@ -360,41 +373,65 @@ def update_proficiency():
     user_id = row[0]
 
     try:
-        # 1️⃣ Get all character IDs for this word
+        # 1️⃣ Get all character data for this word
         cursor.execute("""
-            SELECT word_id, proficiency_level
-            FROM user_word_proficiency
+            SELECT times_practiced, successes, fails, last_practiced
+            FROM user_word_proficiency_new
             WHERE user_id = ? AND word_id = ?
         """, (user_id, word_id))
-        characters = cursor.fetchall()
-
-        if not characters:
+        user_data = cursor.fetchone()
+        if not user_data:
             return jsonify({"success": False, "message": "Word not found"}), 404
 
-        # 2️⃣ Determine worst current proficiency among characters
-        worst_current = min([c[1] for c in characters])
+        times_practiced, successes, fails, last_practiced = user_data
 
-        # 3️⃣ Determine new proficiency for word (worst of existing vs new)
-        updated_proficiency = min(worst_current, new_proficiency)
+        # 2️⃣ Get stroke data
+        cursor.execute("""
+            SELECT stroke_counts
+            FROM vocabulary
+            WHERE word_id = ?
+        """, (word_id,))
+        row = cursor.fetchone()
+        if not row:
+            return jsonify({"success": False, "message": "Vocabulary data not found"}), 404
 
-        # 4️⃣ Determine if word is "noob" (fail) or not (success)
-        is_fail = 1 if updated_proficiency == 0 else 0
+        stroke_counts = json.loads(row[0])  # ✅ JSON → list[int]
+
+        # 3️⃣ Time passed
+        if last_practiced:
+            last_practiced_dt = datetime.strptime(last_practiced, "%Y-%m-%d %H:%M:%S")
+            time_passed = (datetime.now() - last_practiced_dt).total_seconds() / 86400
+        else:
+            time_passed = 0
+
+        # 4️⃣ Compute recall score
+        rs = recall_score(
+            times_practiced,
+            successes,
+            fails,
+            stroke_counts,
+            time_passed,
+            new_proficiency
+        )
+
+        # 5️⃣ Update user_word_proficiency
+        is_fail = 1 if new_proficiency == 0 else 0
         is_success = 1 - is_fail
 
-        # 5️⃣ Update all characters in the word, but only increment times_practiced once
-        cursor.execute(f"""
-            UPDATE user_word_proficiency
+        cursor.execute("""
+            UPDATE user_word_proficiency_new
             SET
                 proficiency_level = ?,
                 last_practiced = CURRENT_TIMESTAMP,
                 times_practiced = times_practiced + 1,
                 successes = successes + ?,
-                fails = fails + ?
+                fails = fails + ?,
+                recall_score = ?
             WHERE user_id = ? AND word_id = ?
-        """, (updated_proficiency, is_success, is_fail, user_id, word_id))
+        """, (new_proficiency, is_success, is_fail, rs, user_id, word_id))
 
         conn.commit()
-        return jsonify({"success": True})
+        return jsonify({"success": True, "recall_score": rs})
 
     finally:
         conn.close()

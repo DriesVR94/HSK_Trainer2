@@ -426,9 +426,10 @@ def update_proficiency():
                 times_practiced = times_practiced + 1,
                 successes = successes + ?,
                 fails = fails + ?,
-                recall_score = ?
+                recall_score = ROUND(?, 2)
             WHERE user_id = ? AND word_id = ?
         """, (new_proficiency, is_success, is_fail, rs, user_id, word_id))
+
 
         conn.commit()
         return jsonify({"success": True, "recall_score": rs})

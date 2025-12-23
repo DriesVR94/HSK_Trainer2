@@ -1,7 +1,9 @@
 - [] User's username and password are shown in the URL. Unsafe. Remove.
 
 - [] Apply a spaced learning algorithm.
-    - [] Add a 'last practiced' column.
+    - [x] Add a 'last practiced' column.
+    - [] Implement a down-counter for the recall score.
+    - [] Let the words closest to 1 (= the baseline) be prompted first for practice. First words that have already been practiced, but score 0. Then words just above or below 1. Then words that haven't been practiced yet.  
 
 - [] Add a 'Show character' GIF during training.
 

@@ -15,7 +15,7 @@ db_path = os.path.join(BASE_DIR, 'users.db')
 print("Using database at:", db_path)
 
 average_stroke_count = 9 # The average HSK character contains ca. 9 strokes
-weighing_parameter = 5
+weighing_parameter = 5 # This one is set manually. A higher weighing_parameter results in a lower forgetting_rate, and hence a higher recall_score
 
 def recall_score(times_practiced, successes, fails, stroke_counts, time_passed, proficiency_score,):
 
@@ -23,7 +23,7 @@ def recall_score(times_practiced, successes, fails, stroke_counts, time_passed, 
     r_h = times_practiced * (successes / (fails + 1))                   # r_h = review_history
     f_r = max_strokes / (weighing_parameter * max(times_practiced, 1))  # f_r = forgetting_rate
     d   = average_stroke_count / max_strokes                            # difficulty
-    r_s = (r_h - (f_r * time_passed) + d) * proficiency_score           # r = recall_score
+    r_s = (r_h - (f_r * time_passed) + d) * proficiency_score           # r_s = recall_score
     return r_s
 
 

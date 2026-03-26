@@ -89,7 +89,7 @@ main {
 /* --- HSK Version Toggle Buttons --- */
 .hsk-toggle-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }

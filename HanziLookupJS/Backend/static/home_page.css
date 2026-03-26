@@ -86,6 +86,22 @@ main {
     background-color: #000f18;
 }
 
+.HSK2_0 ol,
+.HSK3_0 ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+.HSK2_0 li,
+.HSK3_0 li {
+  display: flex;
+  flex-direction: column;   /* 🔥 stack vertically */
+  align-items: flex-start;  /* left align */
+  gap: 0.3rem;
+  margin: 1rem 0;
+}
+
+
 /* --- HSK Version Toggle Buttons --- */
 .hsk-toggle-container {
   display: flex;
@@ -135,7 +151,7 @@ main {
 
 /* --- HSK SECTIONS --- */
 section {
-    background-color: wheat;
+    background-color: #12232e;
     border-radius: 8px;
     color: #000f18;
     padding: 1.5rem;
@@ -149,18 +165,7 @@ section {
     margin-bottom: 0.75rem;
 }
 
-.HSK2_0 ol,
-.HSK3_0 ol {
-    list-style: decimal;
-    padding-left: 1.5rem;
-}
 
-.HSK2_0 li,
-.HSK3_0 li {
-    margin: 0.6rem 0;
-    color: #000f18;
-    font-weight: 600;
-}
 
 /* Hide HSK 3.0 by default */
 .HSK3_0 {
@@ -169,20 +174,26 @@ section {
 
 /* --- PER-LEVEL SEGMENTED PROGRESS BARS --- */
 .level-progress {
-  width: 60%;
-  height: 12px;
+  width: 100%;
+  height: 1.3em;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
   overflow: hidden;
-  margin: 0.4rem 0;
-  display: inline-flex;   /* IMPORTANT: flex for segments */
-  vertical-align: middle;
+  display: flex;   /* IMPORTANT: flex for segments */
+}
+
+.level-title {
+  font-size: clamp(1rem, 3vw, 1.75rem);
+  color: white;
+  min-width: 80px;
+  margin-bottom: 0.2rem;
 }
 
 /* Individual proficiency segments */
 .level-progress .seg {
   height: 100%;
   transition: width 0.4s ease;
+  min-width: 2px;
 }
 
 /* Proficiency colors (fits your theme) */
@@ -211,11 +222,6 @@ section {
   vertical-align: middle;
 }
 
-/* --- LEVEL 1 HOVER TOOLTIP --- */
-.level-progress.level1 {
-  position: relative; /* needed for absolute tooltip positioning */
-  cursor: pointer;
-}
 
 /* --- FLOATING TOOLTIP (NEW) --- */
 .floating-tooltip {

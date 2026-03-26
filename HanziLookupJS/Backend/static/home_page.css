@@ -211,6 +211,44 @@ section {
   vertical-align: middle;
 }
 
+/* --- LEVEL 1 HOVER TOOLTIP --- */
+.level-progress.level1 {
+  position: relative; /* needed for absolute tooltip positioning */
+  cursor: pointer;
+}
+
+/* --- FLOATING TOOLTIP (NEW) --- */
+.floating-tooltip {
+  position: absolute;
+  background-color: #fff;
+  color: #000f18; /* ✅ ensures text is visible */
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* Match your existing tooltip layout */
+.floating-tooltip ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.floating-tooltip li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.floating-tooltip span {
+  font-size: 0.85rem;
+}
+
+
+
 
 /* --- RESPONSIVE NAV --- */
 @media (max-width: 900px) {
@@ -227,3 +265,5 @@ section {
         width: 95%;
     }
 }
+
+

@@ -46,7 +46,7 @@
       <ol>
         <li>
           <div class="level-title">Level 1</div>
-          <div class="level-progress segmented-bar"
+          <div class="level-progress segmented-bar level1"
               data-total="{{ counts['HSK2_0__Level_1'] }}"
               data-noob="{{ prof['HSK2_0__Level_1__Prof_0'] }}"
               data-familiar="{{ prof['HSK2_0__Level_1__Prof_1'] }}"
@@ -59,7 +59,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_1__Prof_3"] }}/{{ counts["HSK2_0__Level_1"] }} words mastered
             <a href="{{ url_for('show_index_page', level=1) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -81,7 +80,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_2__Prof_3"] }}/{{ counts["HSK2_0__Level_2"] }} words mastered
             <a href="{{ url_for('show_index_page', level=2) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -103,7 +101,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_3__Prof_3"] }}/{{ counts["HSK2_0__Level_3"] }} words mastered
             <a href="{{ url_for('show_index_page', level=3) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -125,7 +122,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_4__Prof_3"] }}/{{ counts["HSK2_0__Level_4"] }} words mastered
             <a href="{{ url_for('show_index_page', level=4) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -147,7 +143,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_5__Prof_3"] }}/{{ counts["HSK2_0__Level_5"] }} words mastered
             <a href="{{ url_for('show_index_page', level=5) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -169,7 +164,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK2_0__Level_6__Prof_3"] }}/{{ counts["HSK2_0__Level_6"] }} words mastered
             <a href="{{ url_for('show_index_page', level=6) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -197,7 +191,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_1__Prof_3"] }}/{{ counts["HSK3_0__Level_1"] }} words mastered
             <a href="{{ url_for('show_index_page', level=7) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -219,7 +212,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_2__Prof_3"] }}/{{ counts["HSK3_0__Level_2"] }} words mastered
             <a href="{{ url_for('show_index_page', level=8) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -241,7 +233,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_3__Prof_3"] }}/{{ counts["HSK3_0__Level_3"] }} words mastered
             <a href="{{ url_for('show_index_page', level=9) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -263,7 +254,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_4__Prof_3"] }}/{{ counts["HSK3_0__Level_4"] }} words mastered
             <a href="{{ url_for('show_index_page', level=10) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -285,7 +275,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_5__Prof_3"] }}/{{ counts["HSK3_0__Level_5"] }} words mastered
             <a href="{{ url_for('show_index_page', level=11) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -307,7 +296,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_6__Prof_3"] }}/{{ counts["HSK3_0__Level_6"] }} words mastered
             <a href="{{ url_for('show_index_page', level=12) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -329,7 +317,6 @@
             <div class="seg noob"></div>
           </div>
           <div class="level-count">
-            {{ prof["HSK3_0__Level_7__Prof_3"] }}/{{ counts["HSK3_0__Level_7"] }} words mastered
             <a href="{{ url_for('show_index_page', level=13) }}" class="level-arrow">
               <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -383,6 +370,12 @@
     // NEW: set segmented bars that were rendered server-side using data-* attributes
     setSegmentedBarsFromDataset();
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    addSegmentedBarTooltips();
+  });
+
+
 
   /** Fetch + render global segmented progress in #progressBar (already used) */
   function loadProgress(level) {
@@ -482,6 +475,109 @@
       });
     });
   }
+
+  function addFloatingTooltips() {
+  const colors = {
+    expert: "#b1121b",
+    good: "#ee1c25",
+    familiar: "#f4676e",
+    noob: "#f9a1a6"
+  };
+
+  document.querySelectorAll(".level-progress").forEach(bar => {
+    bar.addEventListener("mouseenter", (e) => {
+      // Remove any existing tooltip
+      let existing = document.querySelector(".floating-tooltip");
+      if (existing) existing.remove();
+
+      // Create tooltip container
+      const tooltip = document.createElement("div");
+      tooltip.className = "floating-tooltip";
+      tooltip.style.position = "absolute";
+      tooltip.style.background = "#fff";
+      tooltip.style.border = "1px solid #ccc";
+      tooltip.style.padding = "6px 10px";
+      tooltip.style.borderRadius = "4px";
+      tooltip.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+      tooltip.style.zIndex = "1000";
+
+      // Build tooltip content
+      const ul = document.createElement("ul");
+      ul.style.listStyle = "none";
+      ul.style.margin = 0;
+      ul.style.padding = 0;
+
+      const total = Number(bar.dataset.total) || 0;
+
+      const header = document.createElement("div");
+      header.textContent = `Total: ${total} words`;
+      header.style.fontWeight = "600";
+      header.style.marginBottom = "6px";
+
+      tooltip.appendChild(header);
+
+            const labels = {
+        expert: "Expert",
+        good: "Good",
+        familiar: "Familiar",
+        noob: "Noob"
+      };
+
+      ["expert", "good", "familiar", "noob"].forEach(level => {
+        const count = Number(bar.dataset[level]) || 0;
+
+        const li = document.createElement("li");
+        li.style.display = "flex";
+        li.style.alignItems = "center";
+        li.style.justifyContent = "space-between";
+        li.style.gap = "8px";
+        li.style.marginBottom = "4px";
+
+        // Left side (color + label)
+        const left = document.createElement("div");
+        left.style.display = "flex";
+        left.style.alignItems = "center";
+        left.style.gap = "6px";
+
+        const square = document.createElement("span");
+        square.style.width = "12px";
+        square.style.height = "12px";
+        square.style.backgroundColor = colors[level];
+
+        const label = document.createElement("span");
+        label.textContent = labels[level];
+
+        left.appendChild(square);
+        left.appendChild(label);
+
+        // Right side (count)
+        const right = document.createElement("span");
+        right.textContent = count;
+
+        li.appendChild(left);
+        li.appendChild(right);
+
+        ul.appendChild(li);
+      });
+
+      tooltip.appendChild(ul);
+      document.body.appendChild(tooltip);
+
+      // Position the tooltip relative to the bar
+      const rect = bar.getBoundingClientRect();
+      tooltip.style.left = `${rect.left + window.scrollX}px`;
+      tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+    });
+
+    bar.addEventListener("mouseleave", () => {
+      const tooltip = document.querySelector(".floating-tooltip");
+      if (tooltip) tooltip.remove();
+    });
+  });
+}
+
+// Call after DOM content loaded
+document.addEventListener("DOMContentLoaded", addFloatingTooltips);
   </script>
 
 

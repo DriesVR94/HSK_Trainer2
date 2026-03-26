@@ -31,7 +31,11 @@
     .feedbackBar.correct { background-color: #a6e3a1; opacity: 1; }
     .feedbackBar.incorrect { background-color: #f28b82; opacity: 1;}
     .ocrResultBox { width: 100%; text-align: center; font-size: 48px; padding: 8px; margin-top: 10px; border-top: 1px dashed #aaa; color: #444; font-family: "Noto Sans", "Arial", sans-serif; }
+    .show_solution_container { display: flex; justify-content: center;  margin: 10px 0;}
+    .show_solution_button { background-color: #f1c40f; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; color: #000f18; transition: 0.2s;}
+    .show_solution_button:hover {  background-color: #f1d7a6;}
   </style>
+
 </head>
 <body data-level="{{ level }}">
   <div class="header">
@@ -163,6 +167,9 @@
             <div class="segment good">Good</div>
             <div class="segment expert">Expert</div>
           </div>
+          <div class="show_solution_container">
+            <button class="show_solution_button">Show solution</button>
+          </div>
           <div class="commands">
             <div class="cmd cmdUndo"><i class="fa-solid fa-rotate-left"></i></div>
             <div class="cmd cmdClear"><i class="fa-solid fa-xmark"></i></div>
@@ -177,6 +184,7 @@
           <div class="strokeCounter dev-only">Strokes: 0</div>
           <div class="timeTaken dev-only">Time: 0.00s</div>
         `;
+        
 
         container.appendChild(wrap);
         if (!isDev) {document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');}
@@ -241,6 +249,12 @@
 
         }
       });
+
+      const solutionButton = wrap.querySelector('.show_solution_button');
+
+      solutionButton.onclick = () => {
+        alert(`Solution: ${window.targetCharacter[idx]}`);
+      };
 
         // ---- NEW: Create overlay canvas for the grid ----
         // HanziLookup.DrawingBoard creates a canvas inside boardElem

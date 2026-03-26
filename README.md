@@ -64,3 +64,7 @@ The data in `mmah.json` is ultimately derived from the following fonts, via Make
 - Arphic PL UKai - https://apps.ubuntu.com/cat/applications/fonts-arphic-ukai/
 
 You can redistribute and/or modify `mmah.json` under the terms of the Arphic Public License as published by Arphic Technology Co., Ltd. The license is reproduced in LICENSE-APL; you can also find it online at <http://ftp.gnu.org/non-gnu/chinese-fonts-truetype/LICENSE>.
+
+# Hanzi Writer
+-> Refer to their content as mentioned on their webpage.
+https://hanziwriter.org/license.html

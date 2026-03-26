@@ -35,6 +35,7 @@
     .show_solution_container { display: flex; justify-content: center;  margin: 10px 0;}
     .show_solution_button { background-color: #f1c40f; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; color: #000f18; transition: 0.2s;}
     .show_solution_button:hover {  background-color: #f1d7a6;}
+    .solutionAnimation { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background-color: rgba(255, 255, 255, 0.9); justify-content: center; align-items: center; z-index: 10;}
   </style>
 
 </head>
@@ -160,7 +161,7 @@
 
         wrap.innerHTML = `
           <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
-            <!-- drawing canvas will be created by HanziLookup.DrawingBoard -->
+            <div class="solutionAnimation"></div>
           </div>
           <div class="feedbackBar">
             <div class="segment noob">Noob</div>
@@ -171,7 +172,6 @@
           <div class="show_solution_container">
             <button class="show_solution_button">Show solution</button>
           </div>
-          <div class="solutionAnimation" style="display:none; margin-top:10px; text-align:center;"></div>
           <div class="commands">
             <div class="cmd cmdUndo"><i class="fa-solid fa-rotate-left"></i></div>
             <div class="cmd cmdClear"><i class="fa-solid fa-xmark"></i></div>
@@ -258,7 +258,7 @@
       let writer = null;
 
       solutionButton.addEventListener('click', () => {
-        solutionContainer.style.display = 'block';
+        solutionContainer.style.display = 'flex';
 
         // Clear previous animation
         solutionContainer.innerHTML = '';
@@ -268,13 +268,18 @@
 
         // 👉 FIXED CHARACTER for now
         writer = HanziWriter.create(charDiv, '我', {
-          width: 120,
-          height: 120,
-          padding: 5,
+          width: boxSize,
+          height: boxSize,
+          padding: 10,
           strokeAnimationSpeed: 1,
           delayBetweenLoops: 1000,
           showOutline: true
         });
+
+        solutionContainer.onclick = () => {
+        solutionContainer.style.display = 'none';
+        solutionContainer.innerHTML = '';
+      };
 
         writer.loopCharacterAnimation();
       });

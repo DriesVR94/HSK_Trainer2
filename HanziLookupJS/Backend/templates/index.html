@@ -5,6 +5,7 @@
   <title>HanziLookupJS demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
   <style>
     body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
     div, h1, h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
@@ -170,6 +171,7 @@
           <div class="show_solution_container">
             <button class="show_solution_button">Show solution</button>
           </div>
+          <div class="solutionAnimation" style="display:none; margin-top:10px; text-align:center;"></div>
           <div class="commands">
             <div class="cmd cmdUndo"><i class="fa-solid fa-rotate-left"></i></div>
             <div class="cmd cmdClear"><i class="fa-solid fa-xmark"></i></div>
@@ -251,10 +253,32 @@
       });
 
       const solutionButton = wrap.querySelector('.show_solution_button');
+      const solutionContainer = wrap.querySelector('.solutionAnimation');
 
-      solutionButton.onclick = () => {
-        alert(`Solution: ${window.targetCharacter[idx]}`);
-      };
+      let writer = null;
+
+      solutionButton.addEventListener('click', () => {
+        solutionContainer.style.display = 'block';
+
+        // Clear previous animation
+        solutionContainer.innerHTML = '';
+
+        const charDiv = document.createElement('div');
+        solutionContainer.appendChild(charDiv);
+
+        // 👉 FIXED CHARACTER for now
+        writer = HanziWriter.create(charDiv, '我', {
+          width: 120,
+          height: 120,
+          padding: 5,
+          strokeAnimationSpeed: 1,
+          delayBetweenLoops: 1000,
+          showOutline: true
+        });
+
+        writer.loopCharacterAnimation();
+      });
+
 
         // ---- NEW: Create overlay canvas for the grid ----
         // HanziLookup.DrawingBoard creates a canvas inside boardElem

@@ -130,24 +130,6 @@ main {
   color: #000f18;
 }
 
-/* --- PROGRESS BAR --- */
-.progress-container {
-  width: 80%;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 0 auto 1.5rem auto;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #ee1c25, #ffb347);
-  transition: width 0.4s ease;
-  border-radius: 4px;
-}
-
 /* --- HSK SECTIONS --- */
 section {
     background-color: #12232e;

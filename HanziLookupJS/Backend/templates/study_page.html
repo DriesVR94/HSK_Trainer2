@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hanzi Practice Grid</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="study_page.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hanzilookup@latest/dist/hanzilookup.min.js"></script>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Hanzi Practice</h1>
+</div>
+
+<div class="targetChar" id="targetChar">你</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const character = "你";
+
+const grid = document.getElementById("grid");
+
+// Create 10 boxes
+for (let i = 0; i < 10; i++) {
+  const box = document.createElement("div");
+  box.className = "box";
+
+  const boardDiv = document.createElement("div");
+  boardDiv.className = "drawingBoard";
+
+  box.appendChild(boardDiv);
+  grid.appendChild(box);
+
+  const board = HanziLookup.DrawingBoard($(boardDiv));
+
+  const canvas = boardDiv.querySelector("canvas");
+
+  const overlay = document.createElement("canvas");
+  overlay.width = canvas.width;
+  overlay.height = canvas.height;
+  overlay.className = "overlay";
+
+  box.appendChild(overlay);
+
+  const ctx = overlay.getContext("2d");
+
+  function drawGrid() {
+    const w = overlay.width;
+    const h = overlay.height;
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.setLineDash([2,2]);
+    ctx.strokeStyle = "#999";
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.rect(0,0,w,h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0,0); ctx.lineTo(w,h);
+    ctx.moveTo(w,0); ctx.lineTo(0,h);
+    ctx.moveTo(w/2,0); ctx.lineTo(w/2,h);
+    ctx.moveTo(0,h/2); ctx.lineTo(w,h/2);
+    ctx.stroke();
+  }
+
+  drawGrid();
+}
+
+// Animate once
+const writer = HanziWriter.create(document.getElementById("targetChar"), character, {
+  width: 100,
+  height: 100,
+  padding: 5,
+  strokeAnimationSpeed: 1,
+  delayBetweenStrokes: 200,
+  showOutline: true
+});
+
+writer.animateCharacter();
+</script>
+
+</body>
+</html>

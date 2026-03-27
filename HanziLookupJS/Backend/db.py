@@ -235,6 +235,10 @@ def show_index_page():
     level = request.args.get("level", 1, type=int)   # ✅ default fallback
     return render_template("index.html", level=level)
 
+@app.route("/study_page")
+def show_study_page():
+    return render_template("study_page.html")
+
 
 @app.route("/save_levels", methods=["POST"])
 def save_levels():

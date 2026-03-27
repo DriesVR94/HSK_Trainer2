@@ -95,8 +95,7 @@ main {
 .HSK2_0 li,
 .HSK3_0 li {
   display: flex;
-  flex-direction: column;   /* 🔥 stack vertically */
-  align-items: flex-start;  /* left align */
+  flex-direction: column; /* stack top row and bar */
   gap: 0.3rem;
   margin: 1rem 0;
 }
@@ -165,28 +164,57 @@ section {
     margin-bottom: 0.75rem;
 }
 
-
-
 /* Hide HSK 3.0 by default */
 .HSK3_0 {
     display: none;
 }
 
 /* --- PER-LEVEL SEGMENTED PROGRESS BARS --- */
-.level-progress {
-  width: 100%;
-  height: 1.3em;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;   /* IMPORTANT: flex for segments */
+
+/* Top row: title + icons aligned next to each other */
+.level-header {
+  display: flex;
+  align-items: center;  /* vertical alignment of title and icons */
+  gap: 10px;            /* space between title and icons */
 }
 
+/* Level title */
 .level-title {
   font-size: clamp(1rem, 3vw, 1.75rem);
   color: white;
-  min-width: 80px;
-  margin-bottom: 0.2rem;
+}
+
+/* Icons */
+.level-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;  /* space between icons */
+  position: static; /* remove absolute positioning */
+  margin-top: 1;
+}
+
+.level-count a:hover .material-symbols-outlined {
+  color: #ee1c25;
+  transform: scale(1.15);
+}
+
+.icon-btn {
+  text-decoration: none;  
+  color: white;
+}
+
+.icon-btn .material-symbols-outlined {
+  font-size: 2rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Progress bar: full width below title + icons */
+.level-progress {
+  width: 100%;
+  height: 1.3em;
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* Individual proficiency segments */
@@ -196,7 +224,7 @@ section {
   min-width: 2px;
 }
 
-/* Proficiency colors (fits your theme) */
+/* Proficiency colors */
 .level-progress .seg.expert {
   background: #b1121b;  /* deep crimson */
 }
@@ -213,21 +241,11 @@ section {
   background: #f9a1a6;  /* very light blush */
 }
 
-/* Keep your text aligned nicely */
-.level-count {
-  margin-left: 0.75rem;
-  font-size: 0.9rem;
-  color: #000f18;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-
-/* --- FLOATING TOOLTIP (NEW) --- */
+/* --- FLOATING TOOLTIP --- */
 .floating-tooltip {
   position: absolute;
   background-color: #fff;
-  color: #000f18; /* ✅ ensures text is visible */
+  color: #000f18;
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -235,7 +253,6 @@ section {
   z-index: 1000;
 }
 
-/* Match your existing tooltip layout */
 .floating-tooltip ul {
   list-style: none;
   margin: 0;
@@ -253,9 +270,6 @@ section {
   font-size: 0.85rem;
 }
 
-
-
-
 /* --- RESPONSIVE NAV --- */
 @media (max-width: 900px) {
     nav {
@@ -271,5 +285,3 @@ section {
         width: 95%;
     }
 }
-
-

@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Let's Practice!</title>
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='home_page.css') }}">
+
 </head>
 
 <body>
@@ -39,23 +40,30 @@
     <section class="HSK2_0">
       <ol>
         <li>
-          <div class="level-title">Level 1</div>
-          <div class="level-progress segmented-bar level1"
+          <!-- Top row: title + icons -->
+          <div class="level-header">
+            <div class="level-title">Level 1</div>
+            <div class="level-count">
+              <a href="{{ url_for('show_study_page') }}" class="icon-btn">
+                <span class="material-symbols-outlined"> auto_stories </span>
+              </a>
+              <a href="{{ url_for('show_index_page', level=1) }}" class="icon-btn">
+                <span class="material-symbols-outlined"> assignment </span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bottom row: full-width progress bar -->
+          <div class="level-progress segmented-bar"
               data-total="{{ counts['HSK2_0__Level_1'] }}"
               data-noob="{{ prof['HSK2_0__Level_1__Prof_0'] }}"
               data-familiar="{{ prof['HSK2_0__Level_1__Prof_1'] }}"
               data-good="{{ prof['HSK2_0__Level_1__Prof_2'] }}"
               data-expert="{{ prof['HSK2_0__Level_1__Prof_3'] }}">
-            
             <div class="seg expert"></div>
             <div class="seg good"></div>
             <div class="seg familiar"></div>
             <div class="seg noob"></div>
-          </div>
-          <div class="level-count">
-            <a href="{{ url_for('show_index_page', level=1) }}" class="level-arrow">
-              <i class="fa-solid fa-arrow-right"></i>
-            </a>
           </div>
         </li>
 
@@ -322,7 +330,7 @@
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
-    
+
   </main>
 
   <script>

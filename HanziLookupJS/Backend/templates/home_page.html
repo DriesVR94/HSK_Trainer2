@@ -40,9 +40,9 @@
     <section class="HSK2_0">
       <ol>
         <li>
-          <!-- Top row: title + icons -->
           <div class="level-header">
             <div class="level-title">Level 1</div>
+
             <div class="level-count">
               <a href="{{ url_for('show_study_page') }}" class="icon-btn">
                 <span class="material-symbols-outlined"> auto_stories </span>
@@ -53,17 +53,19 @@
             </div>
           </div>
 
-          <!-- Bottom row: full-width progress bar -->
-          <div class="level-progress segmented-bar"
-              data-total="{{ counts['HSK2_0__Level_1'] }}"
-              data-noob="{{ prof['HSK2_0__Level_1__Prof_0'] }}"
-              data-familiar="{{ prof['HSK2_0__Level_1__Prof_1'] }}"
-              data-good="{{ prof['HSK2_0__Level_1__Prof_2'] }}"
-              data-expert="{{ prof['HSK2_0__Level_1__Prof_3'] }}">
-            <div class="seg expert"></div>
-            <div class="seg good"></div>
-            <div class="seg familiar"></div>
-            <div class="seg noob"></div>
+            <!-- Progress bar -->
+            <div class="level-progress segmented-bar"
+                data-total="{{ counts['HSK2_0__Level_1'] }}"
+                data-noob="{{ prof['HSK2_0__Level_1__Prof_0'] }}"
+                data-familiar="{{ prof['HSK2_0__Level_1__Prof_1'] }}"
+                data-good="{{ prof['HSK2_0__Level_1__Prof_2'] }}"
+                data-expert="{{ prof['HSK2_0__Level_1__Prof_3'] }}">
+              <div class="seg expert"></div>
+              <div class="seg good"></div>
+              <div class="seg familiar"></div>
+              <div class="seg noob"></div>
+            </div>
+
           </div>
         </li>
 

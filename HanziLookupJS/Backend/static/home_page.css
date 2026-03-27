@@ -154,27 +154,30 @@ section {
 /* --- PER-LEVEL SEGMENTED PROGRESS BARS --- */
 
 /* Top row: title + icons aligned next to each other */
+/* Header row */
 .level-header {
   display: flex;
-  align-items: center;  /* vertical alignment of title and icons */
-  gap: 10px;            /* space between title and icons */
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* Level title */
-.level-title {
+/* Title + icons baseline fix */
+.level-title,
+.level-count {
   font-size: clamp(1rem, 3vw, 1.75rem);
   color: white;
-}
-
-/* Icons */
-.level-count {
   display: flex;
   align-items: center;
-  gap: 10px;  /* space between icons */
-  position: static; /* remove absolute positioning */
-  margin-top: 1;
+  line-height: 1; /* fixes uneven vertical spacing */
 }
 
+/* Icons now float top-right of bar */
+.level-count {
+  position: static;
+  gap: 6px;
+}
+
+/* Icon styles */
 .level-count a:hover .material-symbols-outlined {
   color: #ee1c25;
   transform: scale(1.15);
@@ -190,7 +193,7 @@ section {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Progress bar: full width below title + icons */
+/* Progress bar */
 .level-progress {
   width: 100%;
   height: 1.3em;

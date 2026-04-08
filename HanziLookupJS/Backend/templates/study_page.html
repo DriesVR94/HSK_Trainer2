@@ -44,18 +44,22 @@
 
     function loadRandomHanzi() {
       const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
-      const displayText = `${randomEntry.english} <br>-<br> <span style="font-style: italic;">${randomEntry.pinyin}</span>
-`;
+
+      // Display English, Pinyin, and Chinese character
+      const displayText = `
+        ${randomEntry.english} <br>-<br>
+        <span style="font-style: italic;">${randomEntry.pinyin}</span> <br>
+        <span style="font-size: 2em; color: #333;">${randomEntry.chinese}</span>
+      `;
 
       document.querySelector('.targetCharBox').innerHTML = displayText;
 
-      // Store globally
+      // Store globally for drawing boards
       window.targetHanziEntry = randomEntry;
       window.targetCharacter = randomEntry.chinese;
 
       buildBoards();
     }
-
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;
     function fileLoaded(ok) {

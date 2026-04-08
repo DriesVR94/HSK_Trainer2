@@ -56,8 +56,6 @@
       buildBoards();
     }
 
-
-
     // ----- 2.  load HanziLookup data files -----
     let filesToLoad = 2;
     function fileLoaded(ok) {
@@ -92,26 +90,27 @@
       const container = document.getElementById('drawingBoardsContainer');
       container.innerHTML = '';
 
-      const chars = [...window.targetCharacter].slice(0, window.targetHanziEntry.charCount);
-      const count = window.targetHanziEntry.charCount;
+      const count = 10; // ✅ FIXED NUMBER OF BOARDS
+      const columns = 5;
 
-      const totalWidth = 810;
-      const gap = 20;
-      const availableWidth = totalWidth - gap * (count - 1);
-      let boxSize = Math.floor(availableWidth / count);
-      boxSize = Math.max(150, Math.min(250, boxSize));
+      // 👉 switch layout to grid instead of flex
+      container.style.display = 'grid';
+      container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+      container.style.gap = '20px';
+      container.style.width = '810px';
+      container.style.margin = '0 auto';
 
-      const fontSize = Math.max(12, Math.min(20, boxSize / 12));
+      const boxSize = 150; // fixed size works better in grid
+      const fontSize = 14;
 
       window._drawingBoards = [];
 
-      chars.forEach((char, idx) => {
+      for (let idx = 0; idx < count; idx++) {
         const wrap = document.createElement('div');
         wrap.className = 'boardWrap';
-        wrap.style.flex = `0 0 ${boxSize}px`;
 
         wrap.innerHTML = `
-          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
+          <div class="drawingBoard">
             <div class="solutionAnimation"></div>
           </div>
 
@@ -119,40 +118,38 @@
             <div class="cmd cmdRecognize dev-only">Recognize</div>
           </div>
 
-          <h2 class="dev-only" style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
+          <h2 class="dev-only" style="font-size: ${fontSize}px;">Original HanziLookup data</h2>
           <div class="charPicker hanziLookupChars dev-only"></div>
 
-          <h2 class="dev-only" style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
+          <h2 class="dev-only" style="font-size: ${fontSize}px;">Make Me a Hanzi data</h2>
           <div class="charPicker mmahLookupChars dev-only"></div>
 
-          <h2 class="dev-only" style="font-size: ${fontSize - 2}px;">OCR Result</h2>
+          <h2 class="dev-only" style="font-size: ${fontSize}px;">OCR Result</h2>
           <div class="ocrResultBox dev-only">…</div>
         `;
 
         container.appendChild(wrap);
 
-        if (!isDev) {
-          document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
-        }
-
         const boardElem = wrap.querySelector('.drawingBoard');
         const resOrig = wrap.querySelector('.hanziLookupChars');
         const resMMAH = wrap.querySelector('.mmahLookupChars');
 
-        // ✅ SIMPLIFIED DRAWING BOARD
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
-          // Only keep lookup functionality
           lookup(board, resOrig, resMMAH);
         });
 
-        // Optional manual recognize button (still useful in dev)
         const recognizeButton = wrap.querySelector('.cmdRecognize');
         recognizeButton.onclick = () => {
           lookup(board, resOrig, resMMAH);
         };
 
         window._drawingBoards.push(board);
-      });
+      }
+
+      // ✅ hide dev elements once (not inside loop)
+      if (!isDev) {
+        document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
+      }
     }
 
     document.getElementById('nextButton').onclick = () => {

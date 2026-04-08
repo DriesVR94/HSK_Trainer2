@@ -2,92 +2,452 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Hanzi Practice Grid</title>
+  <title>HanziLookupJS demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- External CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='study_page.css') }}">
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hanzilookup@latest/dist/hanzilookup.min.js"></script>
+  <style>
+    body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
+    div, h1, h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
+    h1 { margin-bottom: 8px; }  h2 { font-weight: normal; margin-bottom: 8px; }
+    .content, .header { width: 100%; margin: 0 auto; background-color: #000f18; padding: 20px; color: #f0f0f0; border-radius: 8px; float: none; }
+    .header { text-align: center; margin-bottom: 20px; }  .header a { color: #fce566; text-decoration: none; }
+    .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+    .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
+    .colLeft > .boardWrap { flex: 0 0 auto; }
+    .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
+    .commands { width: 100%; margin: 8px; display: flex;  justify-content: center; }
+    .cmd { flex: 0.2; background-color: #f1c40f; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
+    .cmd:hover { background-color: #f1d7a6; }
+    .charPicker { width: 100%; border: 1px solid #a0a0a0; padding: 3%; height: 70px; font-size: 48px; background-color: #fafafa; overflow: hidden; color: #606060; }
+    .targetCharBox { width: 500px; height: 100px; padding: 4%; font-weight: bold; font-size: 30px; background-color: #f1c40f; border-radius: 8px; color: #333; margin-top: 10px; font-family: "Noto Sans", "Arial", sans-serif; display: flex;  flex-direction: column; justify-content: center; align-items: center; text-align: center; line-height: 1.2; }
+    .colRight { width: 100%; margin-top: 20px; }
+    .feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; text-align: center;}
+    .segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.2; transition: background-color 0.3s; color: black; }
+    .segment.highlight { opacity: 1 !important; border: 2px solid black; font-weight: bold; }
+    .noob { background-color: #f79297; color: black; }
+    .familiar { background-color: #f4676e; color: black; }
+    .good { background-color: #f03d46; color: black; }
+    .expert { background-color: #ee1c25; color: black; }
+    .feedbackBar.correct { background-color: #a6e3a1; opacity: 1; }
+    .feedbackBar.incorrect { background-color: #f28b82; opacity: 1;}
+    .ocrResultBox { width: 100%; text-align: center; font-size: 48px; padding: 8px; margin-top: 10px; border-top: 1px dashed #aaa; color: #444; font-family: "Noto Sans", "Arial", sans-serif; }
+    .show_solution_container { display: flex; justify-content: center;  margin: 10px 0;}
+    .show_solution_button { background-color: #f1c40f; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; color: #000f18; transition: 0.2s;}
+    .show_solution_button:hover {  background-color: #f1d7a6;}
+    .solutionAnimation { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background-color: rgba(255, 255, 255, 0.9); justify-content: center; align-items: center; z-index: 10;}
+  </style>
+
 </head>
+<body data-level="{{ level }}">
+  <div class="header">
+    <h1>HanziLookupJS demo</h1>
+    <a href="https://github.com/gugray/HanziLookupJS">github.com/gugray/HanziLookupJS</a>
+  </div>
 
-<body>
+  <div class="content">
+    <div class="colLeft_2">
+      <div class="targetCharBox">loading…</div>
+    </div>
 
-<div class="header">
-  <h1>Hanzi Practice</h1>
-</div>
+    <!-- dynamic boards go here -->
+    <div class="colLeft" id="drawingBoardsContainer"></div>
+    <div style="text-align: center; margin: 20px 0;">
+      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;"><i class="fa-solid fa-angle-right"></i> </div>
+    </div>
+  </div>
 
-<div class="targetChar" id="targetChar">你</div>
+  <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
 
-<div class="grid" id="grid"></div>
+  <script>
 
-<script>
-const character = "你";
+    // Choose between development or production
+    const isDev = false; // set to false before deploying
 
-const grid = document.getElementById("grid");
+    const START_LEVEL = Number(document.body.dataset.level) || 1;
 
-// Create 10 boxes
-for (let i = 0; i < 10; i++) {
-  const box = document.createElement("div");
-  box.className = "box";
+    // ----- 1.  fetch random HSK character -----
+    let hanziLoaded = false, assetsLoaded = false;
+    let hanziList = [];
 
-  const boardDiv = document.createElement("div");
-  boardDiv.className = "drawingBoard";
+    function loadRandomHanzi() {
+      const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+      const displayText = `${randomEntry.english} <br>-<br> <span style="font-style: italic;">${randomEntry.pinyin}</span>
+`;
 
-  box.appendChild(boardDiv);
-  grid.appendChild(box);
+      document.querySelector('.targetCharBox').innerHTML = displayText;
 
-  const board = HanziLookup.DrawingBoard($(boardDiv));
+      // Store globally
+      window.targetHanziEntry = randomEntry;
+      window.targetCharacter = randomEntry.chinese;
 
-  const canvas = boardDiv.querySelector("canvas");
+      buildBoards();
+    }
 
-  const overlay = document.createElement("canvas");
-  overlay.width = canvas.width;
-  overlay.height = canvas.height;
-  overlay.className = "overlay";
 
-  box.appendChild(overlay);
 
-  const ctx = overlay.getContext("2d");
+    // ----- 2.  load HanziLookup data files -----
+    let filesToLoad = 2;
+    function fileLoaded(ok) {
+      if (!ok) { filesToLoad = -1; return; }
+      if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
+    }
 
-  function drawGrid() {
-    const w = overlay.width;
-    const h = overlay.height;
+    function loadLevel(level) {
+      hanziLoaded = false;
+      document.querySelector('.targetCharBox').innerText = "loading…";
 
-    ctx.clearRect(0, 0, w, h);
-    ctx.setLineDash([2,2]);
-    ctx.strokeStyle = "#999";
-    ctx.lineWidth = 1;
+      fetch(`/get_vocabulary?level=${level}`)
+        .then(r => r.json())
+        .then(data => {
+          hanziList = data;
+          hanziLoaded = true;
+          maybeInitBoards();
+        })
+        .catch(err => {
+          console.error(err);
+          document.querySelector('.targetCharBox').innerText = "⚠️ load error";
+        });
+    }
 
-    ctx.beginPath();
-    ctx.rect(0,0,w,h);
-    ctx.stroke();
+    HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
+    HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
 
-    ctx.beginPath();
-    ctx.moveTo(0,0); ctx.lineTo(w,h);
-    ctx.moveTo(w,0); ctx.lineTo(0,h);
-    ctx.moveTo(w/2,0); ctx.lineTo(w/2,h);
-    ctx.moveTo(0,h/2); ctx.lineTo(w,h/2);
-    ctx.stroke();
-  }
+    // ----- 3.  create boards when BOTH kinds of data are ready -----
+    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) loadRandomHanzi(); }
 
-  drawGrid();
-}
+    function buildBoards() {
+      const container = document.getElementById('drawingBoardsContainer');
+      container.innerHTML = '';
 
-// Animate once
-const writer = HanziWriter.create(document.getElementById("targetChar"), character, {
-  width: 100,
-  height: 100,
-  padding: 5,
-  strokeAnimationSpeed: 1,
-  delayBetweenStrokes: 200,
-  showOutline: true
-});
+      const chars = [...window.targetCharacter].slice(0, window.targetHanziEntry.charCount);
+      const count = window.targetHanziEntry.charCount;
 
-writer.animateCharacter();
-</script>
+      const totalWidth = 810;    // matches .colLeft width
+      const gap = 20;            // match CSS gap
+      const availableWidth = totalWidth - gap * (count - 1);
+      let boxSize = Math.floor(availableWidth / count);
+      boxSize = Math.max(150, Math.min(250, boxSize));  // clamp between 150–250
 
+      const fontSize = Math.max(12, Math.min(20, boxSize / 12)); // adaptive font
+
+      window._drawingBoards = [];
+
+      chars.forEach((char, idx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'boardWrap';
+        wrap.style.flex = `0 0 ${boxSize}px`;
+
+        wrap.innerHTML = `
+          <div class="drawingBoard" style="height: ${boxSize}px; position: relative;">
+            <div class="solutionAnimation"></div>
+          </div>
+
+          <div class="show_solution_container">
+            <button class="show_solution_button">Show solution</button>
+          </div>
+          <div class="commands">
+
+            <div class="cmd cmdRecognize dev-only">Recognize</div>
+          </div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
+          <div class="charPicker hanziLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
+          <div class="charPicker mmahLookupChars dev-only"></div>
+          <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">OCR Result</h2>
+          <div class="ocrResultBox dev-only">…</div>
+          <div class="strokeCounter dev-only">Strokes: 0</div>
+          <div class="timeTaken dev-only">Time: 0.00s</div>
+        `;
+        
+
+        container.appendChild(wrap);
+        if (!isDev) {document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');}
+
+        const boardElem = wrap.querySelector('.drawingBoard');
+        const resOrig = wrap.querySelector('.hanziLookupChars');
+        const resMMAH = wrap.querySelector('.mmahLookupChars');
+
+        let strokeCount = 0;
+        let startTime = null;
+        let endTime = null;
+        const strokeCounterElement = wrap.querySelector('.strokeCounter'); 
+        const timeTakenElement = wrap.querySelector('.timeTaken'); 
+    
+        const maxStrokes = window.targetHanziEntry.strokeCounts?.[idx] || 999;
+
+        const board = HanziLookup.DrawingBoard($(boardElem), () => {
+          strokeCount++;
+          strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
+
+          lookup(board, resOrig, resMMAH);
+
+          const strokes = board.cloneStrokes();
+
+         if (strokeCount === 1) {
+          startTime = performance.now();
+          endTime = null;
+        }
+
+        if (strokes.length === maxStrokes && !board._ocrSent) {
+          board._ocrSent = true;
+
+          // Calculate and display elapsed time
+          if (startTime && !endTime) {
+            endTime = performance.now();
+            const elapsed = (endTime - startTime) / 1000;
+            timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
+          }
+
+          setTimeout(() => {
+            const dataUrl = board.exportImage();
+
+            fetch('/recognize', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: dataUrl }),
+            })
+              .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch');
+                return res.json();
+              })
+              .then(data => {
+                wrap.querySelector('.ocrResultBox').textContent = data.result;
+              })
+              .catch(err => {
+                console.error(err);
+                alert(`Failed to recognize character ${idx + 1}.`);
+              });
+          }, 50);
+
+          updateFeedbackBarForBoard(board,wrap,idx);
+
+        }
+      });
+
+      const solutionButton = wrap.querySelector('.show_solution_button');
+      const solutionContainer = wrap.querySelector('.solutionAnimation');
+
+      let writer = null;
+
+      solutionButton.addEventListener('click', () => {
+        solutionContainer.style.display = 'flex';
+
+        // Clear previous animation
+        solutionContainer.innerHTML = '';
+
+        const charDiv = document.createElement('div');
+        solutionContainer.appendChild(charDiv);
+
+        // 👉 FIXED CHARACTER for now
+        writer = HanziWriter.create(charDiv, char, {
+          width: boxSize,
+          height: boxSize,
+          padding: 10,
+          strokeAnimationSpeed: 1,
+          delayBetweenLoops: 1000,
+          showOutline: true
+        });
+
+        solutionContainer.onclick = () => {
+        solutionContainer.style.display = 'none';
+        solutionContainer.innerHTML = '';
+      };
+
+        writer.loopCharacterAnimation();
+      });
+
+
+        // ---- NEW: Create overlay canvas for the grid ----
+        // HanziLookup.DrawingBoard creates a canvas inside boardElem
+        // Find that canvas:
+        const strokeCanvas = boardElem.querySelector('canvas');
+        strokeCanvas.style.position = 'relative'; // ensure baseline
+
+        // Create overlay canvas element
+        const overlayCanvas = document.createElement('canvas');
+        overlayCanvas.width = strokeCanvas.width;
+        overlayCanvas.height = strokeCanvas.height;
+        overlayCanvas.style.position = 'absolute';
+        overlayCanvas.style.top = '0';
+        overlayCanvas.style.left = '0';
+        overlayCanvas.style.pointerEvents = 'none'; // so pointer events go to strokeCanvas
+        boardElem.appendChild(overlayCanvas);
+
+        const overlayCtx = overlayCanvas.getContext('2d');
+
+        // Function to draw the grid lines on overlay canvas
+        function drawGrid(ctx, w, h) {
+          ctx.clearRect(0, 0, w, h);
+          ctx.setLineDash([1, 1]);
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = 'grey';
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, 0);
+          ctx.lineTo(w, h);
+          ctx.lineTo(0, h);
+          ctx.lineTo(0, 0);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(w, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w, 0);
+          ctx.lineTo(0, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(w / 2, 0);
+          ctx.lineTo(w / 2, h);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(0, h / 2);
+          ctx.lineTo(w, h / 2);
+          ctx.stroke();
+        }
+
+        drawGrid(overlayCtx, overlayCanvas.width, overlayCanvas.height);
+
+        // ---- Buttons handlers (undo, clear, recognize) ----
+        wrap.querySelector('.cmdUndo').onclick = () => {
+        board.undoStroke();
+        board.redraw();
+        lookup(board, resOrig, resMMAH);
+
+        board._ocrSent = false;
+        strokeCount = board.cloneStrokes().length;
+        strokeCounterElement.textContent = `Strokes: ${strokeCount}`;
+        startTime = null;
+        endTime = null;
+        timeTakenElement.textContent = `Time: 0.00s`;
+      };
+
+      wrap.querySelector('.cmdClear').onclick = () => {
+        board.clearCanvas();
+        board.redraw();
+
+        board._ocrSent = false;
+        strokeCount = 0;
+        startTime = null;
+        endTime = null;
+
+        strokeCounterElement.textContent = `Strokes: 0`;
+        timeTakenElement.textContent = `Time: 0.00s`;
+
+        lookup(board, resOrig, resMMAH);
+      };
+
+
+        const recognizeButton = wrap.querySelector('.cmdRecognize');
+        recognizeButton.onclick = () => {
+          lookup(board, resOrig, resMMAH);
+
+          const dataUrl = board.exportImage();
+
+          fetch('/recognize', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: dataUrl }),
+          })
+            .then(res => {
+              if (!res.ok) throw new Error('Failed to fetch');
+              return res.json();
+            })
+            .then(data => {
+              wrap.querySelector('.ocrResultBox').textContent = data.result;
+              recognizeButton.style.backgroundColor = '#a6e3a1'; // green
+              recognizeButton.style.color = '#000';
+            })
+            .catch(err => {
+              console.error(err);
+              alert('Failed to recognize.');
+              recognizeButton.style.backgroundColor = '#f28b82'; // red
+              recognizeButton.style.color = '#000';
+            });
+        };
+
+        window._drawingBoards.push(board);
+      });
+    }
+
+    document.getElementById('nextButton').onclick = () => {
+      loadRandomHanzi();
+    };
+
+
+    function updateFeedbackBarForBoard(board, wrap, idx) {
+      const expectedChar = window.targetCharacter[idx];
+      const resOrig = wrap.querySelector('.hanziLookupChars');
+      const resMMAH = wrap.querySelector('.mmahLookupChars');
+      const feedbackBar = wrap.querySelector('.feedbackBar');
+      const timeTakenElement = wrap.querySelector('.timeTaken');
+
+      lookup(board, resOrig, resMMAH);
+
+      const gotOrig = resOrig.querySelector('span')?.textContent || '';
+      const gotMMAH = resMMAH.querySelector('span')?.textContent || '';
+      const correct = gotOrig === expectedChar || gotMMAH === expectedChar;
+
+      // Get elapsed time from DOM
+      const timeText = timeTakenElement?.textContent || '';
+      const match = timeText.match(/([\d.]+)s/);
+      const elapsedTime = match ? parseFloat(match[1]) : 0;
+
+      // Calculate average time per stroke
+      const strokes = board.cloneStrokes().length;
+      const avgTimePerStroke = strokes > 0 ? elapsedTime / strokes : 0;
+
+      // Determine level class
+      let levelClass = 'noob';
+      if (correct) {
+        if (avgTimePerStroke <= 0.365) {
+          levelClass = 'expert';
+        } else if (avgTimePerStroke <= 0.5) {
+          levelClass = 'good';
+        } else {
+          levelClass = 'familiar';
+        }
+      }
+
+      let proficiencyValue = 0;
+      if (levelClass === "familiar") proficiencyValue = 1;
+      if (levelClass === "good") proficiencyValue = 2;
+      if (levelClass === "expert") proficiencyValue = 3;
+
+      sendProficiencyUpdate(window.targetHanziEntry.word_id, proficiencyValue);
+
+
+      // Reset all segments opacity
+      feedbackBar.querySelectorAll('.segment').forEach(seg => {
+        seg.style.opacity = '0.1';
+      });
+
+      // Highlight the correct segment
+      const highlightSegment = feedbackBar.querySelector(`.${levelClass}`);
+      if (highlightSegment) {
+        highlightSegment.style.opacity = '1';
+      }
+    }
+
+    // ----- 4.  lookup helpers -----
+    function lookup(board, elmOrig, elmMMAH) {
+      const analysed = new HanziLookup.AnalyzedCharacter(board.cloneStrokes());
+      new HanziLookup.Matcher('orig').match(analysed, 5, m => show(elmOrig, m));
+      new HanziLookup.Matcher('mmah').match(analysed, 5, m => show(elmMMAH, m));
+    }
+    function show(elm, matches) {
+      elm.innerHTML = matches.map(o => `<span>${o.character}</span>`).join('');
+    }
+
+  loadLevel(START_LEVEL);
+    
+  </script>
 </body>
 </html>

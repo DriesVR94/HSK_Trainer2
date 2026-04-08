@@ -97,7 +97,7 @@ main {
   display: flex;
   flex-direction: column; /* stack top row and bar */
   gap: 0.3rem;
-  margin: 1rem 0;
+  margin: 3rem 0;
 }
 
 

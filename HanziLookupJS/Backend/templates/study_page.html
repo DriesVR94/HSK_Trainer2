@@ -94,27 +94,36 @@
       const container = document.getElementById('drawingBoardsContainer');
       container.innerHTML = '';
 
-      const count = 10; // ✅ FIXED NUMBER OF BOARDS
-      const columns = 5;
+      const chars = window.targetCharacter;
+      const charCount = window.targetHanziEntry.charCount || chars.length;
 
-      // 👉 switch layout to grid instead of flex
+      const columns = 10; // ✅ ALWAYS 10 per row
+
+      // 👉 dynamic grid
       container.style.display = 'grid';
       container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-      container.style.gap = '20px';
-      container.style.width = '810px';
+      container.style.gap = '10px';
+      container.style.width = '90%';
+      container.style.maxWidth = '1200px';
       container.style.margin = '0 auto';
 
-      const boxSize = 150; // fixed size works better in grid
-      const fontSize = 14;
+      // 👉 calculate dynamic box size
+      const containerWidth = container.clientWidth || 1000;
+      const boxSize = Math.floor(containerWidth / columns) - 10;
 
       window._drawingBoards = [];
 
-      for (let idx = 0; idx < count; idx++) {
+      // ✅ total boards = charCount × 10
+      const totalBoards = charCount * columns;
+
+      for (let idx = 0; idx < totalBoards; idx++) {
         const wrap = document.createElement('div');
         wrap.className = 'boardWrap';
 
+        wrap.style.width = `${boxSize}px`;
+
         wrap.innerHTML = `
-          <div class="drawingBoard">
+          <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;">
             <div class="solutionAnimation"></div>
           </div>
 
@@ -122,13 +131,8 @@
             <div class="cmd cmdRecognize dev-only">Recognize</div>
           </div>
 
-          <h2 class="dev-only" style="font-size: ${fontSize}px;">Original HanziLookup data</h2>
           <div class="charPicker hanziLookupChars dev-only"></div>
-
-          <h2 class="dev-only" style="font-size: ${fontSize}px;">Make Me a Hanzi data</h2>
           <div class="charPicker mmahLookupChars dev-only"></div>
-
-          <h2 class="dev-only" style="font-size: ${fontSize}px;">OCR Result</h2>
           <div class="ocrResultBox dev-only">…</div>
         `;
 
@@ -150,7 +154,7 @@
         window._drawingBoards.push(board);
       }
 
-      // ✅ hide dev elements once (not inside loop)
+      // hide dev UI
       if (!isDev) {
         document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
       }

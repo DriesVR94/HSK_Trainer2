@@ -130,9 +130,6 @@
         container.appendChild(wrap);
 
         const boardElem = wrap.querySelector('.drawingBoard');
-        const resOrig = wrap.querySelector('.hanziLookupChars');
-        const resMMAH = wrap.querySelector('.mmahLookupChars');
-
         const board = HanziLookup.DrawingBoard($(boardElem), () => {
           lookup(board, resOrig, resMMAH);
         });

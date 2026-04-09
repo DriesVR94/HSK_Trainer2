@@ -20,13 +20,10 @@
     <div class="colLeft_2">
       <div class="targetCharBox">loading…</div>
     </div>
-
-    <div class="colLeft" id="drawingBoardsContainer"></div>
-
+      <div class="colLeft" id="drawingBoardsContainer"></div>
       <!-- dynamic boards go here -->
       <div class="colLeft" id="drawingBoardsContainer"></div>
     </div>
-
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">
         <i class="fa-solid fa-angle-right"></i>
@@ -127,16 +124,17 @@
         wrap.className = 'boardWrap';
         wrap.style.width = `${boxSize}px`;
 
-        // 👉 FIRST BOX = HanziWriter animation
+        const inner = document.createElement('div');
+        inner.className = 'drawingBoard';
+        inner.style.width = `${boxSize}px`;
+        inner.style.height = `${boxSize}px`;
+
+        wrap.appendChild(inner);
+        container.appendChild(wrap);
+
         if (idx === 0) {
-          wrap.innerHTML = `
-            <div id="character-target-div" class="drawingBoard"></div>
-          `;
-
-          container.appendChild(wrap);
-
-          // create writer AFTER element exists
-          const writer = HanziWriter.create('character-target-div', window.targetCharacter, {
+          // ✅ animation goes into first grid cell
+          const writer = HanziWriter.create(inner, window.targetCharacter, {
             width: boxSize,
             height: boxSize,
             padding: 5,
@@ -146,17 +144,8 @@
           writer.loopCharacterAnimation();
 
         } else {
-          // 👉 NORMAL DRAWING BOARDS
-          wrap.innerHTML = `
-            <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;"></div>
-          `;
-
-          container.appendChild(wrap);
-
-          const boardElem = wrap.querySelector('.drawingBoard');
-
-          const board = HanziLookup.DrawingBoard($(boardElem), () => {
-            lookup(board, resOrig, resMMAH);
+          const board = HanziLookup.DrawingBoard($(inner), () => {
+            lookup(board);
           });
 
           window._drawingBoards.push(board);
@@ -175,8 +164,6 @@
 
   loadLevel(START_LEVEL);
   
-  writer.loopCharacterAnimation();
-
 </script>
 </body>
 </html>

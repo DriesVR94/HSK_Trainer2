@@ -132,9 +132,13 @@
         wrap.appendChild(inner);
         container.appendChild(wrap);
 
-        if (idx === 0) {
-          // ✅ animation goes into first grid cell
-          const writer = HanziWriter.create(inner, window.targetCharacter, {
+        const rowIndex = Math.floor(idx / columns);
+
+        // 👉 FIRST COLUMN OF EACH ROW = animation (if char exists)
+        if (idx % columns === 0 && rowIndex < chars.length) {
+          const char = chars[rowIndex];
+
+          const writer = HanziWriter.create(inner, char, {
             width: boxSize,
             height: boxSize,
             padding: 5,

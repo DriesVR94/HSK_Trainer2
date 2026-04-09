@@ -124,13 +124,7 @@
         wrap.style.width = `${boxSize}px`;
 
         wrap.innerHTML = `
-          <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;">
-            <div class="solutionAnimation"></div>
-          </div>
-
-          <div class="charPicker hanziLookupChars dev-only"></div>
-          <div class="charPicker mmahLookupChars dev-only"></div>
-          <div class="ocrResultBox dev-only">…</div>
+          <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;"></div>
         `;
 
         container.appendChild(wrap);
@@ -155,7 +149,6 @@
     document.getElementById('nextButton').onclick = () => {
       loadRandomHanzi();
     };
-
 
   loadLevel(START_LEVEL);
   

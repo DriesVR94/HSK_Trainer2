@@ -19,6 +19,7 @@
   <div class="content">
     <div class="colLeft_2">
       <div class="targetCharBox">loading…</div>
+      <div id="character-target-div" style="margin: 20px auto;"></div>
     </div>
 
     <!-- dynamic boards go here -->
@@ -175,7 +176,17 @@
     }
 
   loadLevel(START_LEVEL);
-    
+  
+  var writer = HanziWriter.create('character-target-div', '轮', {
+    width: 100,
+    height: 100,
+    padding: 5,
+    delayBetweenLoops: 3000
+  });
+
+  writer.loopCharacterAnimation();
+
+
   </script>
 </body>
 </html>

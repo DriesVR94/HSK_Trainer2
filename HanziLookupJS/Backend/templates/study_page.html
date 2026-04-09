@@ -21,11 +21,19 @@
       <div class="targetCharBox">loading…</div>
     </div>
 
-    <!-- dynamic boards go here -->
-    <div class="colLeft" id="drawingBoardsContainer"></div>
+    <!-- wrap animation + boards in a CSS-controlled flex container -->
+    <div class="animation-and-boards">
+      <!-- HanziWriter animation on the left -->
+      <div id="character-target-div"></div>
+
+      <!-- dynamic boards go here -->
+      <div class="colLeft" id="drawingBoardsContainer"></div>
+    </div>
+
     <div style="text-align: center; margin: 20px 0;">
-      <div id="character-target-div" style="margin: 20px auto;"></div>
-      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;"><i class="fa-solid fa-angle-right"></i> </div>
+      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">
+        <i class="fa-solid fa-angle-right"></i>
+      </div>
     </div>
   </div>
 
@@ -120,21 +128,42 @@
       for (let idx = 0; idx < totalBoards; idx++) {
         const wrap = document.createElement('div');
         wrap.className = 'boardWrap';
-
         wrap.style.width = `${boxSize}px`;
 
-        wrap.innerHTML = `
-          <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;"></div>
-        `;
+        // 👉 FIRST BOX = HanziWriter animation
+        if (idx === 0) {
+          wrap.innerHTML = `
+            <div id="character-target-div" class="drawingBoard"></div>
+          `;
 
-        container.appendChild(wrap);
+          container.appendChild(wrap);
 
-        const boardElem = wrap.querySelector('.drawingBoard');
-        const board = HanziLookup.DrawingBoard($(boardElem), () => {
-          lookup(board, resOrig, resMMAH);
-        });
+          // create writer AFTER element exists
+          const writer = HanziWriter.create('character-target-div', window.targetCharacter, {
+            width: boxSize,
+            height: boxSize,
+            padding: 5,
+            delayBetweenLoops: 3000
+          });
 
-        window._drawingBoards.push(board);
+          writer.loopCharacterAnimation();
+
+        } else {
+          // 👉 NORMAL DRAWING BOARDS
+          wrap.innerHTML = `
+            <div class="drawingBoard" style="width:${boxSize}px; height:${boxSize}px;"></div>
+          `;
+
+          container.appendChild(wrap);
+
+          const boardElem = wrap.querySelector('.drawingBoard');
+
+          const board = HanziLookup.DrawingBoard($(boardElem), () => {
+            lookup(board, resOrig, resMMAH);
+          });
+
+          window._drawingBoards.push(board);
+        }
       }
 
       // hide dev UI

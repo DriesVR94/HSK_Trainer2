@@ -204,3 +204,24 @@ h2 { font-weight: normal; margin-bottom: 8px; }
   align-items: center;
   z-index: 10;
 }
+
+/* Container for animation + boards */
+.animation-and-boards {
+  display: flex;
+  align-items: flex-start;    /* align top edges */
+  gap: 20px;                  /* space between animation and boards */
+  width: 100%;
+  justify-content: center;    /* center horizontally */
+  margin-top: 20px;
+  flex-wrap: wrap;            /* wrap on small screens */
+}
+
+/* HanziWriter animation box */
+#character-target-div {
+  flex-shrink: 0;             /* do not shrink */
+  width: 120px;               /* default size, adjust as needed */
+  height: 120px;
+  background-color: #fafafa;
+  border: 2px solid #f1c40f;
+  border-radius: 8px;
+}

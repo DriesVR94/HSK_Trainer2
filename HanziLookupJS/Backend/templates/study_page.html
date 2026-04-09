@@ -21,8 +21,6 @@
       <div class="targetCharBox">loading…</div>
     </div>
       <div class="colLeft" id="drawingBoardsContainer"></div>
-      <!-- dynamic boards go here -->
-      <div class="colLeft" id="drawingBoardsContainer"></div>
     </div>
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">
@@ -48,11 +46,10 @@
     function loadRandomHanzi() {
       const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
 
-      // Display English, Pinyin, and Chinese character
+      // Display English, Pinyin
       const displayText = `
         ${randomEntry.english} <br>-<br>
         <span style="font-style: italic;">${randomEntry.pinyin}</span> <br>
-        <span style="font-size: 2em; color: #333;">${randomEntry.chinese}</span>
       `;
 
       document.querySelector('.targetCharBox').innerHTML = displayText;

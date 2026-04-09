@@ -41,11 +41,8 @@ h2 { font-weight: normal; margin-bottom: 8px; }
 }
 
 .colLeft {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  justify-content: center;
-  width: 810px;
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
 }
 

@@ -12,7 +12,7 @@
 </head>
 <body data-level="{{ level }}">
   <div class="header">
-    <h1>HanziLookupJS demo</h1>
+    <h1>Study</h1>
     <a href="https://github.com/gugray/HanziLookupJS">github.com/gugray/HanziLookupJS</a>
   </div>
 
@@ -128,8 +128,6 @@
             <div class="solutionAnimation"></div>
           </div>
 
-
-
           <div class="charPicker hanziLookupChars dev-only"></div>
           <div class="charPicker mmahLookupChars dev-only"></div>
           <div class="ocrResultBox dev-only">…</div>
@@ -145,8 +143,6 @@
           lookup(board, resOrig, resMMAH);
         });
 
-
-
         window._drawingBoards.push(board);
       }
 
@@ -160,15 +156,6 @@
       loadRandomHanzi();
     };
 
-    // ----- 4.  lookup helpers -----
-    function lookup(board, elmOrig, elmMMAH) {
-      const analysed = new HanziLookup.AnalyzedCharacter(board.cloneStrokes());
-      new HanziLookup.Matcher('orig').match(analysed, 5, m => show(elmOrig, m));
-      new HanziLookup.Matcher('mmah').match(analysed, 5, m => show(elmMMAH, m));
-    }
-    function show(elm, matches) {
-      elm.innerHTML = matches.map(o => `<span>${o.character}</span>`).join('');
-    }
 
   loadLevel(START_LEVEL);
   
@@ -181,7 +168,6 @@
 
   writer.loopCharacterAnimation();
 
-
-  </script>
+</script>
 </body>
 </html>

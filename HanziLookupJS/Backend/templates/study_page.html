@@ -7,9 +7,8 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='study_page.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
-
-
 </head>
+
 <body data-level="{{ level }}">
   <div class="header">
     <h1>Study</h1>
@@ -20,8 +19,9 @@
     <div class="colLeft_2">
       <div class="targetCharBox">loading…</div>
     </div>
-      <div class="colLeft" id="drawingBoardsContainer"></div>
-    </div>
+
+    <div class="colLeft" id="drawingBoardsContainer"></div>
+
     <div style="text-align: center; margin: 20px 0;">
       <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">
         <i class="fa-solid fa-angle-right"></i>
@@ -32,139 +32,184 @@
   <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
   <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
 
-  <script>
+<script>
+const isDev = false;
+const START_LEVEL = Number(document.body.dataset.level) || 1;
 
-    // Choose between development or production
-    const isDev = false; // set to false before deploying
+let hanziLoaded = false, assetsLoaded = false;
+let hanziList = [];
 
-    const START_LEVEL = Number(document.body.dataset.level) || 1;
+function loadRandomHanzi() {
+  const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
 
-    // ----- 1.  fetch random HSK character -----
-    let hanziLoaded = false, assetsLoaded = false;
-    let hanziList = [];
+  document.querySelector('.targetCharBox').innerHTML = `
+    ${randomEntry.english} <br>-<br>
+    <span style="font-style: italic;">${randomEntry.pinyin}</span>
+  `;
 
-    function loadRandomHanzi() {
-      const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+  window.targetHanziEntry = randomEntry;
+  window.targetCharacter = randomEntry.chinese;
 
-      // Display English, Pinyin
-      const displayText = `
-        ${randomEntry.english} <br>-<br>
-        <span style="font-style: italic;">${randomEntry.pinyin}</span> <br>
-      `;
+  buildBoards();
+}
 
-      document.querySelector('.targetCharBox').innerHTML = displayText;
+let filesToLoad = 2;
+function fileLoaded(ok) {
+  if (!ok) { filesToLoad = -1; return; }
+  if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
+}
 
-      // Store globally for drawing boards
-      window.targetHanziEntry = randomEntry;
-      window.targetCharacter = randomEntry.chinese;
+function loadLevel(level) {
+  hanziLoaded = false;
+  document.querySelector('.targetCharBox').innerText = "loading…";
 
-      buildBoards();
-    }
-    // ----- 2.  load HanziLookup data files -----
-    let filesToLoad = 2;
-    function fileLoaded(ok) {
-      if (!ok) { filesToLoad = -1; return; }
-      if (--filesToLoad === 0) { assetsLoaded = true; maybeInitBoards(); }
-    }
+  fetch(`/get_vocabulary?level=${level}`)
+    .then(r => r.json())
+    .then(data => {
+      hanziList = data;
+      hanziLoaded = true;
+      maybeInitBoards();
+    })
+    .catch(err => {
+      console.error(err);
+      document.querySelector('.targetCharBox').innerText = "⚠️ load error";
+    });
+}
 
-    function loadLevel(level) {
-      hanziLoaded = false;
-      document.querySelector('.targetCharBox').innerText = "loading…";
+HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
+HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
 
-      fetch(`/get_vocabulary?level=${level}`)
-        .then(r => r.json())
-        .then(data => {
-          hanziList = data;
-          hanziLoaded = true;
-          maybeInitBoards();
-        })
-        .catch(err => {
-          console.error(err);
-          document.querySelector('.targetCharBox').innerText = "⚠️ load error";
-        });
-    }
+function maybeInitBoards() {
+  if (hanziLoaded && assetsLoaded) loadRandomHanzi();
+}
 
-    HanziLookup.init('mmah', "{{ url_for('static', filename='dist/mmah.json') }}", fileLoaded);
-    HanziLookup.init('orig', "{{ url_for('static', filename='dist/orig.json') }}", fileLoaded);
+function drawGrid(ctx, w, h) {
+  ctx.clearRect(0, 0, w, h);
+  ctx.strokeStyle = "#ddd";
+  ctx.lineWidth = 1;
 
-    // ----- 3.  create boards when BOTH kinds of data are ready -----
-    function maybeInitBoards() { if (hanziLoaded && assetsLoaded) loadRandomHanzi(); }
+  const step = w / 4;
 
-    function buildBoards() {
-      const container = document.getElementById('drawingBoardsContainer');
-      container.innerHTML = '';
+  for (let i = 1; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(step * i, 0);
+    ctx.lineTo(step * i, h);
+    ctx.stroke();
 
-      const chars = window.targetCharacter;
-      const charCount = window.targetHanziEntry.charCount || chars.length;
+    ctx.beginPath();
+    ctx.moveTo(0, step * i);
+    ctx.lineTo(w, step * i);
+    ctx.stroke();
+  }
+}
 
-      const columns = 10; // ✅ ALWAYS 10 per row
+function addGridOverlay(boardElem) {
+  const canvas = boardElem.querySelector('canvas');
+  if (!canvas) return;
 
-      // 👉 dynamic grid
-      container.style.display = 'grid';
-      container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-      container.style.gap = '10px';
-      container.style.width = '90%';
-      container.style.maxWidth = '1200px';
-      container.style.margin = '0 auto';
+  const overlay = document.createElement('canvas');
+  overlay.width = canvas.width;
+  overlay.height = canvas.height;
 
-      // 👉 calculate dynamic box size
-      const containerWidth = container.clientWidth || 1000;
-      const boxSize = Math.floor(containerWidth / columns) - 10;
+  overlay.style.position = 'absolute';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = canvas.style.width;
+  overlay.style.height = canvas.style.height;
+  overlay.style.pointerEvents = 'none';
+  overlay.style.zIndex = 10;
 
-      window._drawingBoards = [];
+  boardElem.appendChild(overlay);
 
-      // ✅ total boards = charCount × 10
-      const totalBoards = charCount * columns;
+  const ctx = overlay.getContext('2d');
+  drawGrid(ctx, overlay.width, overlay.height);
+}
 
-      for (let idx = 0; idx < totalBoards; idx++) {
-        const wrap = document.createElement('div');
-        wrap.className = 'boardWrap';
-        wrap.style.width = `${boxSize}px`;
+function buildBoards() {
+  const container = document.getElementById('drawingBoardsContainer');
+  container.innerHTML = '';
 
-        const inner = document.createElement('div');
-        inner.className = 'drawingBoard';
-        inner.style.width = `${boxSize}px`;
-        inner.style.height = `${boxSize}px`;
+  const chars = window.targetCharacter;
+  const charCount = window.targetHanziEntry.charCount || chars.length;
 
-        wrap.appendChild(inner);
-        container.appendChild(wrap);
+  const columns = 10;
 
-        const rowIndex = Math.floor(idx / columns);
+  container.style.display = 'grid';
+  container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  container.style.gap = '10px';
+  container.style.width = '90%';
+  container.style.maxWidth = '1200px';
+  container.style.margin = '0 auto';
 
-        // 👉 FIRST COLUMN OF EACH ROW = animation (if char exists)
-        if (idx % columns === 0 && rowIndex < chars.length) {
-          const char = chars[rowIndex];
+  const containerWidth = container.clientWidth || 1000;
+  const boxSize = Math.floor(containerWidth / columns) - 10;
 
-          const writer = HanziWriter.create(inner, char, {
-            width: boxSize,
-            height: boxSize,
-            padding: 5,
-            delayBetweenLoops: 3000
-          });
+  window._drawingBoards = [];
 
-          writer.loopCharacterAnimation();
+  const totalBoards = charCount * columns;
 
-        } else {
-          const board = HanziLookup.DrawingBoard($(inner), () => {
-            lookup(board);
-          });
+  for (let idx = 0; idx < totalBoards; idx++) {
 
-          window._drawingBoards.push(board);
-        }
+    const wrap = document.createElement('div');
+    wrap.className = 'boardWrap';
+    wrap.style.width = `${boxSize}px`;
+
+    const inner = document.createElement('div');
+    inner.className = 'drawingBoard';
+    inner.style.width = `${boxSize}px`;
+    inner.style.height = `${boxSize}px`;
+    inner.style.position = 'relative';
+
+    wrap.appendChild(inner);
+    container.appendChild(wrap);
+
+    const rowIndex = Math.floor(idx / columns);
+
+    if (idx % columns === 0 && rowIndex < chars.length) {
+
+      const char = chars[rowIndex];
+
+      const writer = HanziWriter.create(inner, char, {
+        width: boxSize,
+        height: boxSize,
+        padding: 5,
+        delayBetweenLoops: 3000
+      });
+
+      writer.loopCharacterAnimation();
+
+      requestAnimationFrame(() => addGridOverlay(inner));
+
+    } else {
+
+      const board = HanziLookup.DrawingBoard($(inner), () => {
+        lookup(board);
+      });
+
+      const canvas = inner.querySelector('canvas');
+
+      if (canvas) {
+        canvas.width = boxSize;
+        canvas.height = boxSize;
+        canvas.style.width = `${boxSize}px`;
+        canvas.style.height = `${boxSize}px`;
       }
 
-      // hide dev UI
-      if (!isDev) {
-        document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
-      }
+      window._drawingBoards.push(board);
+
+      requestAnimationFrame(() => addGridOverlay(inner));
     }
+  }
 
-    document.getElementById('nextButton').onclick = () => {
-      loadRandomHanzi();
-    };
+  if (!isDev) {
+    document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
+  }
+}
 
-  loadLevel(START_LEVEL);
-  
+document.getElementById('nextButton').onclick = () => loadRandomHanzi();
+
+loadLevel(START_LEVEL);
 </script>
+
 </body>
 </html>

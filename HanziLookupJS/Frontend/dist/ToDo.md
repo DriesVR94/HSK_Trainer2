@@ -1,3 +1,36 @@
+### WELCOME PAGE ###
+- [] Replace the GIF with a self-made one (using code from Hanzi Writer).
+- [] Add a short demo video.
+- [] Fix the pricing tabs together with the "Become a Hero"-button.
+- [] Remove the Pricing for now, test with starter audience first.
+- [] Update the nav bar so it is consistent with the content of the page
+
+### REGISTRATION PAGE ###
+- [] Make the layout consistent with the layout of the Welcome Page.
+- [] Make the Apple button work.
+- [] Make the Google button work.
+
+### SIGNIN PAGE ###
+- [] Make the layout consistent with the layout of the Welcome Page.
+- [] Remove the part 'Or continue with ...'
+
+### HOME PAGE ###
+- [] Make the popup shown on hovering over the progress bars follow your mouse.
+- [] Add a tag 'Study' and 'Test' when hovering over the icons.
+- [] Make the nav bar responsive and consistent.
+- [] Implement a Profile page.
+
+### STUDY PAGE ###
+- [] Make the layout consistent.
+- [] Add a grid for the drawn character.
+- [] Add 2 gray example characters where the user can draw over.
+
+### TEST PAGE ###
+- [] Make the layout consistent.
+- [] Verify that the 'undo' and 'remove' buttons work properly.
+
+### EXTRAS ###
+
 - [] User's username and password are shown in the URL. Unsafe. Remove.
 
 - [] Apply a spaced learning algorithm.
@@ -5,7 +38,7 @@
     - [] Implement a down-counter for the recall score.
     - [] Let the words closest to 1 (= the baseline) be prompted first for practice. First words that have already been practiced, but score 0. Then words just above or below 1. Then words that haven't been practiced yet.  
 
-- [] Add a 'Show character' GIF during training.
+- [x] Add a 'Show character' GIF during training.
 
 - [] Let user choose how many chars should be tested in 1 run.
 - [] Add a 'report an error button'   

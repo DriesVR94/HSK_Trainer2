@@ -440,7 +440,13 @@ def update_proficiency():
     finally:
         conn.close()
 
+@app.route("/")
+def home():
+    return "HSK Hero API is running 🚀"
+
 # app.register_blueprint(ocr_bp) # Not needed for production.
+
+
 
 
 if __name__ == '__main__':

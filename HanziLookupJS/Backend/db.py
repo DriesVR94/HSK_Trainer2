@@ -1,6 +1,6 @@
 
 from flask_cors import CORS
-from ocr import ocr_bp   # ✅ IMPORT OCR MODULE
+from Backend.ocr import ocr_bp
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
 import sqlite3, hashlib, os, json
 from datetime import datetime

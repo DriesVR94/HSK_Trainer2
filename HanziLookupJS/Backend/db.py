@@ -444,6 +444,10 @@ def update_proficiency():
 def home():
     return "HSK Hero API is running 🚀"
 
+@app.route("/health")
+def health():
+    return {"status": "ok"}
+
 # app.register_blueprint(ocr_bp) # Not needed for production.
 
 

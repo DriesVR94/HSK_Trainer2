@@ -2,7 +2,7 @@
 - [] Replace the GIF with a self-made one (using code from Hanzi Writer).
 - [] Add a short demo video.
 - [] Fix the pricing tabs together with the "Become a Hero"-button.
-- [] Remove the Pricing for now, test with starter audience first.
+- [x] Remove the Pricing for now, test with starter audience first.
 - [] Update the nav bar so it is consistent with the content of the page
 
 ### REGISTRATION PAGE ###

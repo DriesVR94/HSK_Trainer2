@@ -1,10 +1,9 @@
 
 from flask_cors import CORS
-from Backend.ocr import ocr_bp
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
 import sqlite3, hashlib, os, json
 from datetime import datetime
-from ocr import ocr_bp
+from Backend.ocr import ocr_bp
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)

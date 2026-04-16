@@ -4,9 +4,9 @@ import numpy as np
 from easydict import EasyDict as edict
 from io import BytesIO
 from PIL import Image
-from lib.utils.utils import strLabelConverter
-import lib.models.crnn as crnn
-import lib.config.alphabets as alphabets
+from Backend.lib.utils.utils import strLabelConverter
+import Backend.lib.models.crnn as crnn
+import Backend.lib.config.alphabets as alphabets
 
 ocr_bp = Blueprint("ocr", __name__)   # ✅ NO url_prefix here
 

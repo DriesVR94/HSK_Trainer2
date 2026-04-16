@@ -11,7 +11,7 @@ import Backend.lib.config.alphabets as alphabets
 ocr_bp = Blueprint("ocr", __name__)   # ✅ NO url_prefix here
 
 # ---- LOAD MODEL ONCE ----
-with open('lib/config/OWN_config.yaml', 'r') as f:
+with open('Backend.lib/config/OWN_config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.FullLoader)
     config = edict(config)
 

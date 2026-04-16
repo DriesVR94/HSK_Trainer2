@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
 import sqlite3, hashlib, os, json
 from datetime import datetime
-from Backend.ocr import ocr_bp
+#from Backend.ocr import ocr_bp  # Not needed for production.
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -440,7 +440,7 @@ def update_proficiency():
     finally:
         conn.close()
 
-app.register_blueprint(ocr_bp)
+# app.register_blueprint(ocr_bp) # Not needed for production.
 
 
 if __name__ == '__main__':

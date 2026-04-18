@@ -3,10 +3,6 @@
     font-family: "Titillium Web", sans-serif;
 }
 
-.fa-apple {
-  color: white;
-}
-
 .google-signin-button img {
     width: 100%;
     height: auto;
@@ -54,12 +50,6 @@ body {
       align-items: center;
       gap: 0.5rem;
       cursor: pointer;
-    }
-
-    .social-button.apple {
-      background-color: #000f18;
-      color: white;
-      border: none;
     }
 
     .social-button.wechat {

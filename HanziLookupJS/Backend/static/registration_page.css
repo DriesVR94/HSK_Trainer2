@@ -1,148 +1,147 @@
 * {
-    box-sizing: border-box;
-    font-family: "Titillium Web", sans-serif;
+  box-sizing: border-box;
+  font-family: "Titillium Web", sans-serif;
 }
 
 .google-signin-button img {
-    width: 100%;
-    height: auto;
-    display: block;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 body {
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #000f18;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #000f18;
 }
 
 .container {
-    width: 40vw;
-    padding: 2rem;
-    text-align: center;
-    background-color: white;
-    border-radius: 10px;
-    color: #000f18;
+  width: 40vw;
+  padding: 2rem;
+  text-align: center;
+  background-color: white;
+  border-radius: 10px;
+  color: #000f18;
 }
 
-    h1 {
-      margin-bottom: 2rem;
-      font-size: 1.5rem;
-    }
-
-    .social-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .social-button {
-      flex: 1;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-weight: 600;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .social-button.wechat {
-    background-color: white;
-    color: #07C160;
-    text-decoration: none;
+h1 {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
 }
 
-    .divider {
-      margin: 1rem 0;
-      position: relative;
-      text-align: center;
-      color: #999;
-    }
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
 
-    .divider::before,
-    .divider::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 40%;
-      height: 1px;
-      background-color: #ddd;
-    }
+.social-button {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
 
-    .divider::before {
-      left: 0;
-    }
+.social-button.wechat {
+  background-color: #07C160;
+  color: white;
+  text-decoration: none;
+}
 
-    .divider::after {
-      right: 0;
-    }
+.divider {
+  margin: 1rem 0;
+  position: relative;
+  text-align: center;
+  color: #999;
+}
 
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      font-size: 1rem;
-    }
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background-color: #ddd;
+}
 
-    .input-group {
-      position: relative;
-    }
+.divider::before {
+  left: 0;
+}
 
-    .eye-icon {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      opacity: 0.6;
-    }
+.divider::after {
+  right: 0;
+}
 
-    button[type="submit"] {
-      width: 100%;
-      padding: 0.75rem;
-      border: none;
-      border-radius: 10px;
-      background-color: #ee1c25;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
+input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
 
-    .signin {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
+.input-group {
+  position: relative;
+}
 
-    .signin a {
-      color: #007bff;
-      text-decoration: none;
-    }
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.6;
+}
 
-    .signin a:hover {
-      text-decoration: underline;
-    }
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background-color: #ee1c25;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
 
-    .terms {
-      font-size: 0.75rem;
-      color: #888;
-      margin-top: 1rem;
-    }
+.signin {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
 
-    .terms a {
-      color: #007bff;
-      text-decoration: none;
-    }
+.signin a {
+  color: #007bff;
+  text-decoration: none;
+}
 
-    .terms a:hover {
-      text-decoration: underline;
-    }
+.signin a:hover {
+  text-decoration: underline;
+}
 
+.terms {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: 1rem;
+}
+
+.terms a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}

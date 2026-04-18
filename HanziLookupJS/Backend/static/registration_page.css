@@ -7,10 +7,11 @@
   color: white;
 }
 
-.fa-google{
-  color: #000f18;
+.google-signin-button img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
-
 
 body {
     background-color: #fff;
@@ -60,10 +61,10 @@ body {
       color: white;
       border: none;
     }
-    
+
     .social-button.wechat {
-    background-color: #07C160;
-    color: white;
+    background-color: white;
+    color: #07C160;
     text-decoration: none;
 }
 

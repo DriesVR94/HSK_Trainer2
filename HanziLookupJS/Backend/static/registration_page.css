@@ -60,6 +60,12 @@ body {
       color: white;
       border: none;
     }
+    
+    .social-button.wechat {
+    background-color: #07C160;
+    color: white;
+    text-decoration: none;
+}
 
     .divider {
       margin: 1rem 0;

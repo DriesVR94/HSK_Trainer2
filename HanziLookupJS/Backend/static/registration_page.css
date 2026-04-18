@@ -230,6 +230,7 @@ button[type="submit"] {
   font-weight: 600;
   cursor: pointer;
   margin-top: 0.5rem;
+  font-size: 1rem;
 }
 
 .signin {

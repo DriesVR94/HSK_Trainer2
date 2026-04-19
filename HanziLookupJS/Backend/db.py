@@ -448,6 +448,46 @@ def home():
 def health():
     return {"status": "ok"}
 
+@app.route("/auth/google", methods=["POST"])
+def google_auth():
+    data = request.get_json()
+    access_token = data.get("access_token")
+
+    if not access_token:
+        return jsonify({"success": False, "message": "No token"}), 400
+
+    import requests
+
+    google_response = requests.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+
+    if google_response.status_code != 200:
+        return jsonify({"success": False, "message": "Invalid Google token"}), 401
+
+    user_info = google_response.json()
+    email = user_info["email"]
+
+    conn = create_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+    user = cursor.fetchone()
+
+    if not user:
+        cursor.execute(
+            "INSERT INTO users (email, password) VALUES (?, ?)",
+            (email, "GOOGLE_AUTH")
+        )
+        conn.commit()
+
+    conn.close()
+
+    session["user_email"] = email
+
+    return jsonify({"success": True})
+
 # app.register_blueprint(ocr_bp) # Not needed for production.
 
 

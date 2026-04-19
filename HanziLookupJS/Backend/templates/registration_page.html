@@ -7,9 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='registration_page.css') }}">
-  <style>
-
-  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <div class="container">
@@ -17,7 +15,7 @@
 
     <div class="social-buttons">
       <button id="googleLoginBtn" class="gsi-material-button" style="width:200px">
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        
         <script>
         let client;
 
@@ -25,16 +23,24 @@
             client = google.accounts.oauth2.initTokenClient({
                 client_id: "365777418021-krre441oq3u1rjv89vis4qkj592io06t.apps.googleusercontent.com",
                 scope: "email profile openid",
-                callback: (response) => {
+                callback: async (response) => {
                     console.log("Access token:", response.access_token);
 
-                    fetch("/auth/google", {
+                    const res = await fetch("/auth/google", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify(response)
                     });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                        window.location.href = "/home_page";
+                    } else {
+                        alert("Google login failed");
+                    }
                 }
             });
 

@@ -16,7 +16,34 @@
     <h1>Create your account</h1>
 
     <div class="social-buttons">
-      <button class="gsi-material-button" style="width:200px">
+      <button id="googleLoginBtn" class="gsi-material-button" style="width:200px">
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <script>
+        let client;
+
+        window.onload = function () {
+            client = google.accounts.oauth2.initTokenClient({
+                client_id: "365777418021-krre441oq3u1rjv89vis4qkj592io06t.apps.googleusercontent.com",
+                scope: "email profile openid",
+                callback: (response) => {
+                    console.log("Access token:", response.access_token);
+
+                    fetch("/auth/google", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(response)
+                    });
+                }
+            });
+
+            document.getElementById("googleLoginBtn")
+                .addEventListener("click", function () {
+                    client.requestAccessToken();
+                });
+        };
+        </script>
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">

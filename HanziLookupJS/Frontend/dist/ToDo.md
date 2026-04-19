@@ -4,6 +4,7 @@
 - [x] Fix the pricing tabs together with the "Become a Hero"-button.
 - [x] Remove the Pricing for now, test with starter audience first.
 - [x] Update the nav bar so it is consistent with the content of the page
+- [] Fix the link when the nav bar topics are clicked. Right now, they are not responsive.
 
 ### REGISTRATION PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.

@@ -1,13 +1,13 @@
 ### WELCOME PAGE ###
 - [] Replace the GIF with a self-made one (using code from Hanzi Writer).
-- [] Add a short demo video.
-- [] Fix the pricing tabs together with the "Become a Hero"-button.
+- [] Add a short demo: Put a sample drawingBoard below. Also stress that writing is an important factor of passing the HSK exam.
+- [x] Fix the pricing tabs together with the "Become a Hero"-button.
 - [x] Remove the Pricing for now, test with starter audience first.
-- [] Update the nav bar so it is consistent with the content of the page
+- [x] Update the nav bar so it is consistent with the content of the page
 
 ### REGISTRATION PAGE ###
-- [] Make the layout consistent with the layout of the Welcome Page.
-- [] Make the Apple button work.
+- [x] Make the layout consistent with the layout of the Welcome Page.
+- [] Make the WeChat button work.
 - [] Make the Google button work.
 
 ### SIGNIN PAGE ###

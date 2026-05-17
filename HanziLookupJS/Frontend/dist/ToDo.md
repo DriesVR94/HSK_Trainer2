@@ -9,12 +9,14 @@
 
 ### REGISTRATION PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.
-- [] Make the WeChat button work.
+- [] Make the WeChat button work. (You need to have a functional website before you can apply for this.)
 - [] Make the Google button work.
 
 ### SIGNIN PAGE ###
-- [] Make the layout consistent with the layout of the Welcome Page.
-- [] Remove the part 'Or continue with ...'
+- [x] Make the layout consistent with the layout of the Welcome Page.
+- [x] Remove the part 'Or continue with ...'
+- [] Make the 'Forgot password' work
+- [] Make the 'Create one' work.
 
 ### HOME PAGE ###
 - [] Make the popup shown on hovering over the progress bars follow your mouse.

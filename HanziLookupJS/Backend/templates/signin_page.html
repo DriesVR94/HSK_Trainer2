@@ -5,23 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign In</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='signin_page.css') }}">
 </head>
 <body>
   <main class="container" aria-labelledby="signin-title">
     <div class="brand">
-      <div class="logo" aria-hidden>SI</div>
       <div>
         <h1 id="signin-title">Sign in to your account</h1>
-        <p class="lead">Enter your email and password to continue. It's quick and secure.</p>
       </div>
     </div>
 
     <form id="signinForm" novalidate>
       <div>
         <label for="email">Email</label>
-        <input id="email" class="input" name="email" type="email" inputmode="email" placeholder="you@company.com" required aria-required="true">
+        <input id="email" class="input" name="email" type="email" inputmode="email" placeholder="Your email" required aria-required="true">
         <div id="emailError" class="error" aria-live="polite" style="display:none"></div>
       </div>
 
@@ -47,8 +45,6 @@
 
       <div class="socials">
         <button type="button" class="social-btn" aria-label="Sign in with Google">Google</button>
-        <button type="button" class="social-btn" aria-label="Sign in with GitHub">GitHub</button>
-        <button type="button" class="social-btn" aria-label="Sign in with Microsoft">Microsoft</button>
       </div>
 
       <p class="muted" style="margin-top:14px">Don't have an account? <a href="#">Create one</a></p>

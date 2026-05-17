@@ -11,6 +11,8 @@
 - [x] Make the layout consistent with the layout of the Welcome Page.
 - [] Make the WeChat button work. (You need to have a functional website before you can apply for this.)
 - [] Make the Google button work.
+- [] Make the 'Terms of Service'.
+- [] Make a 'Privacy Policy'.
 
 ### SIGNIN PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.

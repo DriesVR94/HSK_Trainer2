@@ -17,6 +17,7 @@
 - [x] Remove the part 'Or continue with ...'
 - [] Make the 'Forgot password' work
 - [] Make the 'Create one' work.
+- [] Make the Google button work.
 
 ### HOME PAGE ###
 - [] Make the popup shown on hovering over the progress bars follow your mouse.

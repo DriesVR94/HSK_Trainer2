@@ -139,6 +139,7 @@ label {
 .socials {
   display: flex;
   gap: 1rem;
+  justify-content: center;
 }
 
 .social-btn {

@@ -26,7 +26,7 @@
 - [] Add a tag 'Study' and 'Test' when hovering over the icons.
 - [] Make the nav bar responsive and consistent.
 - [] Implement a Profile page.
-- [] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.
+- [x] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.
 
 ### STUDY PAGE ###
 - [x] Make the layout consistent.

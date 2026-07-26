@@ -25,6 +25,28 @@ def recall_score(times_practiced, successes, fails, stroke_counts, time_passed, 
     r_s = (r_h - (f_r * time_passed) + d) * proficiency_score           # r_s = recall_score
     return r_s
 
+def initialize_user_proficiency(cursor, user_id):
+    """
+    Create proficiency records for all vocabulary words
+    for a new user. All words start at proficiency level 0 (Noob).
+    """
+
+    # Fetch all vocabulary words
+    cursor.execute('SELECT word_id FROM vocabulary')
+    word_ids = [row[0] for row in cursor.fetchall()]
+
+    # Create initial proficiency entries
+    entries = [(user_id, wid, 0) for wid in word_ids]
+
+    cursor.executemany(
+        """
+        INSERT INTO user_word_proficiency_new
+        (user_id, word_id, proficiency_level)
+        VALUES (?, ?, ?)
+        """,
+        entries
+    )
+
 
 def create_connection():
     return sqlite3.connect(db_path)
@@ -38,35 +60,32 @@ def register():
 
     conn = create_connection()
     cursor = conn.cursor()
+
     try:
-        # 1️⃣ Insert user
-        cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, hashed_pw))
-        user_id = cursor.lastrowid  # get the auto-incremented user ID
-
-        # 2️⃣ Fetch all word IDs from 'vocabulary'
-        cursor.execute('SELECT word_id FROM vocabulary')
-        word_ids = [row[0] for row in cursor.fetchall()]
-
-        # 3️⃣ Prepare entries for 'user_word_proficiency'
-        # Each entry = (user_id, word_id, proficiency)
-        entries = [(user_id, wid, 0) for wid in word_ids]
-
-        # 4️⃣ Insert all in one batch
-        cursor.executemany(
-            'INSERT INTO user_word_proficiency_new (user_id, word_id, proficiency_level) VALUES (?, ?, ?)',
-            entries
+        # Create user
+        cursor.execute(
+            'INSERT INTO users (email, password) VALUES (?, ?)',
+            (email, hashed_pw)
         )
 
+        user_id = cursor.lastrowid
+
+        # Initialize all vocabulary as Noob
+        initialize_user_proficiency(cursor, user_id)
+
         conn.commit()
+
     except sqlite3.IntegrityError:
         return "Email already exists!"
+
     except Exception as e:
         print("❌ Error registering user:", e)
         return "An error occurred while creating your account."
+
     finally:
         conn.close()
 
-    return "User registered successfully!"
+    return "You registered successfully!"
 
 @app.route('/welcome_page')
 def show_welcome_page():
@@ -448,6 +467,7 @@ def home():
 def health():
     return {"status": "ok"}
 
+
 @app.route("/auth/google", methods=["POST"])
 def google_auth():
     data = request.get_json()
@@ -472,17 +492,44 @@ def google_auth():
     conn = create_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
-    user = cursor.fetchone()
-
-    if not user:
+    try:
         cursor.execute(
-            "INSERT INTO users (email, password) VALUES (?, ?)",
-            (email, "GOOGLE_AUTH")
+            "SELECT id FROM users WHERE email = ?",
+            (email,)
         )
-        conn.commit()
 
-    conn.close()
+        user = cursor.fetchone()
+
+        if not user:
+            # Create new Google user
+            cursor.execute(
+                """
+                INSERT INTO users (email, password)
+                VALUES (?, ?)
+                """,
+                (email, "GOOGLE_AUTH")
+            )
+
+            user_id = cursor.lastrowid
+
+            # Initialize vocabulary progress
+            initialize_user_proficiency(cursor, user_id)
+
+            conn.commit()
+
+        else:
+            user_id = user[0]
+
+    except Exception as e:
+        print("❌ Google auth error:", e)
+        conn.rollback()
+        return jsonify({
+            "success": False,
+            "message": "Account creation failed"
+        }), 500
+
+    finally:
+        conn.close()
 
     session["user_email"] = email
 

@@ -20,7 +20,7 @@
     <div class="colLeft" id="drawingBoardsContainer"></div>
 
     <div style="text-align: center; margin: 20px 0;">
-      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;">
+      <div class="cmd" id="nextButton" style="width: 75px; margin: 10px auto;">
         <i class="fa-solid fa-angle-right"></i>
       </div>
     </div>
@@ -176,10 +176,12 @@ function buildBoards() {
   const practiceBoxesPerCharacter = 6;
 
   container.style.display = 'flex';
-  container.style.flexDirection = 'column';
-  container.style.gap = '30px';
+  container.style.flexDirection = 'row';
+  container.style.flexWrap = 'wrap';
+  container.style.justifyContent = 'center';
+  container.style.gap = '20px';
   container.style.width = '100%';
-  container.style.maxWidth = '900px';
+  container.style.maxWidth = '1400px';
   container.style.margin = '0 auto';
 
   window._drawingBoards = [];
@@ -201,23 +203,18 @@ function buildBoards() {
 
     const gap = 16;
 
-    const availableWidth = container.clientWidth;
-
-    let columns = Math.floor(availableWidth / (boxSize + gap));
-
-    // Never exceed the number of practice boxes
-    columns = Math.min(columns, practiceBoxesPerCharacter);
-
-    // Make the columns divide 6 evenly
-    const validColumns = [6, 3, 2, 1];
-    columns = validColumns.find(c => c <= columns) || 1;
+    const availableWidth = Math.min(
+      container.clientWidth,
+      1400
+    );
 
     charSection.style.gridTemplateColumns =
-        `repeat(${columns}, var(--char-box-size))`;
-        
+    `repeat(auto-fit, minmax(var(--char-box-size), 1fr))`;
+
     charSection.style.gap = '16px';
     charSection.style.justifyContent = 'center';
     charSection.style.maxWidth = '100%';
+    charSection.style.maxWidth = '1400px';
     charSection.style.margin = '0 auto';
 
     container.appendChild(charSection);

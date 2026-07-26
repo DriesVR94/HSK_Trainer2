@@ -1,5 +1,5 @@
 :root {
-  --char-box-size: clamp(120px, 18vw, 180px);
+  --char-box-size: clamp(70px, 14vw, 160px);
 }
 
 html,
@@ -51,8 +51,8 @@ h2 {
 }
 
 .colLeft {
-  width: 90%;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -90,14 +90,19 @@ h2 {
   border-radius: 3px;
   text-align: center;
   cursor: default;
+  padding-left: 1.5vw;
+  padding-right: 1.5vw;
+  padding-top: 0.5vw;
+  padding-bottom: 0.5vw;
   margin: 8px;
-  padding: 3px;
   color: #000f18;
   user-select: none;
 }
 
 .cmd:hover {
-  background-color: #f1d7a6;
+  padding-left: 2.5vw;
+  padding-right: 2.5vw;
+  transition: 1s;
 }
 
 .charPicker {
@@ -221,5 +226,7 @@ h2 {
 
 #drawingBoardsContainer {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
 }
+
+

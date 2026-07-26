@@ -30,7 +30,6 @@
 
 ### STUDY PAGE ###
 - [x] Make the layout consistent.
-- [] Make the yellow box around the text change size according to the size of the text
 
 ### TEST PAGE ###
 - [] Make the layout consistent.

@@ -226,26 +226,6 @@
             timeTakenElement.textContent = `Time: ${elapsed.toFixed(2)}s`;
           }
 
-          setTimeout(() => {
-            const dataUrl = board.exportImage();
-
-            fetch('/recognize', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: dataUrl }),
-            })
-              .then(res => {
-                if (!res.ok) throw new Error('Failed to fetch');
-                return res.json();
-              })
-              .then(data => {
-                wrap.querySelector('.ocrResultBox').textContent = data.result;
-              })
-              .catch(err => {
-                console.error(err);
-                alert(`Failed to recognize character ${idx + 1}.`);
-              });
-          }, 50);
 
           updateFeedbackBarForBoard(board,wrap,idx);
 

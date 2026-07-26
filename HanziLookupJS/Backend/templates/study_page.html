@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>HanziLookupJS demo</title>
+  <title>HSK Hero - Study</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='study_page.css') }}">
@@ -10,14 +10,11 @@
 </head>
 
 <body data-level="{{ level }}">
-  <div class="header">
-    <h1>Study</h1>
-    <a href="https://github.com/gugray/HanziLookupJS">github.com/gugray/HanziLookupJS</a>
-  </div>
 
   <div class="content">
     <div class="colLeft_2">
       <div class="targetCharBox">loading…</div>
+      <div id="character-target-div"></div>
     </div>
 
     <div class="colLeft" id="drawingBoardsContainer"></div>
@@ -43,13 +40,18 @@ function loadRandomHanzi() {
   const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
 
   document.querySelector('.targetCharBox').innerHTML = `
-    ${randomEntry.english} <br>-<br>
-    <span style="font-style: italic;">${randomEntry.pinyin}</span>
-  `;
+  <strong style="font-size: clamp(14px, 1.8vw, 35px)">
+    ${randomEntry.english}
+  </strong>
+  <span style="font-size: clamp(12px, 1.5vw, 25px); font-style: italic;">
+    ${randomEntry.pinyin}
+  </span>
+`;
 
   window.targetHanziEntry = randomEntry;
   window.targetCharacter = randomEntry.chinese;
 
+  showExampleCharacter();
   buildBoards();
 }
 
@@ -125,84 +127,147 @@ function addGridOverlay(boardElem) {
   drawGrid(ctx, overlay.width, overlay.height);
 }
 
+function showExampleCharacter() {
+  const container = document.getElementById('character-target-div');
+  container.innerHTML = '';
+
+  const chars = Array.from(window.targetCharacter);
+
+  // Put character boxes next to each other
+  container.style.width = 'auto';
+  container.style.height = 'auto';
+  container.style.display = 'flex';
+  container.style.flexDirection = 'row';
+  container.style.gap = '10px';
+  container.style.justifyContent = 'center';
+
+  chars.forEach(char => {
+    const charBox = document.createElement('div');
+
+    charBox.style.width = 'var(--char-box-size)';
+    charBox.style.height = 'var(--char-box-size)';
+    charBox.style.backgroundColor = '#fafafa';
+    charBox.style.border = '3px solid #f1c40f';
+    charBox.style.borderRadius = '12px';
+
+    charBox.style.display = 'flex';
+    charBox.style.justifyContent = 'center';
+    charBox.style.alignItems = 'center';
+
+    container.appendChild(charBox);
+
+    const writer = HanziWriter.create(charBox, char, {
+      width: charBox.clientWidth,
+      height: charBox.clientHeight,
+      padding: 5,
+      strokeAnimationSpeed: 1,
+      delayBetweenLoops: 3000
+    });
+
+    writer.loopCharacterAnimation();
+  });
+}
+
 function buildBoards() {
   const container = document.getElementById('drawingBoardsContainer');
   container.innerHTML = '';
 
-  const chars = window.targetCharacter;
-  const charCount = window.targetHanziEntry.charCount || chars.length;
+  const chars = Array.from(window.targetCharacter);
+  const practiceBoxesPerCharacter = 6;
 
-  const columns = 10;
-
-  container.style.display = 'grid';
-  container.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-  container.style.gap = '10px';
-  container.style.width = '90%';
-  container.style.maxWidth = '1200px';
+  container.style.display = 'flex';
+  container.style.flexDirection = 'column';
+  container.style.gap = '30px';
+  container.style.width = '100%';
+  container.style.maxWidth = '900px';
   container.style.margin = '0 auto';
-
-  const containerWidth = container.clientWidth || 1000;
-  const boxSize = Math.floor(containerWidth / columns) - 10;
 
   window._drawingBoards = [];
 
-  const totalBoards = charCount * columns;
+  chars.forEach((char, charIndex) => {
 
-  for (let idx = 0; idx < totalBoards; idx++) {
+    const charSection = document.createElement('div');
+    charSection.className = 'characterPracticeSection';
 
-    const wrap = document.createElement('div');
-    wrap.className = 'boardWrap';
-    wrap.style.width = `${boxSize}px`;
+    charSection.style.display = 'grid';
+    const probe = document.createElement('div');
+    probe.style.width = 'var(--char-box-size)';
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    document.body.appendChild(probe);
 
-    const inner = document.createElement('div');
-    inner.className = 'drawingBoard';
-    inner.style.width = `${boxSize}px`;
-    inner.style.height = `${boxSize}px`;
-    inner.style.position = 'relative';
+    const boxSize = probe.getBoundingClientRect().width;
+    probe.remove();
 
-    wrap.appendChild(inner);
-    container.appendChild(wrap);
+    const gap = 16;
 
-    const rowIndex = Math.floor(idx / columns);
+    const availableWidth = container.clientWidth;
 
-    if (idx % columns === 0 && rowIndex < chars.length) {
+    let columns = Math.floor(availableWidth / (boxSize + gap));
 
-      const char = chars[rowIndex];
+    // Never exceed the number of practice boxes
+    columns = Math.min(columns, practiceBoxesPerCharacter);
 
-      const writer = HanziWriter.create(inner, char, {
-        width: boxSize,
-        height: boxSize,
-        padding: 5,
-        delayBetweenLoops: 3000
-      });
+    // Make the columns divide 6 evenly
+    const validColumns = [6, 3, 2, 1];
+    columns = validColumns.find(c => c <= columns) || 1;
 
-      writer.loopCharacterAnimation();
+    charSection.style.gridTemplateColumns =
+        `repeat(${columns}, var(--char-box-size))`;
+        
+    charSection.style.gap = '16px';
+    charSection.style.justifyContent = 'center';
+    charSection.style.maxWidth = '100%';
+    charSection.style.margin = '0 auto';
 
-      requestAnimationFrame(() => addGridOverlay(inner));
+    container.appendChild(charSection);
 
-    } else {
+
+    // Create 6 boxes for this character
+    for (let i = 0; i < practiceBoxesPerCharacter; i++) {
+
+      const wrap = document.createElement('div');
+      wrap.className = 'boardWrap';
+
+      const inner = document.createElement('div');
+      inner.className = 'drawingBoard';
+
+      inner.style.width = 'var(--char-box-size)';
+      inner.style.height = 'var(--char-box-size)';
+      inner.style.position = 'relative';
+
+      wrap.appendChild(inner);
+      charSection.appendChild(wrap);
+
 
       const board = HanziLookup.DrawingBoard($(inner), () => {
         lookup(board);
       });
 
-      const canvas = inner.querySelector('canvas');
-
-      if (canvas) {
-        canvas.width = boxSize;
-        canvas.height = boxSize;
-        canvas.style.width = `${boxSize}px`;
-        canvas.style.height = `${boxSize}px`;
-      }
-
       window._drawingBoards.push(board);
 
-      requestAnimationFrame(() => addGridOverlay(inner));
+
+      requestAnimationFrame(() => {
+        const canvas = inner.querySelector('canvas');
+
+        if (canvas) {
+          const size = inner.clientWidth;
+
+          canvas.width = size;
+          canvas.height = size;
+          canvas.style.width = `${size}px`;
+          canvas.style.height = `${size}px`;
+        }
+
+        addGridOverlay(inner);
+      });
     }
-  }
+  });
+
 
   if (!isDev) {
-    document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.dev-only')
+      .forEach(el => el.style.display = 'none');
   }
 }
 

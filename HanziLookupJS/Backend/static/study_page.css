@@ -1,26 +1,45 @@
-body { background-color: #fafafa; font-family: Verdana, sans-serif; padding-top: 70px; }
-
-div, h1, h2 {
-  position: relative;
-  float: none;
-  box-sizing: border-box;
-  height: auto;
-  overflow: visible;
-  width: 100%;
-  margin: 0 0 10px 0;
+:root {
+  --char-box-size: clamp(120px, 18vw, 180px);
 }
 
-h1 { margin-bottom: 8px; }
-h2 { font-weight: normal; margin-bottom: 8px; }
+html,
+body {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
 
-.content, .header {
-  width: 100%;
-  margin: 0 auto;
-  background-color: #000f18;
-  padding: 20px;
-  color: #f0f0f0;
-  border-radius: 8px;
-  float: none;
+body {
+    background-color: #000f18;
+    color: white;
+    font-family: "Titillium Web", sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #000f18;
+}
+
+div {
+    box-sizing: border-box;
+}
+
+h1,
+h2 {
+    margin: 0;
 }
 
 .header {
@@ -34,10 +53,11 @@ h2 { font-weight: normal; margin-bottom: 8px; }
 }
 
 .colLeft_2 {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 .colLeft {
@@ -48,6 +68,14 @@ h2 { font-weight: normal; margin-bottom: 8px; }
 
 .colLeft > .boardWrap {
   flex: 0 0 auto;
+}
+
+#character-target-div {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .drawingBoard {
@@ -94,15 +122,18 @@ h2 { font-weight: normal; margin-bottom: 8px; }
 }
 
 .targetCharBox {
-  width: 500px;
-  height: 100px;
-  padding: 4%;
+  width: clamp(180px, 35vw, 500px);
+  height: clamp(50px, 8vw, 100px);
+  padding: clamp(6px, 1.5vw, 20px);
+
   font-weight: bold;
-  font-size: 30px;
+  font-size: clamp(16px, 2vw, 30px);
+
   background-color: #f1c40f;
   border-radius: 8px;
   color: #333;
   margin-top: 10px;
+
   font-family: "Noto Sans", "Arial", sans-serif;
   display: flex;
   flex-direction: column;
@@ -213,12 +244,7 @@ h2 { font-weight: normal; margin-bottom: 8px; }
   flex-wrap: wrap;            /* wrap on small screens */
 }
 
-/* HanziWriter animation box */
-#character-target-div {
-  flex-shrink: 0;             /* do not shrink */
-  width: 120px;               /* default size, adjust as needed */
-  height: 120px;
-  background-color: #fafafa;
-  border: 2px solid #f1c40f;
-  border-radius: 8px;
+#drawingBoardsContainer {
+    width: 100%;
+    max-width: 1200px;
 }

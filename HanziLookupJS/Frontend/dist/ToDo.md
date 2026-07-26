@@ -28,7 +28,7 @@
 - [] Implement a Profile page.
 
 ### STUDY PAGE ###
-- [] Make the layout consistent.
+- [x] Make the layout consistent.
 - [] Add a grid for the drawn character.
 - [] Add 2 gray example characters where the user can draw over.
 

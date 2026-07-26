@@ -454,13 +454,11 @@
         hsk3Section.style.display = "none";
         btnHSK2.classList.add("active");
         btnHSK3.classList.remove("active");
-        loadProgress(1);   // HSK 2.0 Level 1
       } else {
         hsk2Section.style.display = "none";
         hsk3Section.style.display = "block";
         btnHSK2.classList.remove("active");
         btnHSK3.classList.add("active");
-        loadProgress(7);   // HSK 3.0 Level 7
       }
     }
 
@@ -482,11 +480,6 @@
     // NEW: set segmented bars that were rendered server-side using data-* attributes
     setSegmentedBarsFromDataset();
   });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    addSegmentedBarTooltips();
-  });
-
 
 
   /** Fetch + render global segmented progress in #progressBar (already used) */

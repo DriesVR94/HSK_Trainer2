@@ -190,8 +190,7 @@ function buildBoards() {
 
     const charSection = document.createElement('div');
     charSection.className = 'characterPracticeSection';
-
-    charSection.style.display = 'grid';
+    charSection.style.width = '100%';
     const probe = document.createElement('div');
     probe.style.width = 'var(--char-box-size)';
     probe.style.position = 'absolute';
@@ -207,9 +206,6 @@ function buildBoards() {
       container.clientWidth,
       1400
     );
-
-    charSection.style.gridTemplateColumns =
-    `repeat(auto-fit, minmax(var(--char-box-size), 1fr))`;
 
     charSection.style.gap = '16px';
     charSection.style.justifyContent = 'center';

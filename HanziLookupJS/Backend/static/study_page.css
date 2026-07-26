@@ -229,4 +229,22 @@ h2 {
     max-width: 1400px;
 }
 
+.characterPracticeSection {
+    display: grid;
+    gap: 16px;
+    justify-content: center;
+    grid-template-columns: repeat(6, var(--char-box-size));
+}
+
+@media (max-width: 1200px) {
+    .characterPracticeSection {
+        grid-template-columns: repeat(3, var(--char-box-size));
+    }
+}
+
+@media (max-width: 700px) {
+    .characterPracticeSection {
+        grid-template-columns: repeat(2, var(--char-box-size));
+    }
+}
 

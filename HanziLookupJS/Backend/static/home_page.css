@@ -265,17 +265,23 @@ section {
     bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
-    background: #333;
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #333;
+    padding: 8px 12px;
+    border-radius: 6px;
+
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 14px;
+
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
-
 .icon-btn:hover::after {
     opacity: 1;
 }

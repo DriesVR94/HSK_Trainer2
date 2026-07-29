@@ -22,8 +22,8 @@
 - [x] Make the Google button work.
 
 ### HOME PAGE ###
-- [] Make the popup shown on hovering over the progress bars follow your mouse.
-- [] Add a tag 'Study' and 'Test' when hovering over the icons.
+- [x] Make the popup shown on hovering over the progress bars follow your mouse.
+- [x] Add a tag 'Study' and 'Test' when hovering over the icons.
 - [] Make the nav bar responsive and consistent.
 - [] Implement a Profile page.
 - [x] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.

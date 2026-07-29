@@ -670,8 +670,16 @@
 
       // Position the tooltip relative to the bar
       const rect = bar.getBoundingClientRect();
-      tooltip.style.left = `${rect.left + window.scrollX}px`;
-      tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+      tooltip.style.left = `${e.pageX + 10}px`;
+      tooltip.style.top = `${e.pageY + 10}px`;
+    });
+
+    bar.addEventListener("mousemove", (e) => {
+      const tooltip = document.querySelector(".floating-tooltip");
+      if (!tooltip) return;
+
+      tooltip.style.left = `${e.pageX + 10}px`;
+      tooltip.style.top = `${e.pageY + 10}px`;
     });
 
     bar.addEventListener("mouseleave", () => {

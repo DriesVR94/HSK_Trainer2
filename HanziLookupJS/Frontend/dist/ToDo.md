@@ -20,6 +20,8 @@
 - [] Make the 'Forgot password' work
 - [] Make the 'Create one' work.
 - [x] Make the Google button work.
+- [] When a user signs in by email, the first time it always fails (and his password is exposed in the URL). Second time it works.
+- [] It is not yet possible to use the 'enter' button to sign in, you have to click. Fix.
 
 ### HOME PAGE ###
 - [x] Make the popup shown on hovering over the progress bars follow your mouse.

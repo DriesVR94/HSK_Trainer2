@@ -248,10 +248,10 @@ def signin():
     else:
         return {"success": False, "message": "Invalid email or password."}, 401
 
-@app.route("/index")
-def show_index_page():
+@app.route("/test_page")
+def show_test_page():
     level = request.args.get("level", 1, type=int)   # ✅ default fallback
-    return render_template("index.html", level=level)
+    return render_template("test_page.html", level=level)
 
 @app.route("/study_page")
 def show_study_page():

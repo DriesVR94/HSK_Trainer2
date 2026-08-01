@@ -100,9 +100,7 @@ h2 {
 }
 
 .cmd:hover {
-  padding-left: 2.5vw;
-  padding-right: 2.5vw;
-  transition: 1s;
+  background: #f79297;
 }
 
 .charPicker {

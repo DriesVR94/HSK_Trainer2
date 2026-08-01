@@ -38,23 +38,25 @@
     let hanziLoaded = false, assetsLoaded = false;
     let hanziList = [];
 
-    function loadRandomHanzi() {
-      const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
-      const displayText = `${randomEntry.english} <span style="font-style: italic;">${randomEntry.pinyin}</span>
-`;
+  function loadRandomHanzi() {
+    const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
 
-      document.querySelector('.targetCharBox').innerHTML = displayText;
+    document.querySelector('.targetCharBox').innerHTML = `
+      <strong style="font-size: clamp(14px, 1.8vw, 35px)">
+        ${randomEntry.english}
+      </strong>
+      <span style="font-size: clamp(12px, 1.5vw, 25px); font-style: italic;">
+        ${randomEntry.pinyin}
+      </span>
+    `;
 
-      // Store globally
-      window.targetHanziEntry = randomEntry;
-      window.targetCharacter = randomEntry.chinese;
+    // Store globally
+    window.targetHanziEntry = randomEntry;
+    window.targetCharacter = randomEntry.chinese;
 
-      buildBoards();
-    }
+    buildBoards();
+  }
 
-
-
-  
   // ---- Sends proficiency update to backend ----
   function sendProficiencyUpdate(word_id, proficiency) {
     fetch("/update_proficiency", {

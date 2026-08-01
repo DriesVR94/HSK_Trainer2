@@ -98,17 +98,6 @@ div {
   background: #f79297;
 }
 
-.charPicker {
-  width: 100%;
-  border: 1px solid #a0a0a0;
-  padding: 3%;
-  height: 70px;
-  font-size: 48px;
-  background-color: #fafafa;
-  overflow: hidden;
-  color: #606060;
-}
-
 .targetCharBox {
   width: clamp(180px, 35vw, 500px);
   height: clamp(50px, 8vw, 100px);

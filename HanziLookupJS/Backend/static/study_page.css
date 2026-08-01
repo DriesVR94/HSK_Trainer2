@@ -37,11 +37,6 @@ div {
     box-sizing: border-box;
 }
 
-h1,
-h2 {
-    margin: 0;
-}
-
 .colLeft_2 {
     width: 100%;
     display: flex;
@@ -129,20 +124,6 @@ h2 {
   align-items: center;
   text-align: center;
   line-height: 1.2;
-}
-
-.colRight {
-  width: 100%;
-  margin-top: 20px;
-}
-
-.feedbackBar {
-  display: flex;
-  height: 30px;
-  width: 100%;
-  margin: 8px 0;
-  font-size: 12px;
-  text-align: center;
 }
 
 .segment {

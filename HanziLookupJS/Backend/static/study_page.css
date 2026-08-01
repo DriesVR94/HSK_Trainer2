@@ -178,34 +178,6 @@ h2 {
   margin: 10px 0;
 }
 
-.show_solution_button {
-  background-color: #ee1c25;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  color: #000f18;
-  transition: 0.2s;
-}
-
-.show_solution_button:hover {
-  background-color: #f1d7a6;
-}
-
-.solutionAnimation {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: none;
-  background-color: rgba(255, 255, 255, 0.9);
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
 /* Container for animation + boards */
 .animation-and-boards {
   display: flex;

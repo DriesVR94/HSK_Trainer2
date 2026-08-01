@@ -40,7 +40,7 @@
 
     function loadRandomHanzi() {
       const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
-      const displayText = `${randomEntry.english} <br>-<br> <span style="font-style: italic;">${randomEntry.pinyin}</span>
+      const displayText = `${randomEntry.english} <span style="font-style: italic;">${randomEntry.pinyin}</span>
 `;
 
       document.querySelector('.targetCharBox').innerHTML = displayText;

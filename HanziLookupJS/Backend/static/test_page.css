@@ -1,6 +1,6 @@
     html, body { width: 100%; min-height: 100vh; margin: 0; padding: 0; }
-    body { background-color: #000f18; font-family: Verdana, sans-serif; }
-    div, h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
+    body { background-color: #000f18; font-family: Verdana, sans-serif; padding: 40px; }
+    h2 { position: relative; float: none; box-sizing: border-box; height: auto; overflow: visible; width: 100%; margin: 0 0 10px 0; }
     .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
     .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
     .colLeft > .boardWrap { flex: 0 0 auto; }
@@ -9,8 +9,7 @@
     .cmd { flex: 0.2; background-color: #f1c40f; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
     .cmd:hover { background-color: #f1d7a6; }
     .charPicker { width: 100%; border: 1px solid #a0a0a0; padding: 3%; height: 70px; font-size: 48px; background-color: #fafafa; overflow: hidden; color: #606060; }
-    .targetCharBox { width: 500px; height: 100px; padding: 4%; font-weight: bold; font-size: 30px; background-color: #f1c40f; border-radius: 8px; color: #333; margin-top: 10px; font-family: "Noto Sans", "Arial", sans-serif; display: flex;  flex-direction: column; justify-content: center; align-items: center; text-align: center; line-height: 1.2; }
-    .colRight { width: 100%; margin-top: 20px; }
+    .targetCharBox { width: clamp(180px, 35vw, 500px); height: clamp(50px, 8vw, 100px); padding: clamp(6px, 1.5vw, 20px); font-weight: bold; font-size: clamp(16px, 2vw, 30px); color: white; padding: 0.4rem 1.2rem; font-family: "Noto Sans", "Arial", sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; line-height: 1.2; }
     .feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; text-align: center;}
     .segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.2; transition: background-color 0.3s; color: black; }
     .segment.highlight { opacity: 1 !important; border: 2px solid black; font-weight: bold; }

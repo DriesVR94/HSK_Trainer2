@@ -351,9 +351,9 @@
       });
     }
 
-    document.getElementsByClassName('cmdNextButton').onclick = () => {
+    document.querySelector('.cmdNextButton').addEventListener('click', () => {
       loadRandomHanzi();
-    };
+    });
 
 
     function updateFeedbackBarForBoard(board, wrap, idx) {

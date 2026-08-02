@@ -20,7 +20,7 @@
     <!-- dynamic boards go here -->
     <div class="colLeft" id="drawingBoardsContainer"></div>
     <div style="text-align: center; margin: 20px 0;">
-      <div class="cmd" id="nextButton" style="width: 200px; margin: 10px auto;"><i class="fa-solid fa-angle-right"></i> </div>
+      <div class="cmd cmdNextButton" style="width: 75px; margin: 10px auto;"><i class="fa-solid fa-angle-right"></i> </div>
     </div>
   </div>
 
@@ -138,12 +138,13 @@
             <div class="segment good">Good</div>
             <div class="segment expert">Expert</div>
           </div>
-          <button class="show_solution_button">Show solution</button>
+          
           <div class="commands">
             <div class="cmd cmdUndo"><i class="fa-solid fa-rotate-left"></i></div>
             <div class="cmd cmdClear"><i class="fa-solid fa-xmark"></i></div>
             <div class="cmd cmdRecognize dev-only">Recognize</div>
           </div>
+          <button class="show_solution_button">Show solution</button>
           <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Original HanziLookup data</h2>
           <div class="charPicker hanziLookupChars dev-only"></div>
           <h2 class= "dev-only" style="font-size: ${fontSize - 2}px;">Make Me a Hanzi data</h2>
@@ -350,7 +351,7 @@
       });
     }
 
-    document.getElementById('nextButton').onclick = () => {
+    document.getElementsByClassName('cmdNextButton').onclick = () => {
       loadRandomHanzi();
     };
 
@@ -399,7 +400,7 @@
 
       // Reset all segments opacity
       feedbackBar.querySelectorAll('.segment').forEach(seg => {
-        seg.style.opacity = '0.1';
+        seg.style.opacity = '0.5';
       });
 
       // Highlight the correct segment

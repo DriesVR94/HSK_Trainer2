@@ -1,18 +1,48 @@
 *, *::before, *::after { box-sizing: border-box; }
 html, body { min-height: 100vh; margin: 0; padding: 0; }
-body { background-color: #000f18; font-family: Verdana, sans-serif; }
+body { display: flex; flex-direction: column; background-color: #000f18; font-family: Verdana, sans-serif; }
 h2 { margin: 0 0 10px 0; }
+.content {
+    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #000f18;
+}
 .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
 .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
 .colLeft > .boardWrap { flex: 0 0 auto; }
 .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
 .commands { width: 100%; margin: 8px; display: flex;  justify-content: center; }
-.cmd { flex: 0.2; background-color: #f1c40f; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
-.cmd:hover { background-color: #f1d7a6; }
+.cmdUndo { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
+.cmdClear { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
+.cmdRecognize { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
+.cmdNextButton {
+  flex: 0.1;
+  background-color: #ee1c25;
+  border-radius: 3px;
+  text-align: center;
+  cursor: default;
+  padding-left: 1.5vw;
+  padding-right: 1.5vw;
+  padding-top: 0.5vw;
+  padding-bottom: 0.5vw;
+  margin: 8px;
+  color: #000f18;
+  user-select: none;
+}
+.cmd:hover { background-color: #f79297; }
 .charPicker { width: 100%; border: 1px solid #a0a0a0; padding: 3%; height: 70px; font-size: 48px; background-color: #fafafa; overflow: hidden; color: #606060; }
 .targetCharBox { width: clamp(180px, 35vw, 500px); height: clamp(50px, 8vw, 100px); padding: clamp(6px, 1.5vw, 20px); font-weight: bold; font-size: clamp(16px, 2vw, 30px); color: white; font-family: "Noto Sans", "Arial", sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; line-height: 1.2; }
 .feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; }
-.segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.2; transition: background-color 0.3s; }
+.segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.5; transition: background-color 0.3s; }
 .segment.highlight { opacity: 1 !important; border: 2px solid black; font-weight: bold; }
 .noob { background-color: #f79297; color: black; }
 .familiar { background-color: #f4676e; color: black; }

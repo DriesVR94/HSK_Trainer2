@@ -34,7 +34,7 @@
 - [x] Make the layout consistent.
 
 ### TEST PAGE ###
-- [] Make the layout consistent.
+- [x] Make the layout consistent.
 - [x] Verify that the 'undo' and 'remove' buttons work properly.
 
 ### EXTRAS ###

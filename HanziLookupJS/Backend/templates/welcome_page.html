@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
-    <script src="{{ url_for('static', filename='JS/welcome_page.js') }}" defer></script>
     
     <title>HSK Hero</title>
 </head>
@@ -52,10 +51,12 @@
         </section>
         <section class="extended_demo">
             <h2>Demo</h2>
-            <video autoplay muted >
-                <source src="C:\Users\Dries Van Ranst\OneDrive\Bureaublad\shui.mp4" type="video/mp4">
-                Your browser does not support this demo.
-            </video>
+                <p>Remember words for longer. Try it here.</p>
+                <div class="colLeft_2">
+                    <div class="targetCharBox">loading…</div>
+                    <div id="character-target-div"></div>
+                    <div class="colLeft" id="drawingBoardsContainer"></div>
+                </div>
         </section>
         <section class="pricing" id="pricing">
             <!--
@@ -84,5 +85,11 @@
             </a>
         </section>
     </main>
+
+    <script src="{{ url_for('static', filename='lib/jquery-3.1.1.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <script src="{{ url_for('static', filename='dist/hanzilookup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='JS/welcome_page.js') }}"></script>
+
 </body>
 </html>

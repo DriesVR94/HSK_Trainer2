@@ -1,6 +1,6 @@
 let client;
 
-window.onload = function () {
+document.addEventListener("DOMContentLoaded", function () {
     client = google.accounts.oauth2.initTokenClient({
         client_id: "365777418021-krre441oq3u1rjv89vis4qkj592io06t.apps.googleusercontent.com",
         scope: "email profile openid",
@@ -29,4 +29,5 @@ window.onload = function () {
         .addEventListener("click", function () {
             client.requestAccessToken();
         });
-};
+});
+    

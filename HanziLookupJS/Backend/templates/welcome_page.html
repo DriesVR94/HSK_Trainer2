@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="{{ url_for('static', filename='JS/welcome_page.js') }}" defer></script>
+    
     <title>HSK Hero</title>
 </head>
 <body>
@@ -80,24 +82,7 @@
             <a href="{{ url_for('show_registration_page') }}">
                 <button>Become a Hero</button>
             </a>
-
         </section>
-        <section class="faq">
-             
-        </section>
-
     </main>
-
-    <script>
-    const boxes = document.querySelectorAll('.pricing_boxes div');
-
-    boxes.forEach(box => {
-        box.addEventListener('click', () => {
-        boxes.forEach(b => b.classList.remove('selected')); // Remove from all
-        box.classList.add('selected'); // Add to clicked one
-        });
-    });
-    </script>
-
 </body>
 </html>

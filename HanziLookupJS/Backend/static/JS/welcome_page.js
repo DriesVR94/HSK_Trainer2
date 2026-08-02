@@ -36,41 +36,30 @@ function showExampleCharacter() {
   const container = document.getElementById('character-target-div');
   container.innerHTML = '';
 
-  const chars = Array.from(window.targetCharacter);
-
-  // Put character boxes next to each other
-  container.style.width = 'auto';
-  container.style.height = 'auto';
   container.style.display = 'flex';
-  container.style.flexDirection = 'row';
-  container.style.gap = '10px';
   container.style.justifyContent = 'center';
 
-  chars.forEach(char => {
-    const charBox = document.createElement('div');
+  const charBox = document.createElement('div');
+  charBox.style.width = 'var(--char-box-size)';
+  charBox.style.height = 'var(--char-box-size)';
+  charBox.style.backgroundColor = '#fafafa';
+  charBox.style.border = '3px solid #ee1c25';
+  charBox.style.borderRadius = '12px';
+  charBox.style.display = 'flex';
+  charBox.style.justifyContent = 'center';
+  charBox.style.alignItems = 'center';
 
-    charBox.style.width = 'var(--char-box-size)';
-    charBox.style.height = 'var(--char-box-size)';
-    charBox.style.backgroundColor = '#fafafa';
-    charBox.style.border = '3px solid #ee1c25';
-    charBox.style.borderRadius = '12px';
+  container.appendChild(charBox);
 
-    charBox.style.display = 'flex';
-    charBox.style.justifyContent = 'center';
-    charBox.style.alignItems = 'center';
-
-    container.appendChild(charBox);
-
-    const writer = HanziWriter.create(charBox, char, {
-      width: charBox.clientWidth,
-      height: charBox.clientHeight,
-      padding: 5,
-      strokeAnimationSpeed: 1,
-      delayBetweenLoops: 3000
-    });
-
-    writer.loopCharacterAnimation();
+  const writer = HanziWriter.create(charBox, window.targetCharacter, {
+    width: charBox.clientWidth,
+    height: charBox.clientHeight,
+    padding: 5,
+    strokeAnimationSpeed: 1,
+    delayBetweenLoops: 3000
   });
+
+  writer.loopCharacterAnimation();
 }
 
 function buildBoards() {

@@ -1,5 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; }
-html, body { min-height: 100vh; margin: 0; padding: 0; }
+html, body { height: 100%; margin: 0; padding: 0; }
 body { display: flex; flex-direction: column; background-color: #000f18; font-family: Verdana, sans-serif; }
 h2 { margin: 0 0 10px 0; }
 .content {
@@ -9,20 +9,20 @@ h2 { margin: 0 0 10px 0; }
     margin: 0 auto;
     padding: 40px;
     box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     background-color: #000f18;
+    min-height: 100%;
+    justify-content: space-between;
 }
 .colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
 .colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
 .colLeft > .boardWrap { flex: 0 0 auto; }
 .drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
-.commands { width: 100%; margin: 8px; display: flex;  justify-content: center; }
-.cmdUndo { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
-.cmdClear { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
+.commands { margin: 8px; display: flex;  justify-content: center; }
+.cmdUndo { flex: 0.2; background-color: #000f18; border: 2px solid; border-color: #fafafa; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #fafafa; user-select: none; }
+.cmdClear { flex: 0.2; background-color: #000f18; border: 2px solid; border-color: #fafafa; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #fafafa; user-select: none; }
 .cmdRecognize { flex: 0.2; background-color: #ee1c25; border-radius: 3px; text-align: center; cursor: default; margin: 8px; padding: 3px; color: #000f18; user-select: none; }
 .cmdNextButton {
   flex: 0.1;
@@ -55,16 +55,16 @@ h2 { margin: 0 0 10px 0; }
     display: block;
     margin: 10px auto;
     padding: 8px 16px;
-    background: #f1c40f;
-    color: #000f18;
-    border: none;
-    border-radius: 6px;
+    background:#000f18;
+    color: #fafafa;
+    border: 2px solid;
+    border-radius: 3px;
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .show_solution_button:hover {
-    background: #f1d7a6;
+    background: #f79297;
 }
     .solutionAnimation { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background-color: rgba(255, 255, 255, 0.9); justify-content: center; align-items: center; z-index: 10;}

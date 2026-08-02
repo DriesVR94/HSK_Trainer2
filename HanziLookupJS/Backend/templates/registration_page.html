@@ -15,40 +15,6 @@
 
     <div class="social-buttons">
       <button id="googleLoginBtn" class="gsi-material-button" style="width:200px">
-        <script>
-        let client;
-
-        window.onload = function () {
-            client = google.accounts.oauth2.initTokenClient({
-                client_id: "365777418021-krre441oq3u1rjv89vis4qkj592io06t.apps.googleusercontent.com",
-                scope: "email profile openid",
-                callback: async (response) => {
-                    console.log("Access token:", response.access_token);
-
-                    const res = await fetch("/auth/google", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(response)
-                    });
-
-                    const data = await res.json();
-
-                    if (data.success) {
-                        window.location.href = "/home_page";
-                    } else {
-                        alert("Google login failed");
-                    }
-                }
-            });
-
-            document.getElementById("googleLoginBtn")
-                .addEventListener("click", function () {
-                    client.requestAccessToken();
-                });
-        };
-        </script>
         <div class="gsi-material-button-state"></div>
         <div class="gsi-material-button-content-wrapper">
           <div class="gsi-material-button-icon">
@@ -111,6 +77,8 @@
       <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
     </div>
   </div>
+
+  <script src="{{ url_for('static', filename='JS/registration_page.js') }}"></script>
 
 </body>
 </html>

@@ -67,28 +67,51 @@ function buildBoards() {
   container.innerHTML = '';
 
   container.style.display = 'flex';
+  container.style.flexDirection = 'row';
+  container.style.flexWrap = 'wrap';
   container.style.justifyContent = 'center';
+  container.style.gap = '20px';
+  container.style.width = '100%';
+  container.style.maxWidth = '1400px';
+  container.style.margin = '0 auto';
 
-  const boardElem = document.createElement('div');
-  boardElem.className = 'drawingBoard';
-  boardElem.style.width = 'var(--char-box-size)';
-  boardElem.style.height = 'var(--char-box-size)';
-  boardElem.style.position = 'relative';
+  window._drawingBoards = [];
 
-  container.appendChild(boardElem);
+  // Keep the character section because the layout/CSS depends on it.
+  const charSection = document.createElement('div');
+  charSection.className = 'characterPracticeSection';
+  charSection.style.width = '100%';
+  charSection.style.gap = '16px';
+  charSection.style.justifyContent = 'center';
+  charSection.style.maxWidth = '1400px';
+  charSection.style.margin = '0 auto';
 
-  const board = HanziLookup.DrawingBoard($(boardElem), () => {
-    // Optional: handle completed drawing
+  container.appendChild(charSection);
+
+  // Create a single drawing board.
+  const wrap = document.createElement('div');
+  wrap.className = 'boardWrap';
+
+  const inner = document.createElement('div');
+  inner.className = 'drawingBoard';
+  inner.style.width = 'var(--char-box-size)';
+  inner.style.height = 'var(--char-box-size)';
+  inner.style.position = 'relative';
+
+  wrap.appendChild(inner);
+  charSection.appendChild(wrap);
+
+  const board = HanziLookup.DrawingBoard($(inner), () => {
     // lookup(board);
   });
 
-  window._drawingBoards = [board];
+  window._drawingBoards.push(board);
 
   requestAnimationFrame(() => {
-    const canvas = boardElem.querySelector('canvas');
+    const canvas = inner.querySelector('canvas');
 
     if (canvas) {
-      const size = boardElem.clientWidth;
+      const size = inner.clientWidth;
 
       canvas.width = size;
       canvas.height = size;
@@ -96,8 +119,9 @@ function buildBoards() {
       canvas.style.height = `${size}px`;
     }
 
-    addGridOverlay(boardElem);
+    addGridOverlay(inner);
   });
+
 }
 
 function addGridOverlay(boardElem) {

@@ -1,3 +1,7 @@
+:root {
+  --char-box-size: clamp(100px, 14vw, 160px);
+}
+
 *{ 
     font-family: "Titillium Web", sans-serif; 
     font-weight: 700; 
@@ -192,6 +196,18 @@ section{
     display: inline-block;
 }
 
+#drawingBoardsContainer {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.characterPracticeSection {
+    display: grid;
+    gap: 16px;
+    justify-content: center;
+    grid-template-columns: repeat(6, var(--char-box-size));
+}
+
 @media (max-width: 1320px) {
     button {
         margin-bottom: 8vh;
@@ -210,6 +226,18 @@ section{
     }
     .nav-links ul li{
         padding: 0px 5px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .characterPracticeSection {
+        grid-template-columns: repeat(3, var(--char-box-size));
+    }
+}
+
+@media (max-width: 400px) {
+    .characterPracticeSection {
+        grid-template-columns: repeat(2, var(--char-box-size));
     }
 }
 

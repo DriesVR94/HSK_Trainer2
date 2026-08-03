@@ -196,17 +196,47 @@ section{
     display: inline-block;
 }
 
+
+div {
+    box-sizing: border-box;
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #000f18;
+    min-height: 100%;
+    justify-content: space-between;
+}
+.colLeft_2 { width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+.colLeft { display: flex; flex-wrap: nowrap; gap: 20px; justify-content: center; width: 810px; margin: 0 auto;}
+.colLeft > .boardWrap { flex: 0 0 auto; }
+.drawingBoard { position: relative; width: 100%; cursor: crosshair; background-color: #fafafa; overflow: hidden; }
+
 #drawingBoardsContainer {
     width: 100%;
     max-width: 1400px;
 }
 
 .characterPracticeSection {
-    display: grid;
-    gap: 16px;
-    justify-content: center;
-    grid-template-columns: repeat(6, var(--char-box-size));
+    grid-template-columns: var(--char-box-size);
 }
+
+.feedbackBar { display: flex; height: 30px; width: 100%; margin: 8px 0; font-size: 12px; }
+.segment { flex: 1; display: flex; align-items: center; justify-content: center; opacity: 0.5; transition: background-color 0.3s; }
+.segment.highlight { opacity: 1 !important; border: 2px solid black; font-weight: bold; }
+.noob { background-color: #f79297; color: black; }
+.familiar { background-color: #f4676e; color: black; }
+.good { background-color: #f03d46; color: black; }
+.expert { background-color: #ee1c25; color: black; }
+
 
 @media (max-width: 1320px) {
     button {

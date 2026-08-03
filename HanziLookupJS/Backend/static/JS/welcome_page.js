@@ -7,28 +7,23 @@ boxes.forEach(box => {
     });
 });
 
-let hanziList = [
+let givenHanzi = [
     { chinese: "水", pinyin: "shuǐ", english: "water" },
     { chinese: "火", pinyin: "huǒ", english: "fire" },
     { chinese: "山", pinyin: "shān", english: "mountain" }
 ];
 
-function loadRandomHanzi() {
-  const randomEntry = hanziList[Math.floor(Math.random() * hanziList.length)];
+function loadGivenHanzi() {
+  const randomEntry = givenHanzi[Math.floor(Math.random() * givenHanzi.length)];
 
   document.querySelector('.targetCharBox').innerHTML = `
-  <strong style="font-size: clamp(14px, 1.8vw, 35px)">
-    ${randomEntry.english}
-  </strong>
-  <span style="font-size: clamp(12px, 1.5vw, 25px); font-style: italic;">
-    ${randomEntry.pinyin}
-  </span>
-`;
+    <strong>${randomEntry.english}</strong>
+    <span>${randomEntry.pinyin}</span>
+  `;
 
   window.targetHanziEntry = randomEntry;
   window.targetCharacter = randomEntry.chinese;
 
-  showExampleCharacter();
   buildBoards();
 }
 
@@ -66,52 +61,45 @@ function buildBoards() {
   const container = document.getElementById('drawingBoardsContainer');
   container.innerHTML = '';
 
-  container.style.display = 'flex';
-  container.style.flexDirection = 'row';
-  container.style.flexWrap = 'wrap';
-  container.style.justifyContent = 'center';
-  container.style.gap = '20px';
-  container.style.width = '100%';
-  container.style.maxWidth = '1400px';
-  container.style.margin = '0 auto';
-
-  window._drawingBoards = [];
-
-  // Keep the character section because the layout/CSS depends on it.
-  const charSection = document.createElement('div');
-  charSection.className = 'characterPracticeSection';
-  charSection.style.width = '100%';
-  charSection.style.gap = '16px';
-  charSection.style.justifyContent = 'center';
-  charSection.style.maxWidth = '1400px';
-  charSection.style.margin = '0 auto';
-
-  container.appendChild(charSection);
-
-  // Create a single drawing board.
   const wrap = document.createElement('div');
   wrap.className = 'boardWrap';
 
-  const inner = document.createElement('div');
-  inner.className = 'drawingBoard';
-  inner.style.width = 'var(--char-box-size)';
-  inner.style.height = 'var(--char-box-size)';
-  inner.style.position = 'relative';
+  const boardElem = document.createElement('div');
+  boardElem.className = 'drawingBoard';
 
-  wrap.appendChild(inner);
-  charSection.appendChild(wrap);
+  boardElem.style.width = 'var(--char-box-size)';
+  boardElem.style.height = 'var(--char-box-size)';
+  boardElem.style.position = 'relative';
 
-  const board = HanziLookup.DrawingBoard($(inner), () => {
-    // lookup(board);
+  wrap.appendChild(boardElem);
+
+  wrap.innerHTML = `
+        <div class="drawingBoard" 
+        style="width: var(--char-box-size); 
+        height: var(--char-box-size); 
+        position: relative;">
+        <div class="solutionAnimation"></div>
+        </div>
+        <div class="feedbackBar">
+        <div class="segment noob">Noob</div>
+        <div class="segment familiar">Familiar</div>
+        <div class="segment good">Good</div>
+        <div class="segment expert">Expert</div>
+        </div>
+    `;
+
+  container.appendChild(wrap);
+
+  const board = HanziLookup.DrawingBoard($(boardElem), () => {
+    // Drawing completed
+    // lookup(board);  // enable later if needed
   });
 
-  window._drawingBoards.push(board);
-
   requestAnimationFrame(() => {
-    const canvas = inner.querySelector('canvas');
+    const canvas = boardElem.querySelector('canvas');
 
     if (canvas) {
-      const size = inner.clientWidth;
+      const size = boardElem.clientWidth;
 
       canvas.width = size;
       canvas.height = size;
@@ -119,9 +107,11 @@ function buildBoards() {
       canvas.style.height = `${size}px`;
     }
 
-    addGridOverlay(inner);
+    addGridOverlay(boardElem);
   });
 
+  // Optional: keep reference for later reset/clear functionality
+  window._drawingBoard = board;
 }
 
 function addGridOverlay(boardElem) {
@@ -172,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         'orig',
         "/static/dist/orig.json",
         () => {
-            loadRandomHanzi();
+            loadGivenHanzi();
         }
     );
 

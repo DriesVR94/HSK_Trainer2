@@ -24,6 +24,7 @@ function loadGivenHanzi() {
   window.targetHanziEntry = randomEntry;
   window.targetCharacter = randomEntry.chinese;
 
+  showExampleCharacter();
   buildBoards();
 }
 

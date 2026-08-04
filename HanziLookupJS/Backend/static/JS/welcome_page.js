@@ -65,97 +65,130 @@ function buildBoards() {
   const wrap = document.createElement('div');
   wrap.className = 'boardWrap';
 
-  const boardElem = document.createElement('div');
-  boardElem.className = 'drawingBoard';
-
-  boardElem.style.width = 'var(--char-box-size)';
-  boardElem.style.height = 'var(--char-box-size)';
-  boardElem.style.position = 'relative';
-
-  wrap.appendChild(boardElem);
-
   wrap.innerHTML = `
-        <div class="drawingBoard" 
-        style="width: var(--char-box-size); 
-        height: var(--char-box-size); 
-        position: relative;">
-        <div class="solutionAnimation"></div>
-        </div>
-        <div class="feedbackBar">
-        <div class="segment noob">Noob</div>
-        <div class="segment familiar">Familiar</div>
-        <div class="segment good">Good</div>
-        <div class="segment expert">Expert</div>
-        </div>
-    `;
+    <div class="drawingBoard" 
+      style="
+        width: var(--char-box-size);
+        height: var(--char-box-size);
+        position: relative;
+      ">
+    </div>
+
+    <div class="feedbackBar">
+      <div class="segment noob">Noob</div>
+      <div class="segment familiar">Familiar</div>
+      <div class="segment good">Good</div>
+      <div class="segment expert">Expert</div>
+    </div>
+  `;
 
   container.appendChild(wrap);
 
+  const boardElem = wrap.querySelector('.drawingBoard');
+
+
   const board = HanziLookup.DrawingBoard($(boardElem), () => {
     // Drawing completed
-    // lookup(board);  // enable later if needed
   });
 
-  requestAnimationFrame(() => {
-    const canvas = boardElem.querySelector('canvas');
 
-    if (canvas) {
-      const size = boardElem.clientWidth;
+  // ---- GRID OVERLAY (copied from working version) ----
 
-      canvas.width = size;
-      canvas.height = size;
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
-    }
+  const overlayCanvas = document.createElement('canvas');
 
-    addGridOverlay(boardElem);
-  });
+  const size = boardElem.clientWidth;
 
-  // Optional: keep reference for later reset/clear functionality
+  overlayCanvas.width = size;
+  overlayCanvas.height = size;
+
+  overlayCanvas.style.width = `${size}px`;
+  overlayCanvas.style.height = `${size}px`;
+
+  overlayCanvas.style.position = 'absolute';
+  overlayCanvas.style.top = '0';
+  overlayCanvas.style.left = '0';
+  overlayCanvas.style.pointerEvents = 'none';
+
+  boardElem.appendChild(overlayCanvas);
+
+
+  const overlayCtx = overlayCanvas.getContext('2d');
+
+
+  function drawGrid(ctx, w, h) {
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.setLineDash([1, 1]);
+    ctx.lineWidth = 0.5;
+    ctx.strokeStyle = 'grey';
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.lineTo(0, 0);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w, 0);
+    ctx.lineTo(0, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, 0);
+    ctx.lineTo(w / 2, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.stroke();
+  }
+
+
+  drawGrid(
+    overlayCtx,
+    overlayCanvas.width,
+    overlayCanvas.height
+  );
+
+
   window._drawingBoard = board;
 }
 
 function addGridOverlay(boardElem) {
-  const canvas = boardElem.querySelector('canvas');
-  if (!canvas) return;
+  const strokeCanvas = boardElem.querySelector('canvas');
+  if (!strokeCanvas) return;
 
-  const overlay = document.createElement('canvas');
-  overlay.width = canvas.width;
-  overlay.height = canvas.height;
+  const overlayCanvas = document.createElement('canvas');
 
-  overlay.style.position = 'absolute';
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = canvas.style.width;
-  overlay.style.height = canvas.style.height;
-  overlay.style.pointerEvents = 'none';
-  overlay.style.zIndex = 10;
+  // Use the actual displayed board size
+  const size = boardElem.clientWidth;
 
-  boardElem.appendChild(overlay);
+  overlayCanvas.width = size;
+  overlayCanvas.height = size;
 
-  const ctx = overlay.getContext('2d');
-  drawGrid(ctx, overlay.width, overlay.height);
+  overlayCanvas.style.position = 'absolute';
+  overlayCanvas.style.top = '0';
+  overlayCanvas.style.left = '0';
+  overlayCanvas.style.width = `${size}px`;
+  overlayCanvas.style.height = `${size}px`;
+  overlayCanvas.style.pointerEvents = 'none';
+  overlayCanvas.style.zIndex = '10';
+
+  boardElem.appendChild(overlayCanvas);
+
+  const ctx = overlayCanvas.getContext('2d');
+
+  drawGrid(ctx, size, size);
 }
 
-function drawGrid(ctx, w, h) {
-  ctx.clearRect(0, 0, w, h);
-  ctx.strokeStyle = "#ddd";
-  ctx.lineWidth = 1;
-
-  const step = w / 4;
-
-  for (let i = 1; i < 4; i++) {
-    ctx.beginPath();
-    ctx.moveTo(step * i, 0);
-    ctx.lineTo(step * i, h);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(0, step * i);
-    ctx.lineTo(w, step * i);
-    ctx.stroke();
-  }
-}
 
 document.addEventListener("DOMContentLoaded", () => {
 

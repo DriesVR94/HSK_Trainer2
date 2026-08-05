@@ -6,12 +6,26 @@ from datetime import datetime
 #from Backend.ocr import ocr_bp  # Not needed for production.
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
-app.secret_key = "replace_this_with_a_strong_secret_key"
+CORS(
+    app,
+    supports_credentials=True,
+    origins=[
+        "https://hsk-hero.onrender.com",
+        "http://localhost:5000"
+    ]
+)
+
+app.secret_key = os.environ.get("SECRET_KEY")
+
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SAMESITE="None"
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(BASE_DIR, 'users.db')
 print("Using database at:", db_path)
+print("Database exists:", os.path.exists(db_path))
 
 average_stroke_count = 9 # The average HSK character contains ca. 9 strokes
 weighing_parameter = 5 # This one is set manually. A higher weighing_parameter results in a lower forgetting_rate, and hence a higher recall_score

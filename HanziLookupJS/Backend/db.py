@@ -1,26 +1,43 @@
 
 from flask_cors import CORS
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for
-import sqlite3, hashlib, os, json
+import sqlite3, hashlib, os, json, tempfile
 from datetime import datetime
+from paddleocr import PaddleOCR
+import base64
 #from Backend.ocr import ocr_bp  # Not needed for production.
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "dev-secret-key-change-this"
+)
+
+is_production = os.environ.get("RENDER") == "true"
+
+app.config.update(
+    SESSION_COOKIE_SECURE=is_production,
+    SESSION_COOKIE_SAMESITE="None" if is_production else "Lax"
+)
+
 CORS(
     app,
     supports_credentials=True,
     origins=[
         "https://hsk-hero.onrender.com",
-        "http://localhost:5000"
+        "http://localhost:5000",
+        "http://127.0.0.1:5000"
     ]
 )
 
-app.secret_key = os.environ.get("SECRET_KEY")
-
-app.config.update(
-    SESSION_COOKIE_SECURE=True,
-    SESSION_COOKIE_SAMESITE="None"
+paddle_ocr = PaddleOCR(
+    lang="ch",
+    use_doc_orientation_classify=False,
+    use_doc_unwarping=False,
+    use_textline_orientation=False
 )
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 db_path = os.path.join(BASE_DIR, 'users.db')
@@ -551,6 +568,94 @@ def google_auth():
 
 # app.register_blueprint(ocr_bp) # Not needed for production.
 
+@app.route("/recognize_paddle", methods=["POST"])
+def recognize_paddle():
+
+    data = request.get_json(silent=True)
+
+    if not data or "image" not in data:
+        return jsonify({
+            "success": False,
+            "error": "Missing image"
+        }), 400
+
+    image_data_url = data["image"]
+
+    try:
+
+        if "," not in image_data_url:
+            return jsonify({
+                "success": False,
+                "error": "Invalid image data URL"
+            }), 400
+
+        _, encoded = image_data_url.split(",", 1)
+
+        image_bytes = base64.b64decode(encoded)
+
+        # PaddleOCR can work with image paths,
+        # so write the canvas image to a temporary PNG.
+        with tempfile.NamedTemporaryFile(
+            suffix=".png",
+            delete=False
+        ) as tmp:
+
+            tmp.write(image_bytes)
+            temp_path = tmp.name
+
+        try:
+
+            results = paddle_ocr.predict(
+                temp_path
+            )
+
+            recognized_text = ""
+
+            for result in results:
+
+                data_dict = result.json
+
+                if callable(data_dict):
+                    data_dict = data_dict()
+
+                # PaddleOCR 3.x stores recognized strings
+                # in rec_texts in OCR pipeline results.
+                if isinstance(data_dict, dict):
+
+                    res = data_dict.get(
+                        "res",
+                        data_dict
+                    )
+
+                    texts = res.get(
+                        "rec_texts",
+                        []
+                    )
+
+                    if texts:
+                        recognized_text = "".join(texts)
+                        break
+
+            return jsonify({
+                "success": True,
+                "result": recognized_text.strip()
+            })
+
+        finally:
+
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+    except Exception as exc:
+
+        app.logger.exception(
+            "PaddleOCR recognition failed"
+        )
+
+        return jsonify({
+            "success": False,
+            "error": str(exc)
+        }), 500
 
 
 

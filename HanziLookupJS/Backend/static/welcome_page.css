@@ -2,12 +2,28 @@
   --char-box-size: clamp(100px, 14vw, 160px);
 }
 
-*{ 
-    font-family: "Titillium Web", sans-serif; 
-    font-weight: 700; 
-    font-style: normal; 
-    background-color: #000f18; 
-    color: white; 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Titillium Web", sans-serif;
+    font-weight: 700;
+    background: #000f18;
+    color: white;
+}
+
+img,
+video {
+    display: block;
+    max-width: 100%;
 }
 
 .about_hsk p, .extended_demo p{

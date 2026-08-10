@@ -183,28 +183,27 @@ h2 {
     border-radius: 12px;
 }
 
-/* CTA */
-
-.button {
+button {
     display: inline-block;
-
     margin-top: clamp(1.5rem, 4vw, 3rem);
     padding: 0.65em 1.4em;
-
     font-size: clamp(1rem, 1.5vw, 1.25rem);
-
     color: var(--background);
     background: var(--accent);
-
     text-decoration: none;
-
     border-radius: 10px;
-
     transition: transform 0.2s ease;
+    cursor: pointer;
+    border: none;
 }
 
-.button:hover {
+button:hover {
     transform: scale(1.05);
+}
+
+button:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
 }
 
 /* TEXT EFFECTS */

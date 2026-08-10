@@ -17,8 +17,8 @@ function loadGivenHanzi() {
   const randomEntry = givenHanzi[Math.floor(Math.random() * givenHanzi.length)];
 
   document.querySelector('.targetCharBox').innerHTML = `
-    <strong>${randomEntry.english}</strong>
-    <span>${randomEntry.pinyin}</span>
+  <span>${randomEntry.pinyin}</span>  
+  <strong>${randomEntry.english}</strong> 
   `;
 
   window.targetHanziEntry = randomEntry;

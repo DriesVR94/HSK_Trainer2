@@ -278,6 +278,12 @@ button:focus-visible {
     cursor: crosshair;
 }
 
+.targetCharBox span,
+.targetCharBox strong {
+    display: block;
+    text-align: center;
+}
+
 /* MOBILE */
 
 @media (max-width: 800px) {

@@ -1,7 +1,7 @@
 :root {
     --background: #000f18;
     --accent: #ee1c25;
-    --char-box-size: clamp(100px, 14vw, 160px);
+    --char-box-size: clamp(110px, 18vw, 220px);
 }
 
 *,
@@ -108,11 +108,9 @@ nav img {
 
 section {
     width: 100%;
-
     padding:
-        clamp(3rem, 7vw, 6rem)
+        clamp(2rem, 5vw, 4rem)
         clamp(1rem, 5vw, 4rem);
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -138,10 +136,9 @@ h2 {
 .landing {
     width: min(1200px, 100%);
     margin-inline: auto;
-
     flex-direction: row;
-
     gap: clamp(2rem, 5vw, 5rem);
+    min-height: calc(100vh - 220px);
 }
 
 .call_to_action,
@@ -252,11 +249,16 @@ button:focus-visible {
     gap: clamp(2rem, 6vw, 5rem);
 }
 
+.left-panel,
+.right-panel {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
 .left-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-
     gap: 1.25rem;
 }
 
@@ -273,21 +275,40 @@ button:focus-visible {
     gap: 1rem;
 }
 
-.drawingBoard {
+#character-target-div, .drawingBoard {
     position: relative;
+    width: var(--char-box-size);
+    height: var(--char-box-size);
+    background: #fafafa;
+    cursor: crosshair;
+}
 
+.targetCharBox {
+    width: var(--char-box-size);
+    text-align: center;
+}
+
+.targetCharBox span {
+    font-size: clamp(1rem, 2vw, 1.4rem);
+}
+
+.targetCharBox strong {
+    display: block;
+    text-align: center;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+}
+
+.exampleCharBox {
     width: var(--char-box-size);
     height: var(--char-box-size);
 
     background: #fafafa;
+    border: 3px solid var(--accent);
+    border-radius: 12px;
 
-    cursor: crosshair;
-}
-
-.targetCharBox span,
-.targetCharBox strong {
-    display: block;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* MOBILE */
@@ -328,7 +349,4 @@ button:focus-visible {
         gap: 1.25rem;
     }
 
-    :root {
-        --char-box-size: min(135px, 40vw);
-    }
 }

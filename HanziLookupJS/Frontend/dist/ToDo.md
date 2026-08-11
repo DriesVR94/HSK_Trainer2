@@ -8,6 +8,7 @@
 - [] Automatically renew the char when it is drawn correctly.
 - [] Add a 'clear strokes' button.
 - [] Have a total of 10 easy chars in the list of examples.
+- [] Add a section 'About the creator'.
 - [x] Fix the pricing tabs together with the "Become a Hero"-button.
 - [x] Remove the Pricing for now, test with starter audience first.
 - [x] Update the nav bar so it is consistent with the content of the page

@@ -1,6 +1,13 @@
 ### WELCOME PAGE ###
-- [] Replace the GIF with a self-made one (using code from Hanzi Writer).
+- [x] Replace the GIF with a self-made one (using code from Hanzi Writer).
 - [] Add a short demo: Put a sample drawingBoard below. Also stress that writing is an important factor of passing the HSK exam.
+- [] Check whether the grid color can be changed to red.
+- [] Remove the ugly corners of the example char.
+- [] Make the outer grid not a dotted line but a full line.
+- [] Make the feedbackbar as it should be.
+- [] Automatically renew the char when it is drawn correctly.
+- [] Add a 'clear strokes' button.
+- [] Have a total of 10 easy chars in the list of examples.
 - [x] Fix the pricing tabs together with the "Become a Hero"-button.
 - [x] Remove the Pricing for now, test with starter audience first.
 - [x] Update the nav bar so it is consistent with the content of the page

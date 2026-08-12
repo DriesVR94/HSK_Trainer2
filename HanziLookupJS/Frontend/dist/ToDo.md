@@ -1,8 +1,8 @@
 ### WELCOME PAGE ###
 - [x] Replace the GIF with a self-made one (using code from Hanzi Writer).
-- [] Add a short demo: Put a sample drawingBoard below. Also stress that writing is an important factor of passing the HSK exam.
+- [x] Add a short demo: Put a sample drawingBoard below. Also stress that writing is an important factor of passing the HSK exam.
 - [x] Check whether the grid color can be changed to red.
-- [] Remove the ugly corners of the example char.
+- [x] Remove the ugly corners of the example char.
 - [x] Make the outer grid not a dotted line but a full line.
 - [] Make the feedbackbar as it should be.
 - [] Automatically renew the char when it is drawn correctly.

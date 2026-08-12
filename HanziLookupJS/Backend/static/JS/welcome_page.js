@@ -118,7 +118,6 @@ function showExampleCharacter() {
 function drawGrid(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
 
-    ctx.lineWidth = 5;
     ctx.strokeStyle = '#ee1c25';
 
     // Outer border

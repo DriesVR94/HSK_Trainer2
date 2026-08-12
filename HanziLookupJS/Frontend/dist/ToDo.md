@@ -7,7 +7,7 @@
 - [] Make the feedbackbar as it should be.
 - [] Automatically renew the char when it is drawn correctly.
 - [] Add a 'clear strokes' button.
-- [] Have a total of 10 easy chars in the list of examples.
+- [x] Have a total of 10 easy chars in the list of examples.
 - [] Add a section 'About the creator'.
 - [x] Fix the pricing tabs together with the "Become a Hero"-button.
 - [x] Remove the Pricing for now, test with starter audience first.

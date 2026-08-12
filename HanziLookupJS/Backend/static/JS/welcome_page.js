@@ -17,9 +17,16 @@ boxes.forEach(box => {
 // ==========================================
 
 const givenHanzi = [
-    { chinese: "水", pinyin: "shuǐ", english: "water" },
-    { chinese: "火", pinyin: "huǒ", english: "fire" },
-    { chinese: "山", pinyin: "shān", english: "mountain" }
+    { chinese: "水", pinyin: "shuǐ", english: "Water" },
+    { chinese: "火", pinyin: "huǒ", english: "Fire" },
+    { chinese: "山", pinyin: "shān", english: "Mountain" },
+    { chinese: "气", pinyin: "qì", english: "Air" },
+    { chinese: "土", pinyin: "tǔ", english: "Earth" },
+    { chinese: "人", pinyin: "rén", english: "Person" },
+    { chinese: "龙", pinyin: "lóng", english: "Dragon" },
+    { chinese: "月", pinyin: "yuè", english: "Moon" },
+    { chinese: "八", pinyin: "bā", english: "Eight" },
+    { chinese: "米", pinyin: "mǐ", english: "Rice" },
 ];
 
 let exampleWriter = null;

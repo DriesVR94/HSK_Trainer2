@@ -118,11 +118,11 @@ function showExampleCharacter() {
 function drawGrid(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
 
-    ctx.setLineDash([4, 4]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'grey';
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = '#ee1c25';
 
     // Outer border
+    ctx.setLineDash([]);
     ctx.beginPath();
     ctx.rect(
         0.5,
@@ -133,6 +133,8 @@ function drawGrid(ctx, width, height) {
     ctx.stroke();
 
     // Diagonal top-left -> bottom-right
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(width, height);

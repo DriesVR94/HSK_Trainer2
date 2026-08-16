@@ -76,13 +76,12 @@ function showExampleCharacter() {
         return;
     }
 
-    // Stop previous animation if one exists
     if (exampleWriter) {
         try {
             exampleWriter.cancelQuiz();
             exampleWriter.pauseAnimation();
         } catch (error) {
-            // Ignore if these methods aren't currently active
+            // Ignore if these methods aren't active
         }
     }
 
@@ -192,21 +191,14 @@ function buildBoards() {
         <div class="drawingBoard"></div>
 
         <div class="feedbackBar">
-            <div class="segment noob">
-                Noob
-            </div>
+            <div class="segment noob">Noob</div>
+            <div class="segment familiar">Familiar</div>
+            <div class="segment good">Good</div>
+            <div class="segment expert">Expert</div>
+        </div>
 
-            <div class="segment familiar">
-                Familiar
-            </div>
-
-            <div class="segment good">
-                Good
-            </div>
-
-            <div class="segment expert">
-                Expert
-            </div>
+        <div class="recognitionResults"
+             style="display: none;">
         </div>
     `;
 
@@ -214,6 +206,9 @@ function buildBoards() {
 
     const boardElem =
         wrap.querySelector('.drawingBoard');
+
+    const recognitionResults =
+        wrap.querySelector('.recognitionResults');
 
     if (!boardElem) {
         console.error(
@@ -231,11 +226,27 @@ function buildBoards() {
         return;
     }
 
-    // Create drawing board
+    let startTime = null;
+
     const board = HanziLookup.DrawingBoard(
         $(boardElem),
         () => {
-            // Drawing completed
+            const strokes =
+                board.cloneStrokes();
+
+            if (
+                strokes.length === 1 &&
+                startTime === null
+            ) {
+                startTime = performance.now();
+            }
+
+            updateRecognition(
+                board,
+                recognitionResults,
+                wrap,
+                startTime
+            );
         }
     );
 
@@ -245,15 +256,9 @@ function buildBoards() {
 
     overlayCanvas.className = 'gridOverlay';
 
-    /*
-     * Canvas internal dimensions
-     */
     overlayCanvas.width = size;
     overlayCanvas.height = size;
 
-    /*
-     * Canvas displayed dimensions
-     */
     overlayCanvas.style.width = '100%';
     overlayCanvas.style.height = '100%';
 
@@ -280,16 +285,119 @@ function buildBoards() {
 
 
 // ==========================================
+// CHARACTER RECOGNITION
+// ==========================================
+
+function updateRecognition(
+    board,
+    resultElement,
+    wrap,
+    startTime
+) {
+    const analysed =
+        new HanziLookup.AnalyzedCharacter(
+            board.cloneStrokes()
+        );
+
+    new HanziLookup.Matcher('orig')
+        .match(
+            analysed,
+            5,
+            matches => {
+                const bestMatch =
+                    matches.length > 0
+                        ? matches[0].character
+                        : '';
+
+                resultElement.textContent =
+                    bestMatch;
+
+                updateFeedbackBar(
+                    board,
+                    wrap,
+                    bestMatch,
+                    startTime
+                );
+            }
+        );
+}
+
+
+// ==========================================
+// FEEDBACK BAR
+// ==========================================
+
+function updateFeedbackBar(
+    board,
+    wrap,
+    recognizedChar,
+    startTime
+) {
+    const feedbackBar =
+        wrap.querySelector('.feedbackBar');
+
+    if (!feedbackBar) {
+        return;
+    }
+
+    const expectedChar =
+        window.targetCharacter;
+
+    const correct =
+        recognizedChar === expectedChar;
+
+    const strokes =
+        board.cloneStrokes().length;
+
+    let elapsedTime = 0;
+
+    if (startTime !== null) {
+        elapsedTime =
+            (performance.now() - startTime) /
+            1000;
+    }
+
+    const avgTimePerStroke =
+        strokes > 0
+            ? elapsedTime / strokes
+            : 0;
+
+    let levelClass = 'noob';
+
+    if (correct) {
+        if (avgTimePerStroke <= 0.365) {
+            levelClass = 'expert';
+        } else if (avgTimePerStroke <= 0.5) {
+            levelClass = 'good';
+        } else {
+            levelClass = 'familiar';
+        }
+    }
+
+    feedbackBar
+        .querySelectorAll('.segment')
+        .forEach(segment => {
+            segment.style.opacity = '0.5';
+        });
+
+    const selected =
+        feedbackBar.querySelector(
+            `.${levelClass}`
+        );
+
+    if (selected) {
+        selected.style.opacity = '1';
+    }
+}
+
+
+// ==========================================
 // RESPONSIVE RESIZING
 // ==========================================
 
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
 
-    /*
-     * Wait until resizing has stopped briefly
-     * before rebuilding everything.
-     */
     resizeTimer = setTimeout(() => {
         if (!window.targetCharacter) {
             return;
@@ -300,6 +408,31 @@ window.addEventListener('resize', () => {
 
     }, 150);
 });
+
+
+// ==========================================
+// NEXT CHARACTER BUTTON
+// ==========================================
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        const nextButton =
+            document.querySelector(
+                '.cmdNextButton'
+            );
+
+        if (nextButton) {
+            nextButton.addEventListener(
+                'click',
+                () => {
+                    loadGivenHanzi();
+                }
+            );
+        }
+    }
+);
 
 
 // ==========================================

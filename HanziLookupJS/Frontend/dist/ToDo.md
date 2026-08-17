@@ -4,9 +4,9 @@
 - [x] Check whether the grid color can be changed to red.
 - [x] Remove the ugly corners of the example char.
 - [x] Make the outer grid not a dotted line but a full line.
-- [] Make the feedbackbar as it should be.
-- [] Automatically renew the char when it is drawn correctly.
-- [] Add a 'clear strokes' button.
+- [x] Make the feedbackbar as it should be.
+- [x] Automatically renew the char when it is drawn correctly.
+- [x] Add a 'clear strokes' button.
 - [x] Have a total of 10 easy chars in the list of examples.
 - [] Add a section 'About the creator'.
 - [x] Fix the pricing tabs together with the "Become a Hero"-button.

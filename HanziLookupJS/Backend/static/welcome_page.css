@@ -1,7 +1,10 @@
 :root {
     --background: #000f18;
     --accent: #ee1c25;
-    --char-box-size: clamp(110px, 18vw, 220px);
+    --char-box-size: clamp(180px, 22vw, 320px);
+    --practice-gap: 8px;
+    --feedback-height: 30px;
+    --controls-height: 38px;
 }
 
 *,
@@ -253,25 +256,15 @@ button:focus-visible {
 .right-panel {
     flex: 1 1 0;
     min-width: 0;
-}
-
-.left-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
-}
-
-.right-panel {
-    display: flex;
-    justify-content: center;
 }
 
 #drawingBoardsContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-
     gap: 1rem;
 }
 

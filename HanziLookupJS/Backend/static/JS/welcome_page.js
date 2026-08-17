@@ -273,6 +273,10 @@ function buildBoards() {
                     wrap,
                     elapsedTime
                 );
+
+                setTimeout(() => {
+                    loadGivenHanzi();
+                }, 1500);
             }
         }
     );

@@ -363,6 +363,35 @@ button:focus-visible {
     background-color: #ee1c25;
 }
 
+.commands {
+    margin: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.cmdClear {
+    flex: 0.2;
+
+    background-color: #000f18;
+
+    border: 2px solid;
+    border-color: #fafafa;
+    border-radius: 3px;
+
+    text-align: center;
+    cursor: default;
+
+    margin: 8px;
+    padding: 3px;
+
+    color: #fafafa;
+    user-select: none;
+}
+
+.cmdClear:hover {
+    background-color: #f79297;
+}
+
 /* MOBILE */
 
 @media (max-width: 800px) {

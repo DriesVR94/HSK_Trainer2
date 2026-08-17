@@ -187,20 +187,26 @@ function buildBoards() {
     const wrap = document.createElement('div');
     wrap.className = 'boardWrap';
 
-    wrap.innerHTML = `
-        <div class="drawingBoard"></div>
+        wrap.innerHTML = `
+            <div class="drawingBoard"></div>
 
-        <div class="feedbackBar">
-            <div class="segment noob">Noob</div>
-            <div class="segment familiar">Familiar</div>
-            <div class="segment good">Good</div>
-            <div class="segment expert">Expert</div>
-        </div>
+            <div class="feedbackBar">
+                <div class="segment noob">Noob</div>
+                <div class="segment familiar">Familiar</div>
+                <div class="segment good">Good</div>
+                <div class="segment expert">Expert</div>
+            </div>
 
-        <div class="recognitionResults"
-             style="display: none;">
-        </div>
-    `;
+            <div class="commands">
+                <div class="cmd cmdClear">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+
+            <div class="recognitionResults"
+                style="display: none;">
+            </div>
+        `;
 
     container.appendChild(wrap);
 
@@ -270,6 +276,32 @@ function buildBoards() {
             }
         }
     );
+
+    const clearButton =
+        wrap.querySelector('.cmdClear');
+
+    clearButton.addEventListener('click', () => {
+        board.clearCanvas();
+        board.redraw();
+
+        // Allow feedback to be calculated again
+        board._feedbackSent = false;
+
+        // Restart timing
+        startTime = null;
+        endTime = null;
+
+        // Reset feedback bar
+        wrap.querySelectorAll(
+            '.feedbackBar .segment'
+        ).forEach(segment => {
+            segment.style.opacity = '0.5';
+            segment.classList.remove('highlight');
+        });
+
+        // Clear hidden recognition result
+        recognitionResults.textContent = '';
+    });
 
     // Create grid overlay
     const overlayCanvas =

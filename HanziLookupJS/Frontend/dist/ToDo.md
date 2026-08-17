@@ -13,7 +13,7 @@
 - [x] Remove the Pricing for now, test with starter audience first.
 - [x] Update the nav bar so it is consistent with the content of the page
 - [] Fix the link when the nav bar topics are clicked. Right now, they are not responsive.
-- [] Redirect the first 'Become a Hero' button directly to the registration page. 
+- [x] Redirect the first 'Become a Hero' button directly to the registration page. 
 
 ### REGISTRATION PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.

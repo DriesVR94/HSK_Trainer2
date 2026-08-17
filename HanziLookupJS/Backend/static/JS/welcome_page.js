@@ -17,16 +17,16 @@ boxes.forEach(box => {
 // ==========================================
 
 const givenHanzi = [
-    { chinese: "水", pinyin: "shuǐ", english: "Water" },
-    { chinese: "火", pinyin: "huǒ", english: "Fire" },
-    { chinese: "山", pinyin: "shān", english: "Mountain" },
-    { chinese: "气", pinyin: "qì", english: "Air" },
-    { chinese: "土", pinyin: "tǔ", english: "Earth" },
-    { chinese: "人", pinyin: "rén", english: "Person" },
-    { chinese: "龙", pinyin: "lóng", english: "Dragon" },
-    { chinese: "月", pinyin: "yuè", english: "Moon" },
-    { chinese: "八", pinyin: "bā", english: "Eight" },
-    { chinese: "米", pinyin: "mǐ", english: "Rice" },
+    { chinese: "水", pinyin: "shuǐ", english: "Water", strokeCount: 4 },
+    { chinese: "火", pinyin: "huǒ", english: "Fire", strokeCount: 4 },
+    { chinese: "山", pinyin: "shān", english: "Mountain", strokeCount: 3 },
+    { chinese: "气", pinyin: "qì", english: "Air", strokeCount: 4 },
+    { chinese: "土", pinyin: "tǔ", english: "Earth", strokeCount: 3 },
+    { chinese: "人", pinyin: "rén", english: "Person", strokeCount: 2 },
+    { chinese: "龙", pinyin: "lóng", english: "Dragon", strokeCount: 5 },
+    { chinese: "月", pinyin: "yuè", english: "Moon", strokeCount: 4 },
+    { chinese: "八", pinyin: "bā", english: "Eight", strokeCount: 2 },
+    { chinese: "米", pinyin: "mǐ", english: "Rice", strokeCount: 6 },
 ];
 
 let exampleWriter = null;
@@ -227,6 +227,10 @@ function buildBoards() {
     }
 
     let startTime = null;
+    let endTime = null;
+
+    const maxStrokes =
+        window.targetHanziEntry.strokeCount;
 
     const board = HanziLookup.DrawingBoard(
         $(boardElem),
@@ -234,19 +238,36 @@ function buildBoards() {
             const strokes =
                 board.cloneStrokes();
 
+            // Start timer after first stroke
             if (
                 strokes.length === 1 &&
                 startTime === null
             ) {
                 startTime = performance.now();
+                endTime = null;
             }
 
-            updateRecognition(
-                board,
-                recognitionResults,
-                wrap,
-                startTime
-            );
+            // Character is complete
+            if (
+                strokes.length === maxStrokes &&
+                !board._feedbackSent
+            ) {
+                board._feedbackSent = true;
+
+                endTime = performance.now();
+
+                const elapsedTime =
+                    startTime !== null
+                        ? (endTime - startTime) / 1000
+                        : 0;
+
+                updateRecognition(
+                    board,
+                    recognitionResults,
+                    wrap,
+                    elapsedTime
+                );
+            }
         }
     );
 
@@ -292,32 +313,73 @@ function updateRecognition(
     board,
     resultElement,
     wrap,
-    startTime
+    elapsedTime
 ) {
     const analysed =
         new HanziLookup.AnalyzedCharacter(
             board.cloneStrokes()
         );
 
+    let origResult = '';
+    let mmahResult = '';
+
+    let origFinished = false;
+    let mmahFinished = false;
+
+    function checkResults() {
+        if (!origFinished || !mmahFinished) {
+            return;
+        }
+
+        const expectedChar =
+            window.targetCharacter;
+
+        const recognizedCorrectly =
+            origResult === expectedChar ||
+            mmahResult === expectedChar;
+
+        resultElement.textContent =
+            `orig: ${origResult || '—'} | mmah: ${mmahResult || '—'}`;
+
+        updateFeedbackBar(
+            board,
+            wrap,
+            recognizedCorrectly,
+            elapsedTime
+        );
+    }
+
+    // Original HanziLookup dataset
     new HanziLookup.Matcher('orig')
         .match(
             analysed,
             5,
             matches => {
-                const bestMatch =
+                origResult =
                     matches.length > 0
                         ? matches[0].character
                         : '';
 
-                resultElement.textContent =
-                    bestMatch;
+                origFinished = true;
 
-                updateFeedbackBar(
-                    board,
-                    wrap,
-                    bestMatch,
-                    startTime
-                );
+                checkResults();
+            }
+        );
+
+    // Make Me a Hanzi dataset
+    new HanziLookup.Matcher('mmah')
+        .match(
+            analysed,
+            5,
+            matches => {
+                mmahResult =
+                    matches.length > 0
+                        ? matches[0].character
+                        : '';
+
+                mmahFinished = true;
+
+                checkResults();
             }
         );
 }
@@ -330,8 +392,8 @@ function updateRecognition(
 function updateFeedbackBar(
     board,
     wrap,
-    recognizedChar,
-    startTime
+    correct,
+    elapsedTime
 ) {
     const feedbackBar =
         wrap.querySelector('.feedbackBar');
@@ -340,22 +402,8 @@ function updateFeedbackBar(
         return;
     }
 
-    const expectedChar =
-        window.targetCharacter;
-
-    const correct =
-        recognizedChar === expectedChar;
-
     const strokes =
         board.cloneStrokes().length;
-
-    let elapsedTime = 0;
-
-    if (startTime !== null) {
-        elapsedTime =
-            (performance.now() - startTime) /
-            1000;
-    }
 
     const avgTimePerStroke =
         strokes > 0
@@ -367,9 +415,11 @@ function updateFeedbackBar(
     if (correct) {
         if (avgTimePerStroke <= 0.365) {
             levelClass = 'expert';
-        } else if (avgTimePerStroke <= 0.5) {
+        }
+        else if (avgTimePerStroke <= 0.5) {
             levelClass = 'good';
-        } else {
+        }
+        else {
             levelClass = 'familiar';
         }
     }
@@ -378,6 +428,7 @@ function updateFeedbackBar(
         .querySelectorAll('.segment')
         .forEach(segment => {
             segment.style.opacity = '0.5';
+            segment.classList.remove('highlight');
         });
 
     const selected =
@@ -387,7 +438,17 @@ function updateFeedbackBar(
 
     if (selected) {
         selected.style.opacity = '1';
+        selected.classList.add('highlight');
     }
+
+    console.log({
+        expected: window.targetCharacter,
+        correct,
+        elapsedTime,
+        strokes,
+        avgTimePerStroke,
+        levelClass
+    });
 }
 
 
@@ -443,13 +504,33 @@ document.addEventListener(
     'DOMContentLoaded',
     () => {
 
+        let filesLoaded = 0;
+
+        function lookupFileLoaded(ok) {
+            if (!ok) {
+                console.error(
+                    'Failed to load HanziLookup data.'
+                );
+                return;
+            }
+
+            filesLoaded++;
+
+            if (filesLoaded === 2) {
+                loadGivenHanzi();
+            }
+        }
+
         HanziLookup.init(
             'orig',
             '/static/dist/orig.json',
-            () => {
-                loadGivenHanzi();
-            }
+            lookupFileLoaded
         );
 
+        HanziLookup.init(
+            'mmah',
+            '/static/dist/mmah.json',
+            lookupFileLoaded
+        );
     }
 );

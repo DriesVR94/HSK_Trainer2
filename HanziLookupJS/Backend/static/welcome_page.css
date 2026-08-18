@@ -385,6 +385,53 @@ button:focus-visible {
     background-color: #f79297;
 }
 
+/* ABOUT CREATOR */
+
+.about_creator {
+    width: 100%;
+}
+
+.creator-content {
+    width: min(1100px, 100%);
+    margin-inline: auto;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    gap: clamp(2rem, 5vw, 4rem);
+}
+
+.creator-image {
+    flex: 0 1 350px;
+    width: 35%;
+    max-width: 350px;
+}
+
+.creator-image img,
+.creator-image svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.creator-text {
+    flex: 1 1 0;
+    max-width: 600px;
+    min-width: 0;
+}
+
+.creator-text h3 {
+    margin-top: 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.creator-text p {
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    line-height: 1.6;
+}
+
 /* MOBILE */
 
 @media (max-width: 800px) {
@@ -423,4 +470,42 @@ button:focus-visible {
         gap: 1.25rem;
     }
 
+}
+
+@media (max-width: 800px) {
+
+    .landing {
+        flex-direction: column;
+    }
+
+    .call_to_action,
+    .video_container {
+        width: 100%;
+    }
+
+    .practice-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .left-panel,
+    .right-panel {
+        width: 100%;
+    }
+
+    /* About creator */
+    .creator-content {
+        flex-direction: column;
+    }
+
+    .creator-image {
+        width: min(100%, 500px);
+        max-width: 500px;
+        flex: none;
+    }
+
+    .creator-text {
+        width: 100%;
+        max-width: 650px;
+    }
 }

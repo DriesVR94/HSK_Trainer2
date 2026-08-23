@@ -120,7 +120,8 @@ def register():
 
 @app.route('/welcome_page')
 def show_welcome_page():
-    return render_template('welcome_page.html')
+    current_year = datetime.now().year
+    return render_template('welcome_page.html', current_year=current_year)
 
 @app.route('/contact')
 def show_contact_page():

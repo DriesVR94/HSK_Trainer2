@@ -127,9 +127,10 @@ def show_welcome_page():
 def show_contact_page():
     return render_template('contact_page.html')
 
-@app.route('/terms')
-def show_terms_page():
-    return render_template('terms_and_conditions.html')
+@app.route('/terms_and_conditions')
+def show_terms_and_conditions():
+    current_year = datetime.now().year
+    return render_template('terms_and_conditions.html', current_year=current_year)
 
 @app.route('/privacy')
 def show_privacy_page():

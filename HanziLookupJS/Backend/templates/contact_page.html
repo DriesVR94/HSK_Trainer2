@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Contact page stylesheet -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='contact_page.css') }}"
+    >
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;400;600;700;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <title>Contact | HSK Hero</title>
+</head>
+
+
+<body>
+
+    <!-- =========================
+         Header
+    ========================== -->
+
+    <header>
+        <nav>
+            <div class="logo_bar">
+
+                <a href="{{ url_for('show_welcome_page') }}">
+                    <img
+                        src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}"
+                        alt="HSK Hero Logo"
+                        class="logo"
+                    >
+                </a>
+
+                <span class="logo-text">HSK Hero</span>
+
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- =========================
+         Contact
+    ========================== -->
+
+    <main class="contact-page">
+
+        <h1>Contact</h1>
+
+        <p class="contact-intro">
+            Have a question, suggestion, or feedback about HSK Hero?
+            Send me a message below.
+        </p>
+
+        <form
+            class="contact-form"
+            method="POST"
+            action="{{ url_for('submit_contact') }}"
+        >
+
+            <div class="form-group">
+                <label for="name">Name</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                >
+            </div>
+
+
+            <div class="form-group">
+                <label for="email">Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autocomplete="email"
+                    maxlength="254"
+                    required
+                >
+            </div>
+
+
+            <div class="form-group">
+                <label for="message">Question</label>
+
+                <textarea
+                    id="message"
+                    name="message"
+                    maxlength="5000"
+                    required
+                ></textarea>
+            </div>
+
+
+            <button type="submit">
+                Send message
+            </button>
+
+        </form>
+
+    </main>
+
+
+    <!-- =========================
+         Footer
+    ========================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-content">
+
+            <span class="footer-copyright">
+                &copy; {{ current_year }} HSK Hero
+            </span>
+
+            <div class="footer-links">
+                <a href="{{ url_for('show_contact_page') }}">
+                    Contact
+                </a>
+
+                <a href="{{ url_for('show_terms_and_conditions') }}">
+                    Terms &amp; Conditions
+                </a>
+
+                <a href="{{ url_for('show_privacy_policy') }}">
+                    Privacy Policy
+                </a>
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
+

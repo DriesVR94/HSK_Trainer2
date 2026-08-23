@@ -127,13 +127,24 @@ def show_welcome_page():
 def show_contact_page():
     return render_template('contact_page.html')
 
+@app.route('/contact/submit', methods=['POST'])
+def submit_contact():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    message = request.form.get('message')
+
+    # validate here
+    # send email here
+
+    return render_template('contact_success.html')
+
 @app.route('/terms_and_conditions')
 def show_terms_and_conditions():
     current_year = datetime.now().year
     return render_template('terms_and_conditions.html', current_year=current_year)
 
 @app.route('/privacy')
-def show_privacy_page():
+def show_privacy_policy():
     return render_template('privacy_policy.html')
 
 @app.route('/registration_page')

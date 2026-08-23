@@ -1,10 +1,10 @@
 
 from flask_cors import CORS
-from flask import Flask, request, redirect, render_template, session, jsonify, url_for
-import sqlite3, hashlib, os, json, tempfile
+from flask import Flask, request, redirect, render_template, session, jsonify, url_for, flash
+import sqlite3, hashlib, os, json, tempfile, base64, smtplib
 from datetime import datetime
 from paddleocr import PaddleOCR
-import base64
+from email.message import EmailMessage
 #from Backend.ocr import ocr_bp  # Not needed for production.
 
 app = Flask(__name__)
@@ -82,6 +82,47 @@ def initialize_user_proficiency(cursor, user_id):
 def create_connection():
     return sqlite3.connect(db_path)
 
+def send_contact_email(name, user_email, user_message):
+
+    smtp_server = os.environ['MAIL_SERVER']
+    smtp_port = int(os.environ.get('MAIL_PORT', 587))
+    smtp_username = os.environ['MAIL_USERNAME']
+    smtp_password = os.environ['MAIL_PASSWORD']
+    recipient = os.environ['CONTACT_EMAIL']
+
+    msg = EmailMessage()
+
+    msg['Subject'] = f'HSK Hero contact form - {name}'
+
+    # Your own authenticated account should be the sender
+    msg['From'] = smtp_username
+
+    # The message gets delivered to you
+    msg['To'] = recipient
+
+    # Pressing Reply in your mail client replies to the user
+    msg['Reply-To'] = user_email
+
+    msg.set_content(
+        f"""
+New HSK Hero contact message
+
+Name:
+{name}
+
+Email:
+{user_email}
+
+Message:
+{user_message}
+"""
+    )
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+        server.send_message(msg)
+
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -129,14 +170,39 @@ def show_contact_page():
 
 @app.route('/contact/submit', methods=['POST'])
 def submit_contact():
-    name = request.form.get('name')
-    email = request.form.get('email')
-    message = request.form.get('message')
 
-    # validate here
-    # send email here
+    name = request.form.get('name', '').strip()
+    email = request.form.get('email', '').strip()
+    message = request.form.get('message', '').strip()
 
-    return render_template('contact_success.html')
+    # Basic validation
+    if not name or not email or not message:
+        flash('Please complete all fields.', 'error')
+        return redirect(url_for('show_contact_page'))
+
+    if len(name) > 100 or len(email) > 254 or len(message) > 5000:
+        flash('Your message is too long.', 'error')
+        return redirect(url_for('show_contact_page'))
+
+    try:
+        send_contact_email(name, email, message)
+
+    except Exception as e:
+        print(f"Contact form email error: {e}")
+
+        flash(
+            'Something went wrong while sending your message. Please try again.',
+            'error'
+        )
+
+        return redirect(url_for('show_contact_page'))
+
+    flash(
+        'Thanks! Your message has been sent.',
+        'success'
+    )
+
+    return redirect(url_for('show_contact_page'))
 
 @app.route('/terms_and_conditions')
 def show_terms_and_conditions():

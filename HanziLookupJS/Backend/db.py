@@ -122,6 +122,17 @@ def register():
 def show_welcome_page():
     return render_template('welcome_page.html')
 
+@app.route('/contact')
+def show_contact_page():
+    return render_template('contact_page.html')
+
+@app.route('/terms')
+def show_terms_page():
+    return render_template('terms_and_conditions.html')
+
+@app.route('/privacy')
+def show_privacy_page():
+    return render_template('privacy_policy.html')
 
 @app.route('/registration_page')
 def show_registration_page():

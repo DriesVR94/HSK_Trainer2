@@ -14,8 +14,8 @@
 - [x] Update the nav bar so it is consistent with the content of the page
 - [x] Fix the link when the nav bar topics are clicked. Right now, they are not responsive.
 - [x] Redirect the first 'Become a Hero' button directly to the registration page. 
-- [] Create a contact form.
-- [] Add a footer with a contact form, terms & conditions, and privacy policy.
+- [] Create a working contact form (using Render). This step can only be done after owning a domain.
+- [x] Add a footer with a contact form, terms & conditions, and privacy policy.
 
 ### REGISTRATION PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.

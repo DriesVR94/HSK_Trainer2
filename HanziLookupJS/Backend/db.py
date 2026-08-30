@@ -1,11 +1,17 @@
 
 from flask_cors import CORS
 from flask import Flask, request, redirect, render_template, session, jsonify, url_for, flash
-import sqlite3, hashlib, os, json, tempfile, base64, smtplib
+import sqlite3, hashlib, os, json, tempfile, base64, resend
 from datetime import datetime
 from paddleocr import PaddleOCR
-from email.message import EmailMessage
+from dotenv import load_dotenv
+
 #from Backend.ocr import ocr_bp  # Not needed for production.
+load_dotenv()
+
+print("MAIL_SERVER:", os.getenv("MAIL_SERVER"))
+print("MAIL_USERNAME loaded:", bool(os.getenv("MAIL_USERNAME")))
+print("MAIL_PASSWORD loaded:", bool(os.getenv("MAIL_PASSWORD")))
 
 app = Flask(__name__)
 
@@ -84,27 +90,14 @@ def create_connection():
 
 def send_contact_email(name, user_email, user_message):
 
-    smtp_server = os.environ['MAIL_SERVER']
-    smtp_port = int(os.environ.get('MAIL_PORT', 587))
-    smtp_username = os.environ['MAIL_USERNAME']
-    smtp_password = os.environ['MAIL_PASSWORD']
-    recipient = os.environ['CONTACT_EMAIL']
+    resend.api_key = os.environ["RESEND_API_KEY"]
 
-    msg = EmailMessage()
-
-    msg['Subject'] = f'HSK Hero contact form - {name}'
-
-    # Your own authenticated account should be the sender
-    msg['From'] = smtp_username
-
-    # The message gets delivered to you
-    msg['To'] = recipient
-
-    # Pressing Reply in your mail client replies to the user
-    msg['Reply-To'] = user_email
-
-    msg.set_content(
-        f"""
+    params = {
+        "from": "HSK Hero <hskhero@outlook.com>",
+        "to": [os.environ["CONTACT_EMAIL"]],
+        "subject": f"HSK Hero contact form - {name}",
+        "reply_to": user_email,
+        "text": f"""
 New HSK Hero contact message
 
 Name:
@@ -116,13 +109,9 @@ Email:
 Message:
 {user_message}
 """
-    )
+    }
 
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.send_message(msg)
-
+    resend.Emails.send(params)
 
 @app.route('/register', methods=['POST'])
 def register():

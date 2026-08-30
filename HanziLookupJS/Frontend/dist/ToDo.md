@@ -23,6 +23,7 @@
 - [x] Make the Google button work.
 - [x] Make the 'Terms of Service'.
 - [] Make a 'Privacy Policy'.
+- [] Make the page dynamic to different screen sizes.
 
 ### SIGNIN PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.
@@ -32,6 +33,7 @@
 - [x] Make the Google button work.
 - [] When a user signs in by email, the first time it always fails (and his password is exposed in the URL). Second time it works.
 - [] It is not yet possible to use the 'enter' button to sign in, you have to click. Fix.
+- [] Make the page dynamic to different screen sizes.
 
 ### HOME PAGE ###
 - [x] Make the popup shown on hovering over the progress bars follow your mouse.
@@ -39,13 +41,16 @@
 - [] Make the nav bar responsive and consistent.
 - [] Implement a Profile page.
 - [x] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.
+- [] Make the page dynamic to different screen sizes.
 
 ### STUDY PAGE ###
 - [x] Make the layout consistent.
+- [] Make the page dynamic to different screen sizes.
 
 ### TEST PAGE ###
 - [x] Make the layout consistent.
 - [x] Verify that the 'undo' and 'remove' buttons work properly.
+- [] Make the page dynamic to different screen sizes.
 
 ### EXTRAS ###
 

@@ -11,6 +11,22 @@
 
 <body data-level="{{ level }}">
 
+  <header>
+    <nav>
+      <div class="logo_bar">
+        <img src="{{ url_for('static', filename='images/LogoHSKHero2.png') }}" alt="HSK Hero Logo" class="logo">
+        <span class="logo-text">HSK Hero</span>
+      </div>
+
+      <div class="nav-links">
+        <ul>
+          <li><a href="{{ url_for('show_home_page') }}">Home</a></li>
+          <li><a href="#">Profile</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
   <div class="content">
     <div class="colLeft_2">
       <div class="targetCharBox">loading…</div>

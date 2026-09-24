@@ -42,15 +42,21 @@
 - [] Implement a Profile page.
 - [x] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.
 - [] Make the page dynamic to different screen sizes.
+- [] Make the nav bar consistent with the welcome page.
 
 ### STUDY PAGE ###
 - [x] Make the layout consistent.
 - [] Make the page dynamic to different screen sizes.
+- [] Add a home button.
+- [] Make the nav bar consistent with the welcome page.
 
 ### TEST PAGE ###
 - [x] Make the layout consistent.
 - [x] Verify that the 'undo' and 'remove' buttons work properly.
 - [] Make the page dynamic to different screen sizes.
+- [] Add a home button.
+- [] The proficiency of words from HSK 3.0 is not remembered.
+- [] Make the nav bar consistent with the welcome page.
 
 ### EXTRAS ###
 

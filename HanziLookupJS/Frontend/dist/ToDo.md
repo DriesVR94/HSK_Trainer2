@@ -1,59 +1,26 @@
 ### WELCOME PAGE ###
-- [x] Replace the GIF with a self-made one (using code from Hanzi Writer).
-- [x] Add a short demo: Put a sample drawingBoard below. Also stress that writing is an important factor of passing the HSK exam.
-- [x] Check whether the grid color can be changed to red.
-- [x] Remove the ugly corners of the example char.
-- [x] Make the outer grid not a dotted line but a full line.
-- [x] Make the feedbackbar as it should be.
-- [x] Automatically renew the char when it is drawn correctly.
-- [x] Add a 'clear strokes' button.
-- [x] Have a total of 10 easy chars in the list of examples.
-- [x] Add a section 'About the creator'.
-- [x] Fix the pricing tabs together with the "Become a Hero"-button.
-- [x] Remove the Pricing for now, test with starter audience first.
-- [x] Update the nav bar so it is consistent with the content of the page
-- [x] Fix the link when the nav bar topics are clicked. Right now, they are not responsive.
-- [x] Redirect the first 'Become a Hero' button directly to the registration page. 
 - [] Create a working contact form (using Render). This step can only be done after owning a domain.
-- [x] Add a footer with a contact form, terms & conditions, and privacy policy.
-- [] Add a link to the provacy policy, once it has been made.
+- [] Add a link to the privacy policy on the bottom of the page, once it has been made.
 
 ### REGISTRATION PAGE ###
-- [x] Make the layout consistent with the layout of the Welcome Page.
-- [x] Make the WeChat button work. (You need to have a functional website before you can apply for this.)
-- [x] Make the Google button work.
-- [x] Make the 'Terms of Service'.
 - [] Make a 'Privacy Policy'.
 - [] Make the page dynamic to different screen sizes.
 
 ### SIGNIN PAGE ###
-- [x] Make the layout consistent with the layout of the Welcome Page.
-- [x] Remove the part 'Or continue with ...'
 - [] Make the 'Forgot password' work
-- [x] Make the 'Create one' work.
-- [x] Make the Google button work.
-- [x] When a user signs in by email, the first time it always fails (and his password is exposed in the URL). Second time it works.
-- [x] It is not yet possible to use the 'enter' button to sign in, you have to click. Fix.
-- [x] Make the page dynamic to different screen sizes.
 
 ### HOME PAGE ###
-- [x] Make the popup shown on hovering over the progress bars follow your mouse.
-- [x] Add a tag 'Study' and 'Test' when hovering over the icons.
 - [] Make the nav bar responsive and consistent.
 - [] Implement a Profile page.
-- [x] The progress bar is completely empty for new users. It should be filled with 'noob level' color instead.
 - [] Make the page dynamic to different screen sizes.
 - [] Make the nav bar consistent with the welcome page.
 
 ### STUDY PAGE ###
-- [x] Make the layout consistent.
 - [] Make the page dynamic to different screen sizes.
 - [] Add a home button.
 - [] Make the nav bar consistent with the welcome page.
 
 ### TEST PAGE ###
-- [x] Make the layout consistent.
-- [x] Verify that the 'undo' and 'remove' buttons work properly.
 - [] Make the page dynamic to different screen sizes.
 - [] Add a home button.
 - [] The proficiency of words from HSK 3.0 is not remembered.

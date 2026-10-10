@@ -16,6 +16,7 @@
 - [x] Redirect the first 'Become a Hero' button directly to the registration page. 
 - [] Create a working contact form (using Render). This step can only be done after owning a domain.
 - [x] Add a footer with a contact form, terms & conditions, and privacy policy.
+- [] Add a link to the provacy policy, once it has been made.
 
 ### REGISTRATION PAGE ###
 - [x] Make the layout consistent with the layout of the Welcome Page.
@@ -29,11 +30,11 @@
 - [x] Make the layout consistent with the layout of the Welcome Page.
 - [x] Remove the part 'Or continue with ...'
 - [] Make the 'Forgot password' work
-- [] Make the 'Create one' work.
+- [x] Make the 'Create one' work.
 - [x] Make the Google button work.
-- [] When a user signs in by email, the first time it always fails (and his password is exposed in the URL). Second time it works.
-- [] It is not yet possible to use the 'enter' button to sign in, you have to click. Fix.
-- [] Make the page dynamic to different screen sizes.
+- [x] When a user signs in by email, the first time it always fails (and his password is exposed in the URL). Second time it works.
+- [x] It is not yet possible to use the 'enter' button to sign in, you have to click. Fix.
+- [x] Make the page dynamic to different screen sizes.
 
 ### HOME PAGE ###
 - [x] Make the popup shown on hovering over the progress bars follow your mouse.

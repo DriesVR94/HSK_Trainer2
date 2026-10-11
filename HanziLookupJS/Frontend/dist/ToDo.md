@@ -1,6 +1,7 @@
 ### WELCOME PAGE ###
 - [] Create a working contact form (using Render). This step can only be done after owning a domain.
 - [] Add a link to the privacy policy on the bottom of the page, once it has been made.
+- [] Use better picture.
 
 ### REGISTRATION PAGE ###
 - [] Make a 'Privacy Policy'.

@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile</title>
+
+  <!-- CSS stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- JavaScript file -->
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <main class="profile-card">
+    <header class="profile-header">
+      <div class="avatar" aria-hidden="true">👤</div>
+      <h1>My Profile</h1>
+      <p class="subtitle">Manage your account settings</p>
+    </header>
+
+    <section class="email-section">
+      <h2 class="section-title">Account information</h2>
+      <span class="field-label">Registered email address</span>
+      <p class="email" id="userEmail">user@example.com</p>
+    </section>
+
+    <section>
+      <h2 class="section-title">Security</h2>
+      <div class="actions">
+        <button type="button" class="primary-btn" id="changePasswordBtn">
+          Change password
+        </button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2 class="section-title">Account actions</h2>
+      <div class="actions">
+        <button type="button" class="danger-btn" id="deleteAccountBtn">
+          Delete account
+        </button>
+
+        <button type="button" class="logout-btn" id="logoutBtn">
+          Log out
+        </button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Your account settings
+    </footer>
+  </main>
+</body>
+</html>

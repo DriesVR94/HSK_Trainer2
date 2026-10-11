@@ -15,11 +15,13 @@ body {
 
 /* --- HEADER --- */
 header {
-    min-height: 10vh;
     width: 100%;
-    background-color: #000f18;
-    position: relative;
-    z-index: 10;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--background);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    opacity: 0.9;
 }
 
 /* --- NAVBAR STYLING --- */

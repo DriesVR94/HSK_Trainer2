@@ -153,6 +153,10 @@ def show_welcome_page():
     current_year = datetime.now().year
     return render_template('welcome_page.html', current_year=current_year)
 
+@app.route("/profile_page")
+def profile_page(): 
+    return render_template("profile_page.html")
+
 @app.route('/contact')
 def show_contact_page():
     return render_template('contact_page.html')

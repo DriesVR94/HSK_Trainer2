@@ -6,7 +6,7 @@
 ### REGISTRATION PAGE ###
 - [] Make a 'Privacy Policy'.
 - [] Make the page dynamic to different screen sizes.
-
+- [] When new people register, they should be brought to their home page directly. Now, a message "You registered successfully" appears.
 ### SIGNIN PAGE ###
 - [] Make the 'Forgot password' work
 
